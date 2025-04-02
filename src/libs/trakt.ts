@@ -1,7 +1,7 @@
 import { getTMDBData } from './tmdb'
 
-const USERNAME = import.meta.env.USERNAME
-const TRAKT_CLIENT_ID = import.meta.env.TRAKT_CLIENT_ID
+const USERNAME = process.env.USERNAME
+const TRAKT_CLIENT_ID = process.env.TRAKT_CLIENT_ID
 
 export const getNowWatching = async () => {
 	const WATCHING_ENDPOINT = `https://api.trakt.tv/users/${USERNAME}/watching`
@@ -11,7 +11,7 @@ export const getNowWatching = async () => {
 			'content-type': 'application/json',
 			'trakt-api-version': '2',
 			'trakt-api-key': TRAKT_CLIENT_ID,
-		},
+		} as HeadersInit,
 	})
 	if (response.status === 204) {
 		return {
@@ -41,7 +41,7 @@ export const getStats = async () => {
 			'content-type': 'application/json',
 			'trakt-api-version': '2',
 			'trakt-api-key': TRAKT_CLIENT_ID,
-		},
+		} as HeadersInit,
 	})
 
 	const stats = (await response.json()) as {
@@ -69,7 +69,7 @@ export const getWatchedMovies = async (): Promise<Movie[]> => {
 			'content-type': 'application/json',
 			'trakt-api-version': '2',
 			'trakt-api-key': TRAKT_CLIENT_ID,
-		},
+		} as HeadersInit,
 	})
 
 	interface TraktMovie {
@@ -132,7 +132,7 @@ export const getWatchedShows = async () => {
 			'content-type': 'application/json',
 			'trakt-api-version': '2',
 			'trakt-api-key': TRAKT_CLIENT_ID,
-		},
+		} as HeadersInit,
 	})
 
 	interface TraktShow {
