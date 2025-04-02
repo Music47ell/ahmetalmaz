@@ -1,5 +1,5 @@
 import type React from 'react'
-import { minutesToDays } from '@/utils/formatters'
+import { minutesToDays } from '../../../utils/formatters'
 import OverviewItem from '../Overview'
 
 type TraktStatsProps = {

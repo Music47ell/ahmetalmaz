@@ -1,9 +1,13 @@
 ---
-import BaseLayout from '@/layouts/BaseLayout.astro'
-import StatsData from '@/layouts/StatsLayout.astro'
-import siteMetadata from '@/data/siteMetadata'
+import BaseLayout from "../layouts/BaseLayout.astro";
+import StatsData from "../layouts/StatsLayout.astro";
+import siteMetadata from "../data/siteMetadata";
 ---
 
-<BaseLayout title={siteMetadata.name} description={siteMetadata.description} slug="/analytics">
+<BaseLayout
+	title={siteMetadata.name}
+	description={siteMetadata.description}
+	slug="/analytics"
+>
 	<StatsData />
 </BaseLayout>

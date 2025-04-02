@@ -3,7 +3,7 @@ import { html } from 'satori-html'
 import sharp from 'sharp'
 import * as fs from 'node:fs/promises'
 import type { APIContext } from 'astro'
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '../../data/siteMetadata'
 
 export class ImageResponse extends Response {
 	constructor(template = '') {

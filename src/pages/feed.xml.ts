@@ -3,9 +3,9 @@ export const prerender = true
 import rss from '@astrojs/rss'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry } from 'astro:content'
-import siteMetadata from '@/data/siteMetadata'
 import sanitizeHtml from 'sanitize-html'
 import MarkdownIt from 'markdown-it'
+import siteMetadata from '../data/siteMetadata'
 const parser = new MarkdownIt()
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>

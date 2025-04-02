@@ -1,5 +1,5 @@
 ---
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from "../data/siteMetadata";
 ---
 
 <nav class="w-full border-y border-zinc-500 px-6 shadow-inner print:hidden">
@@ -20,7 +20,9 @@ import siteMetadata from '@/data/siteMetadata'
 			</svg>
 		</button>
 	</div>
-	<ul class="nav-menu hidden md:flex flex-col md:flex-row items-center justify-center gap-4">
+	<ul
+		class="nav-menu hidden md:flex flex-col md:flex-row items-center justify-center gap-4"
+	>
 		{
 			siteMetadata.NavLinks.map((navLink) => (
 				<li class="w-full md:w-auto">
@@ -37,14 +39,14 @@ import siteMetadata from '@/data/siteMetadata'
 </nav>
 
 <script>
-	const menuButton = document.querySelector('.menu-button')
-	const navMenu = document.querySelector('.nav-menu')
+	const menuButton = document.querySelector(".menu-button");
+	const navMenu = document.querySelector(".nav-menu");
 
 	if (menuButton) {
-		menuButton.addEventListener('click', () => {
+		menuButton.addEventListener("click", () => {
 			if (navMenu) {
-				navMenu.classList.toggle('hidden')
+				navMenu.classList.toggle("hidden");
 			}
-		})
+		});
 	}
 </script>

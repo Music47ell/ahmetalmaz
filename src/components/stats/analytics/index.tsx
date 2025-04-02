@@ -1,11 +1,11 @@
 'use client'
 
-import OverviewItem from '@/components/stats/Overview'
-import SlugsStats from '@/components/stats/analytics/SlugsStats'
-import CitiesStats from '@/components/stats/analytics/CitiesStats'
-import CountriesStats from '@/components/stats/analytics/CountriesStats'
-import ReferrersStats from '@/components/stats/analytics/ReferrersStats'
 import { useEffect, useState } from 'react'
+import OverviewItem from '../../../components/stats/Overview'
+import SlugsStats from '../../../components/stats/analytics/SlugsStats'
+import CitiesStats from '../../../components/stats/analytics/CitiesStats'
+import CountriesStats from '../../../components/stats/analytics/CountriesStats'
+import ReferrersStats from '../../../components/stats/analytics/ReferrersStats'
 
 const AnalyticsStats = () => {
 	const [data, setData] = useState<{

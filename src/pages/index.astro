@@ -2,11 +2,11 @@
 import { getCollection } from "astro:content";
 const content = await getCollection("content");
 
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import siteMetadata from "@/data/siteMetadata";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import siteMetadata from "../data/siteMetadata";
 
-import Link from "@/components/Link.astro";
-import ViewsCounter from "@/components/ViewsCounter.astro";
+import Link from "../components/Link.astro";
+import ViewsCounter from "../components/ViewsCounter.astro";
 
 const items = content
 	.sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime())
