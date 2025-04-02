@@ -1,0 +1,11 @@
+---
+import NowPlaying from './NowPlaying'
+import NowWatching from './NowWatching'
+---
+
+<footer class="m-auto p-4 flex max-w-md flex-col items-center gap-4 print:hidden">
+	<div class="grid grid-cols-1 gap-y-2">
+		<NowPlaying client:load />
+		<NowWatching client:load />
+	</div>
+</footer>

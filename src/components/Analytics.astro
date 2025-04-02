@@ -1,0 +1,18 @@
+<edge-analytics></edge-analytics>
+<script is:inline async>
+	class EdgeAnalytics extends HTMLElement {
+		constructor() {
+			super()
+			navigator.sendBeacon(
+				'/api/turso/correct-horse-battery-staple',
+				JSON.stringify({
+					title: document.title,
+					slug: window.location.pathname,
+					referrer: document.referrer,
+				})
+			)
+		}
+	}
+
+	customElements.define('edge-analytics', EdgeAnalytics)
+</script>

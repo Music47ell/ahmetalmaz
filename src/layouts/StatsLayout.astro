@@ -1,0 +1,15 @@
+---
+import Analytics from '@/components/stats/analytics'
+import Code from '@/components/stats/codes'
+import Music from '@/components/stats/music'
+import Shows from '@/components/stats/shows'
+---
+
+<section
+	class="container mx-auto flex gap-y-2 flex-col py-8 px-4 print:my-0 print:items-center print:justify-center"
+>
+	<Analytics client:load />
+	<Code client:load />
+	<Music client:load />
+	<Shows client:load />
+</section>

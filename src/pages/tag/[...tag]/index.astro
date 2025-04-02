@@ -1,0 +1,62 @@
+---
+export const prerender = true
+
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+
+import Link from '../../../components/Link.astro'
+import ViewsCounter from '../../../components/ViewsCounter.astro'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import siteMetadata from '../../../data/siteMetadata'
+
+export async function getStaticPaths() {
+	const content = (await getCollection('content')).filter(
+		(item) => item.data.type !== 'page',
+	) as CollectionEntry<'content'>[]
+
+	const tags = [...new Set(content.flatMap((item) => item.data.tags))]
+	return tags.map((tag) => ({
+		params: { tag: (tag ?? '').replace(/\s+/g, '-').toLowerCase() },
+	}))
+}
+
+const { tag } = Astro.params
+
+const tagTitle =
+	(await getCollection('content'))
+		.filter((item) => item.data.type !== 'page')
+		.flatMap((post) => post.data.tags)
+		.filter((t): t is string => t !== undefined)
+		.find((t) => t.replace(/\s+/g, '-').toLowerCase() === tag) || 'Unknown Tag'
+
+const item = (await getCollection('content'))
+	.sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime())
+	.filter((item) =>
+		(item.data.tags ?? [])
+			.map((tag) => tag.replace(/\s+/g, '-').toLowerCase())
+			.includes(tag),
+	)
+	.filter((item) => item.data.type !== 'page')
+---
+
+<BaseLayout
+	title={`Posts tagged with ${tagTitle}`}
+	tagTitle={tagTitle}
+	description={siteMetadata.description}
+	type="website"
+	slug={`/tag/${tag}`}
+>
+	<main class="divide-y divide-zinc-500 overflow-hidden border border-zinc-500">
+		<h1 class="text-4xl font-bold p-4">Posts tagged with {tagTitle}</h1>
+		{
+			item.map((item) => (
+				<div class="flex no-underline items-baseline justify-between gap-x-4 p-4 max-sm:flex-col">
+					<Link href={`/${item.id}`}>
+						<p class="font-medium">{item.data.title}</p>
+					</Link>
+					<ViewsCounter slug={item.id} trackViews={false} />
+				</div>
+			))
+		}
+	</main>
+</BaseLayout>

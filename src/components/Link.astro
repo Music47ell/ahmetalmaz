@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+export type Props = HTMLAttributes<'a'>
+
+const { class: className, rel } = Astro.props
+
+const url = new URL(Astro.props.href ?? '', Astro.url)
+const isExternal = url.host !== Astro.url.host
+const isCurrent = url.href === Astro.url.href
+---
+
+<a
+	class:list={[className, 'text-red-500']}
+	aria-current={isCurrent ? 'page' : null}
+	rel={`${rel} ${isExternal ? 'noopener noreferrer' : ''}`}
+	{...Astro.props}
+>
+	<slot />
+</a>

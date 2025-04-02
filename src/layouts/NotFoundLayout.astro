@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Link from '@/components/Link.astro'
+import ViewsCounter from '@/components/ViewsCounter.astro'
+
+const content = (await getCollection('content')) as CollectionEntry<'content'>[]
+
+const { title, description } = Astro.props
+---
+
+<BaseLayout title={title} description={description} type="website" slug="/404">
+	<h1 class="text-4xl font-bold p-4 text-center">Oh, NO! 404!</h1>
+	<main class="divide-y divide-zinc-500 overflow-hidden rounded-xl border border-zinc-500">
+		<h3 class="text-2xl font-bold p-4">Here's 5 random posts from my blog</h3>
+		{
+			content
+				.filter((item) => item.data.type !== 'page')
+				.sort(() => Math.random() - 0.5)
+				.slice(0, 5)
+				.map((item) => (
+					<div class="flex no-underline items-baseline justify-between gap-x-4 p-4 max-sm:flex-col">
+						<Link href={`/${item.id}`}>
+							<p class="font-medium">{item.data.title}</p>
+						</Link>
+						<ViewsCounter slug={item.id} trackViews={false} />
+					</div>
+				))
+		}
+	</main>
+</BaseLayout>
