@@ -1,0 +1,93 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Prose from '@/components/Prose.astro'
+import Title from '@/components/Title.astro'
+import Link from '@/components/Link.astro'
+import { displayDate } from '@/utils/formatters'
+import ViewsCounter from '@/components/ViewsCounter.astro'
+import { Image } from 'astro:assets'
+
+const {
+	title,
+	description,
+	published_at,
+	lastModified,
+	wordsCount,
+	readingTime,
+	cover,
+	source,
+	tags = [],
+	slug,
+} = Astro.props
+---
+
+<BaseLayout
+	title={title}
+	description={description}
+	slug={slug}
+	published_at={published_at}
+	updated_at={lastModified}
+	wordsCount={wordsCount}
+	image={cover?.src.src}
+	type="article"
+>
+	<main class="col-span-10 flex flex-col lg:col-span-7">
+		<Prose>
+			<header
+				class="relative w-full flex flex-col border-b border-zinc-500 pb-4 space-y-3 print:hidden"
+			>
+				{
+					cover && (
+						<Image src={cover.src} alt={cover.alt} class="w-full h-auto" width="500" height="300" />
+					)
+				}
+
+				<div class="flex items-center justify-between text-zinc-100 text-sm">
+					<time
+						datetime={new Date(published_at).toISOString()}
+						class="dt-published"
+						aria-label={`Published at: ${displayDate(published_at)}`}
+						itemprop="dateModified"
+					>
+						{displayDate(lastModified || published_at)}
+					</time>
+					<Link href={slug}>⌘ Permalink</Link>
+				</div>
+
+				{
+					source ? (
+						<Link href={source} class="hover:text-zinc-300">
+							<Title>{title} &#8599;</Title>
+						</Link>
+					) : (
+						<Title>{title}</Title>
+					)
+				}
+
+				<div class="flex items-center text-sm text-zinc-100 space-x-2">
+					<span>{readingTime} min</span>
+					<span>/</span>
+					<span>{wordsCount} words</span>
+					<span>/</span>
+					<ViewsCounter slug={slug} trackViews={true} />
+				</div>
+
+				<div class="flex flex-wrap gap-2">
+					{
+						tags.map((tag: string) => (
+							<Link
+								class="p-category px-2 py-1 bg-zinc-700 text-sm hover:bg-zinc-600"
+								href={`/tag/${(tag as string).replace(' ', '-').toLowerCase()}`}
+							>
+								#{tag}
+							</Link>
+						))
+					}
+				</div>
+			</header>
+			<div class="e-content entry-content">
+				<slot />
+			</div>
+		</Prose>
+	</main>
+</BaseLayout>
