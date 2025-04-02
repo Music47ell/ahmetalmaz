@@ -116,8 +116,8 @@ const getNowPlaying = async () => {
 			)
 
 			if (exactMatch) {
-				trackInfo.image = exactMatch.album.cover_xl || ''
-				trackInfo.preview = exactMatch.preview || ''
+				trackInfo.image = exactMatch.album.cover_xl
+				trackInfo.preview = exactMatch.preview
 			}
 		}
 
@@ -166,8 +166,8 @@ const getRecentTracks = async (): Promise<TrackInfo[]> => {
 					)
 
 					if (matchedTrack) {
-						track.image = matchedTrack.album.cover_xl || ''
-						track.preview = matchedTrack.preview || ''
+						track.image = matchedTrack.album.cover_xl
+						track.preview = matchedTrack.preview
 					}
 				}
 
@@ -189,7 +189,7 @@ const getRecentTracks = async (): Promise<TrackInfo[]> => {
 						)
 
 						if (matchedAlbum) {
-							track.image = matchedAlbum.cover_xl || ''
+							track.image = matchedAlbum.cover_xl
 						}
 					}
 				}
@@ -207,7 +207,7 @@ const getRecentTracks = async (): Promise<TrackInfo[]> => {
 						)
 
 						if (matchedArtist) {
-							track.image = matchedArtist.picture_xl || ''
+							track.image = matchedArtist.picture_xl
 						}
 					}
 				}
@@ -266,8 +266,8 @@ const getTopTracks = async (): Promise<TrackInfo[]> => {
 						)
 
 						if (matchedTrack) {
-							trackInfo.image = matchedTrack.album.cover_xl || ''
-							trackInfo.preview = matchedTrack.preview || ''
+							trackInfo.image = matchedTrack.album.cover_xl
+							trackInfo.preview = matchedTrack.preview
 						}
 					}
 				}
@@ -291,7 +291,7 @@ const getTopTracks = async (): Promise<TrackInfo[]> => {
 						)
 
 						if (matchedAlbum) {
-							trackInfo.image = matchedAlbum.cover_xl || ''
+							trackInfo.image = matchedAlbum.cover_xl
 						}
 					}
 				}
@@ -310,7 +310,7 @@ const getTopTracks = async (): Promise<TrackInfo[]> => {
 						)
 
 						if (matchedArtist) {
-							trackInfo.image = matchedArtist.picture_xl || ''
+							trackInfo.image = matchedArtist.picture_xl
 						}
 					}
 				}
@@ -373,7 +373,7 @@ const getTopAlbums = async (): Promise<AlbumInfo[]> => {
 						)
 
 						if (matchedTrack) {
-							albumInfo.image = matchedTrack.album.cover_xl || ''
+							albumInfo.image = matchedTrack.album.cover_xl
 						}
 					}
 
@@ -397,7 +397,7 @@ const getTopAlbums = async (): Promise<AlbumInfo[]> => {
 							)
 
 							if (matchedAlbum) {
-								albumInfo.image = matchedAlbum.cover_xl || ''
+								albumInfo.image = matchedAlbum.cover_xl
 							}
 						}
 					}
@@ -416,7 +416,7 @@ const getTopAlbums = async (): Promise<AlbumInfo[]> => {
 							)
 
 							if (matchedArtist) {
-								albumInfo.image = matchedArtist.picture_xl || ''
+								albumInfo.image = matchedArtist.picture_xl
 							}
 						}
 					}
@@ -481,7 +481,7 @@ const getTopArtists = async (): Promise<ArtistInfo[]> => {
 						)
 
 						if (matchedArtist) {
-							artistInfo.image = matchedArtist.picture_xl || ''
+							artistInfo.image = matchedArtist.picture_xl
 						}
 					}
 				}
@@ -500,7 +500,7 @@ const getTopArtists = async (): Promise<ArtistInfo[]> => {
 						)
 
 						if (matchedAlbum) {
-							artistInfo.image = matchedAlbum.cover_xl || ''
+							artistInfo.image = matchedAlbum.cover_xl
 						}
 					}
 				}
