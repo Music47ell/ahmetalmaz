@@ -1,35 +1,42 @@
 ---
-import { getCollection } from 'astro:content'
-const content = await getCollection('content')
+import { getCollection } from "astro:content";
+const content = await getCollection("content");
 
-import BaseLayout from '@/layouts/BaseLayout.astro'
-import siteMetadata from '@/data/siteMetadata'
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import siteMetadata from "@/data/siteMetadata";
 
-import Link from '@/components/Link.astro'
-import ViewsCounter from '@/components/ViewsCounter.astro'
+import Link from "@/components/Link.astro";
+import ViewsCounter from "@/components/ViewsCounter.astro";
 
 const items = content
 	.sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime())
-	.filter((item) => item.data.type !== 'page')
+	.filter((item) => item.data.type !== "page");
 const tags = items
 	.flatMap((item) => item.data.tags)
 	.reduce<{ [key: string]: number }>((result, c) => {
-		if (typeof c === 'string') {
-			const count = result[c] || 0
-			result[c] = count + 1
+		if (typeof c === "string") {
+			const count = result[c] || 0;
+			result[c] = count + 1;
 		}
-		return result
-	}, {})
+		return result;
+	}, {});
 
-const sortedTags = Object.entries(tags).sort((a, b) => b[1] - a[1])
-const topTags = sortedTags.slice(0, 5)
-const hiddenTags = sortedTags.slice(5)
-const totalTags = sortedTags.length
-const totalPosts = items.length
+const sortedTags = Object.entries(tags).sort((a, b) => b[1] - a[1]);
+const topTags = sortedTags.slice(0, 5);
+const hiddenTags = sortedTags.slice(5);
+const totalTags = sortedTags.length;
+const totalPosts = items.length;
 ---
 
-<BaseLayout title="Blog" description={siteMetadata.description} type="website" slug="/">
-	<main class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500">
+<BaseLayout
+	title={siteMetadata.name}
+	description={siteMetadata.description}
+	type="website"
+	slug="/"
+>
+	<main
+		class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500"
+	>
 		<section>
 			<h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
 			{
@@ -51,7 +58,7 @@ const totalPosts = items.length
 				{
 					topTags.map(([tag, count]) => (
 						<li class="p-4 border-t border-yellow-500">
-							<Link href={`/tag/${tag.replace(/\s+/g, '-').toLowerCase()}`}>
+							<Link href={`/tag/${tag.replace(/\s+/g, "-").toLowerCase()}`}>
 								{tag} ({count})
 							</Link>
 						</li>
@@ -63,7 +70,7 @@ const totalPosts = items.length
 				{
 					hiddenTags.map(([tag, count]) => (
 						<li class="p-4 border-t border-yellow-500">
-							<Link href={`/tag/${tag.replace(/\s+/g, '-').toLowerCase()}`}>
+							<Link href={`/tag/${tag.replace(/\s+/g, "-").toLowerCase()}`}>
 								{tag} ({count})
 							</Link>
 						</li>
@@ -74,20 +81,20 @@ const totalPosts = items.length
 	</main>
 
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const hiddenTags = document.getElementById('hidden-tags')
-			const toggleButton = document.getElementById('toggle-tags')
-			let isExpanded = false
+		document.addEventListener("DOMContentLoaded", function () {
+			const hiddenTags = document.getElementById("hidden-tags");
+			const toggleButton = document.getElementById("toggle-tags");
+			let isExpanded = false;
 
 			if (toggleButton) {
-				toggleButton.addEventListener('click', function () {
-					isExpanded = !isExpanded
+				toggleButton.addEventListener("click", function () {
+					isExpanded = !isExpanded;
 					if (hiddenTags) {
-						hiddenTags.classList.toggle('hidden', !isExpanded)
+						hiddenTags.classList.toggle("hidden", !isExpanded);
 					}
-					toggleButton.textContent = isExpanded ? 'Show Less' : 'Show More'
-				})
+					toggleButton.textContent = isExpanded ? "Show Less" : "Show More";
+				});
 			}
-		})
+		});
 	</script>
 </BaseLayout>
