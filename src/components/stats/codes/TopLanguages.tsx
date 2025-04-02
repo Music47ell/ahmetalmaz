@@ -1,5 +1,5 @@
 import type React from 'react'
-import { displayNumbers } from '@/utils/formatters'
+import { displayNumbers } from '../../../utils/formatters'
 
 export type Language = {
 	name: string

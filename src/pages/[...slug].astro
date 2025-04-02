@@ -1,32 +1,32 @@
 ---
-export const prerender = true
+export const prerender = true;
 
-import { getCollection } from 'astro:content'
-import { render } from 'astro:content'
-import type { CollectionEntry } from 'astro:content'
+import { getCollection } from "astro:content";
+import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
-import ContentLayout from '@/layouts/ContentLayout.astro'
-import { components } from '@/components/mdx/index.astro'
+import ContentLayout from "../layouts/ContentLayout.astro";
+import { components } from "../components/mdx/index.astro";
 
 export async function getStaticPaths() {
-	const content = await getCollection('content')
+	const content = await getCollection("content");
 
 	return content.map((item) => {
 		return {
 			params: { slug: item.id },
 			props: { item },
-		}
-	})
+		};
+	});
 }
 
 interface Props {
-	item: CollectionEntry<'content'>
+	item: CollectionEntry<"content">;
 }
 
-const { item } = Astro.props
-const { Content, remarkPluginFrontmatter } = await render(item)
-const { title, description, published_at } = item.data
-const { lastModified, readingTime, wordsCount } = remarkPluginFrontmatter
+const { item } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await render(item);
+const { title, description, published_at } = item.data;
+const { lastModified, readingTime, wordsCount } = remarkPluginFrontmatter;
 ---
 
 <ContentLayout

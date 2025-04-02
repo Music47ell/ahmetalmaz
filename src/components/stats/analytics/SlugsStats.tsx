@@ -1,4 +1,4 @@
-import siteMetadata from '@/data/siteMetadata'
+import siteMetadata from '../../../data/siteMetadata'
 
 interface Slug {
 	slugs: { slug: string; title: string; total: number }[]

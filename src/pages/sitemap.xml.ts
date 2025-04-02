@@ -1,6 +1,6 @@
-import siteMetadata from '@/data/siteMetadata'
-
 import { getCollection } from 'astro:content'
+
+import siteMetadata from '../data/siteMetadata'
 
 async function generateSitemap() {
 	const content = await getCollection('content')

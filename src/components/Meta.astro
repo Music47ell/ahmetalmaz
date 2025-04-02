@@ -1,16 +1,16 @@
 ---
-import siteMetadata from '@/data/siteMetadata'
-import Analytics from '@/components/Analytics.astro'
+import siteMetadata from "../data/siteMetadata";
+import Analytics from "../components/Analytics.astro";
 
 export interface Props {
-	title: string
-	tagTitle: string
-	description: string
-	slug: string
-	published_at: Date
-	updated_at: Date
-	wordsCount: number | undefined
-	type: string
+	title: string;
+	tagTitle: string;
+	description: string;
+	slug: string;
+	published_at: Date;
+	updated_at: Date;
+	wordsCount: number | undefined;
+	type: string;
 }
 
 const {
@@ -22,25 +22,25 @@ const {
 	updated_at,
 	wordsCount,
 	type,
-} = Astro.props
+} = Astro.props;
 
 const pageTitle =
 	title === siteMetadata.name
 		? siteMetadata.name
-		: type === 'article'
+		: type === "article"
 			? title
-			: `${title} | ${siteMetadata.name}`
-const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+			: `${title} | ${siteMetadata.name}`;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const twitter = {
-	site: '@',
+	site: "@",
 	author: siteMetadata.username,
-}
+};
 
-const isProduction = import.meta.env.PROD
+const isProduction = import.meta.env.PROD;
 
 const ogImage = isProduction
 	? `/api/og.png?title=${encodeURIComponent(title)}`
-	: `localhost:4321/api/og.png?title=${encodeURIComponent(title)}`
+	: `localhost:4321/api/og.png?title=${encodeURIComponent(title)}`;
 ---
 
 <meta charset="utf-8" />
@@ -60,7 +60,7 @@ const ogImage = isProduction
 	href="/feed.xml"
 />
 {
-	Astro.url.pathname.includes('/tag/') ? (
+	Astro.url.pathname.includes("/tag/") ? (
 		<link
 			rel="alternate"
 			type="application/rss+xml"
@@ -76,10 +76,19 @@ const ogImage = isProduction
 	rel="icon"
 	type="image/x-icon"
 />
-<link rel="icon" type="image/png" href="/favicons/favicon-96x96.png" sizes="96x96" />
+<link
+	rel="icon"
+	type="image/png"
+	href="/favicons/favicon-96x96.png"
+	sizes="96x96"
+/>
 <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg" />
 <link rel="shortcut icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+<link
+	rel="apple-touch-icon"
+	sizes="180x180"
+	href="/favicons/apple-touch-icon.png"
+/>
 <meta name="apple-mobile-web-app-title" content="Ahmet ALMAZ" />
 <link rel="manifest" href="/favicons/site.webmanifest" />
 
@@ -94,7 +103,10 @@ const ogImage = isProduction
 
 {/*Twitter Meta Tags*/}
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content={type == 'article' ? twitter.author : twitter.site} />
+<meta
+	name="twitter:site"
+	content={type == "article" ? twitter.author : twitter.site}
+/>
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
@@ -103,47 +115,47 @@ const ogImage = isProduction
 <script
 	type="application/ld+json"
 	set:html={JSON.stringify({
-		'@context': 'https://schema.org',
-		'@graph': [
+		"@context": "https://schema.org",
+		"@graph": [
 			{
-				'@type': 'Article',
-				'@id': `${siteMetadata.siteUrl}/${slug}`,
+				"@type": "Article",
+				"@id": `${siteMetadata.siteUrl}/${slug}`,
 				isPartOf: {
-					'@id': `${siteMetadata.siteUrl}/${slug}`,
+					"@id": `${siteMetadata.siteUrl}/${slug}`,
 				},
 				author: {
 					name: siteMetadata.name,
-					'@id': siteMetadata.siteUrl,
+					"@id": siteMetadata.siteUrl,
 				},
 				headline: title,
 				datePublished: published_at,
 				dateModified: updated_at,
 				mainEntityOfPage: {
-					'@id': `${siteMetadata.siteUrl}/${slug}`,
+					"@id": `${siteMetadata.siteUrl}/${slug}`,
 				},
 				wordCount: wordsCount,
 				publisher: {
-					'@id': siteMetadata.siteUrl,
+					"@id": siteMetadata.siteUrl,
 				},
 				image: {
-					'@id': ogImage,
+					"@id": ogImage,
 				},
 				thumbnailUrl: ogImage,
 				inLanguage: siteMetadata.locale,
 			},
 			{
-				'@type': 'WebPage',
-				'@id': `${siteMetadata.siteUrl}/${slug}`,
+				"@type": "WebPage",
+				"@id": `${siteMetadata.siteUrl}/${slug}`,
 				url: `${siteMetadata.siteUrl}/${slug}`,
 				name: title,
 				isPartOf: {
-					'@id': `${siteMetadata.siteUrl}/${slug}`,
+					"@id": `${siteMetadata.siteUrl}/${slug}`,
 				},
 				primaryImageOfPage: {
-					'@id': ogImage,
+					"@id": ogImage,
 				},
 				image: {
-					'@id': ogImage,
+					"@id": ogImage,
 				},
 				thumbnailUrl: ogImage,
 				datePublished: published_at,
@@ -152,15 +164,15 @@ const ogImage = isProduction
 				inLanguage: siteMetadata.locale,
 				potentialAction: [
 					{
-						'@type': 'ReadAction',
+						"@type": "ReadAction",
 						target: [`${siteMetadata.siteUrl}/${slug}`],
 					},
 				],
 			},
 			{
-				'@type': 'ImageObject',
-				inLanguage: 'en-US',
-				'@id': ogImage,
+				"@type": "ImageObject",
+				inLanguage: "en-US",
+				"@id": ogImage,
 				url: ogImage,
 				contentUrl: ogImage,
 				width: 1200,
@@ -168,48 +180,48 @@ const ogImage = isProduction
 				caption: title,
 			},
 			{
-				'@type': 'BreadcrumbList',
-				'@id': `${siteMetadata.siteUrl}/${slug}#breadcrumb`,
+				"@type": "BreadcrumbList",
+				"@id": `${siteMetadata.siteUrl}/${slug}#breadcrumb`,
 				itemListElement: [
 					{
-						'@type': 'ListItem',
+						"@type": "ListItem",
 						position: 1,
-						name: 'Blog',
+						name: "Blog",
 						item: siteMetadata.siteUrl,
 					},
 					{
-						'@type': 'ListItem',
+						"@type": "ListItem",
 						position: 2,
 						name: title,
 					},
 				],
 			},
 			{
-				'@type': 'WebSite',
-				'@id': siteMetadata.siteUrl,
+				"@type": "WebSite",
+				"@id": siteMetadata.siteUrl,
 				url: siteMetadata.siteUrl,
 				name: siteMetadata.name,
 				description: siteMetadata.description,
 				publisher: {
-					'@id': siteMetadata.siteUrl,
+					"@id": siteMetadata.siteUrl,
 				},
-				inLanguage: 'en-US',
+				inLanguage: "en-US",
 			},
 			{
-				'@type': 'Organization',
-				'@id': siteMetadata.siteUrl,
+				"@type": "Organization",
+				"@id": siteMetadata.siteUrl,
 				name: siteMetadata.name,
 				url: siteMetadata.siteUrl,
 				sameAs: [siteMetadata.socials.map((url) => url.url)],
 			},
 			{
-				'@type': 'Person',
-				'@id': `${siteMetadata.siteUrl}/colophon`,
+				"@type": "Person",
+				"@id": `${siteMetadata.siteUrl}/colophon`,
 				name: siteMetadata.name,
 				image: {
-					'@type': 'ImageObject',
+					"@type": "ImageObject",
 					inLanguage: siteMetadata.locale,
-					'@id': `${siteMetadata.siteUrl}${siteMetadata.avatar}`,
+					"@id": `${siteMetadata.siteUrl}${siteMetadata.avatar}`,
 					url: `${siteMetadata.siteUrl}${siteMetadata.avatar}`,
 					contentUrl: `${siteMetadata.siteUrl}${siteMetadata.avatar}`,
 					caption: siteMetadata.name,
