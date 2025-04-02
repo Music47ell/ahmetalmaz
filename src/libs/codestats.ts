@@ -2,7 +2,7 @@ import { get_level, get_level_progress } from '../utils/level-calc'
 import type { CodeStats, Languages } from '../utils//types'
 
 const API_ENDPOINT = 'https://codestats.net/api/users'
-const USERNAME = import.meta.env.USERNAME
+const USERNAME = process.env.USERNAME
 
 export const getStats = async () => {
 	const response = await fetch(`${API_ENDPOINT}/${USERNAME}`)
