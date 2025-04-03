@@ -1,4 +1,4 @@
-const USERNAME = process.env.USERNAME
+const USERNAME = import.meta.env.USERNAME
 
 if (!USERNAME) {
 	throw new Error('USERNAME environment variable is not defined.')

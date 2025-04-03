@@ -1,6 +1,6 @@
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN
-const USERNAME = process.env.USERNAME
-const REPO = process.env.REPO
+const GITHUB_TOKEN = import.meta.env.GITHUB_TOKEN
+const USERNAME = import.meta.env.USERNAME
+const REPO = import.meta.env.REPO
 
 export const getPaths = async () => {
 	const owner = USERNAME
