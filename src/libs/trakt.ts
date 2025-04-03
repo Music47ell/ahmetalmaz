@@ -1,4 +1,7 @@
+import { config } from 'dotenv'
 import { getTMDBData } from './tmdb'
+
+config({ path: '.env' })
 
 const USERNAME = process.env.USERNAME
 const TRAKT_CLIENT_ID = process.env.TRAKT_CLIENT_ID

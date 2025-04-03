@@ -1,12 +1,15 @@
+import { config } from 'dotenv'
 import { createClient } from '@libsql/client'
 import { drizzle } from 'drizzle-orm/libsql'
 import { sql, eq } from 'drizzle-orm'
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
+config({ path: '.env' })
+
 const connection = () => {
 	return createClient({
-		url: process.env.DATABASE_URL,
-		authToken: process.env.DATABASE_AUTH_TOKEN,
+		url: process.env.DATABASE_URL || '',
+		authToken: process.env.DATABASE_AUTH_TOKEN || '',
 	})
 }
 

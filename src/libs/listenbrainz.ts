@@ -1,3 +1,7 @@
+import { config } from 'dotenv'
+
+config({ path: '.env' })
+
 const USERNAME = process.env.USERNAME
 
 if (!USERNAME) {
