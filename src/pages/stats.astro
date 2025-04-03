@@ -4,10 +4,6 @@ import StatsData from "../layouts/StatsLayout.astro";
 import siteMetadata from "../data/siteMetadata";
 ---
 
-<BaseLayout
-	title={siteMetadata.name}
-	description={siteMetadata.description}
-	slug="/analytics"
->
+<BaseLayout title="Stats" description={siteMetadata.description} slug="/stats">
 	<StatsData />
 </BaseLayout>
