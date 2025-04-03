@@ -1,8 +1,5 @@
-import { config } from 'dotenv'
 import { get_level, get_level_progress } from '../utils/level-calc'
 import type { CodeStats, Languages } from '../utils//types'
-
-config({ path: '.env' })
 
 const API_ENDPOINT = 'https://codestats.net/api/users'
 const USERNAME = process.env.USERNAME

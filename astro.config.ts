@@ -28,6 +28,13 @@ export default defineConfig({
 
 	vite: {
 		define: {
+			'process.env.TMDB_API_TOKEN': JSON.stringify(process.env.TMDB_API_TOKEN),
+			'process.env.TRAKT_CLIENT_ID': JSON.stringify(
+				process.env.TRAKT_CLIENT_ID,
+			),
+			'process.env.USERNAME': JSON.stringify(process.env.USERNAME),
+			'process.env.REPO': JSON.stringify(process.env.REPO),
+			'process.env.GITHUB_TOKEN': JSON.stringify(process.env.GITHUB_TOKEN),
 			'process.env.DATABASE_URL': JSON.stringify(process.env.DATABASE_URL),
 			'process.env.DATABASE_AUTH_TOKEN': JSON.stringify(
 				process.env.DATABASE_AUTH_TOKEN,

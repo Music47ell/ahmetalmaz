@@ -1,7 +1,3 @@
-import { config } from 'dotenv'
-
-config({ path: '.env' })
-
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN
 const USERNAME = process.env.USERNAME
 const REPO = process.env.REPO
