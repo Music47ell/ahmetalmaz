@@ -1,10 +1,7 @@
-import { config } from 'dotenv'
-import { createClient } from '@libsql/client'
+import { createClient } from '@libsql/client/web'
 import { drizzle } from 'drizzle-orm/libsql'
 import { sql, eq } from 'drizzle-orm'
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
-
-config({ path: '.env' })
 
 const connection = () => {
 	return createClient({
