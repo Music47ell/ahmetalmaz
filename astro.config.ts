@@ -7,6 +7,7 @@ import {
 	remarkModifiedTime,
 	remarkReadingTime,
 } from './src/libs/remark'
+import { rehypeExternalUrlsFavicon } from './src/libs/rehype'
 import siteMetadata from './src/data/siteMetadata'
 import astroExpressiveCode from 'astro-expressive-code'
 
@@ -53,7 +54,10 @@ export default defineConfig({
 		},
 	},
 
-	markdown: { remarkPlugins: [remarkModifiedTime, remarkReadingTime] },
+	markdown: {
+		remarkPlugins: [remarkModifiedTime, remarkReadingTime],
+		rehypePlugins: [rehypeExternalUrlsFavicon],
+	},
 	integrations: [
 		astroExpressiveCode(astroExpressiveCodeOptions()),
 		mdx(),
