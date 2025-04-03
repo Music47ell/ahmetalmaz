@@ -5,8 +5,8 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 const connection = () => {
 	return createClient({
-		url: process.env.DATABASE_URL || '',
-		authToken: process.env.DATABASE_AUTH_TOKEN || '',
+		url: import.meta.env.DATABASE_URL || '',
+		authToken: import.meta.env.DATABASE_AUTH_TOKEN || '',
 	})
 }
 

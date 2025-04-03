@@ -1,7 +1,7 @@
 import { getTMDBData } from './tmdb'
 
-const USERNAME = process.env.USERNAME
-const TRAKT_CLIENT_ID = process.env.TRAKT_CLIENT_ID
+const USERNAME = import.meta.env.USERNAME
+const TRAKT_CLIENT_ID = import.meta.env.TRAKT_CLIENT_ID
 
 export const getNowWatching = async () => {
 	const WATCHING_ENDPOINT = `https://api.trakt.tv/users/${USERNAME}/watching`

@@ -13,10 +13,10 @@ const AnalyticsStats = () => {
 		lastWeek: number
 		lastMonth: number
 		lastYear: number
-		topTenSlugs: { slug: string; views: number }[]
-		topTenCities: { city: string; views: number }[]
-		topTenCountries: { country: string; views: number }[]
-		topTenReferrers: { referrer: string; views: number }[]
+		topTenSlugs: { slug: string; title: string; total: number }[]
+		topTenCities: { flag: string; city: string; total: number }[]
+		topTenCountries: { flag: string; country: string; total: number }[]
+		topTenReferrers: { referrer: string; total: number }[]
 	}>()
 
 	useEffect(() => {
@@ -49,34 +49,34 @@ const AnalyticsStats = () => {
 					<OverviewItem label="Last Year" value={data?.lastYear ?? 0} />
 				</div>
 				<SlugsStats
-					title="Top 10 Blog Posts"
+					title="Top 10 Pages"
 					slugs={(data?.topTenSlugs ?? []).map((slug) => ({
 						slug: slug.slug,
-						title: slug.slug,
-						total: slug.views,
+						title: slug.title,
+						total: slug.total,
 					}))}
 				/>
 				<CitiesStats
 					title="Top 10 Cities"
 					cities={(data?.topTenCities ?? []).map((city) => ({
 						city: city.city,
-						flag: city.city,
-						total: city.views,
+						flag: city.flag,
+						total: city.total,
 					}))}
 				/>
 				<CountriesStats
 					title="Top 10 Countries"
 					countries={(data?.topTenCountries ?? []).map((country) => ({
 						country: country.country,
-						flag: country.country,
-						total: country.views,
+						flag: country.flag,
+						total: country.total,
 					}))}
 				/>
 				<ReferrersStats
 					title="Top 10 Referrers"
 					referrers={(data?.topTenReferrers ?? []).map((referrer) => ({
 						referrer: referrer.referrer,
-						total: referrer.views,
+						total: referrer.total,
 					}))}
 				/>
 			</>
