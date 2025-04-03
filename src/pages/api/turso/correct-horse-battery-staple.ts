@@ -1,6 +1,6 @@
 import type { APIContext } from 'astro'
-import { updateAnalytics } from '../../libs/turso'
-import { getFlagEmoji } from '../../utils/emoji-flag'
+import { updateAnalytics } from '../../../libs/turso'
+import { getFlagEmoji } from '../../../utils/emoji-flag'
 
 export const config = {
 	runtime: 'edge',
