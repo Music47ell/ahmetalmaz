@@ -36,7 +36,7 @@ const twitter = {
 	author: siteMetadata.username,
 };
 
-const isProduction = process.env.PROD;
+const isProduction = import.meta.env.PROD;
 
 const ogImage = isProduction
 	? `/api/og.png?title=${encodeURIComponent(title)}`
