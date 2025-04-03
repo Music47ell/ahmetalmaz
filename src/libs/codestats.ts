@@ -1,5 +1,8 @@
+import { config } from 'dotenv'
 import { get_level, get_level_progress } from '../utils/level-calc'
 import type { CodeStats, Languages } from '../utils//types'
+
+config({ path: '.env' })
 
 const API_ENDPOINT = 'https://codestats.net/api/users'
 const USERNAME = process.env.USERNAME
@@ -9,7 +12,7 @@ export const getStats = async () => {
 
 	const data = (await response.json()) as CodeStats
 
-	data.user = USERNAME
+	data.user = USERNAME || ''
 	data.previous_xp = data?.total_xp - data?.new_xp
 	data.level = Math.floor(0.025 * Math.sqrt(data?.total_xp - data?.new_xp))
 

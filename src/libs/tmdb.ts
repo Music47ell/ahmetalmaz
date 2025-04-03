@@ -1,3 +1,7 @@
+import { config } from 'dotenv'
+
+config({ path: '.env' })
+
 export const getTMDBData = async (id: number, type: 'movies' | 'shows') => {
 	const endpoint =
 		type === 'movies'
