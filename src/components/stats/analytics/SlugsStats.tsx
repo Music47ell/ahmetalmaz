@@ -36,7 +36,7 @@ const SlugList: React.FC<Slug> = ({ title, slugs }) => {
 									href={`${siteMetadata.siteUrl}${slug}`}
 									className="capitalize text-sm"
 								>
-									{title}
+									{title.replace(`| ${siteMetadata.name}`, '')}
 								</a>
 							</div>
 

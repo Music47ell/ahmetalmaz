@@ -23,42 +23,39 @@ const TopLanguages: React.FC<TopLanguagesProps> = ({ topLanguages }) => {
 	}
 
 	return (
-		<div className="relative flex flex-1 flex-col gap-2 p-[2px] border border-yellow-500">
-			<div className="h-full w-full p-4">
-				<div className="grid gap-2 px-4 py-3">
-					{/* Iterate over topLanguages and pass each language data to Progress */}
-					{topLanguages.map((language) => (
-						<div
-							key={language.name}
-							className="flex items-center justify-between gap-3"
-						>
-							<div className="flex w-24 flex-col">
-								{language.name}
-								<span className="text-xs text-neutral-400">
-									Level {language.level}
-								</span>
-								<span className="text-xs text-neutral-400">
-									XP {displayNumbers.format(language.xps)}
-								</span>
-							</div>
-							<div className="relative flex h-3 flex-1 justify-center bg-gray-500">
-								<span
-									className="absolute left-0 top-0 h-3 px-3 from-red-500 to-yellow-500 bg-gradient-to-r"
-									style={{
-										width: `${language.percent}%`,
-										transition: 'width 0.8s',
-									}}
-								>
-									&ensp;
-								</span>
-							</div>
-							<div className="w-8 text-right text-neutral-100">
-								{language.percent.toFixed(0)}%
-							</div>
+		<div className="flex flex-col border border-yellow-500 shadow-lg bg-black/50">
+			{topLanguages.map((language) => (
+				<div
+					key={language.name}
+					className="flex flex-col p-4 border-b border-yellow-500"
+				>
+					<div className="flex flex-col w-full">
+						<p className="text-lg font-semibold text-white">{language.name}</p>
+						<p className="text-xs text-neutral-400">Level {language.level}</p>
+						<p className="text-xs text-neutral-400">
+							XP {displayNumbers.format(language.xps)}
+						</p>
+					</div>
+
+					<div className="relative flex gap-3 mt-2">
+						<div className="flex-1 h-3 bg-gray-500">
+							<span
+								className="absolute left-0 top-0 h-3"
+								style={{
+									width: `${language.percent}%`,
+									backgroundColor: language.color,
+									transition: 'width 0.8s',
+								}}
+							>
+								&ensp;
+							</span>
 						</div>
-					))}
+						<div className="text-right text-neutral-100">
+							{language.percent.toFixed(0)}%
+						</div>
+					</div>
 				</div>
-			</div>
+			))}
 		</div>
 	)
 }
