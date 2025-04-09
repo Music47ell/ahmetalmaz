@@ -1,31 +1,8 @@
 ---
-import { getCollection } from "astro:content";
-const content = await getCollection("content");
-
 import BaseLayout from "../layouts/BaseLayout.astro";
 import siteMetadata from "../data/siteMetadata";
 
 import Link from "../components/Link.astro";
-import ViewsCounter from "../components/ViewsCounter.astro";
-
-const items = content
-	.sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime())
-	.filter((item) => item.data.type !== "page");
-const tags = items
-	.flatMap((item) => item.data.tags)
-	.reduce<{ [key: string]: number }>((result, c) => {
-		if (typeof c === "string") {
-			const count = result[c] || 0;
-			result[c] = count + 1;
-		}
-		return result;
-	}, {});
-
-const sortedTags = Object.entries(tags).sort((a, b) => b[1] - a[1]);
-const topTags = sortedTags.slice(0, 5);
-const hiddenTags = sortedTags.slice(5);
-const totalTags = sortedTags.length;
-const totalPosts = items.length;
 ---
 
 <BaseLayout
@@ -34,67 +11,138 @@ const totalPosts = items.length;
 	type="website"
 	slug="/"
 >
-	<main
-		class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500"
-	>
-		<section>
-			<h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
-			{
-				items.map((item) => (
-					<div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
-						<Link href={`/${item.id}`}>{item.data.title}</Link>
-						<ViewsCounter slug={item.id} trackViews={false} />
-					</div>
-				))
-			}
+	<main>
+		<section class="p-6 border border-yellow-500">
+			<h1 class="text-2xl font-semibold mb-4">
+				Hey, I'm a Full-Stack Developer from Türkiye 🇹🇷
+			</h1>
+			<p class="leading-relaxed">
+				A self-taught developer who began his journey back in 2013. I'm
+				passionate about
+				<strong class="text-red-500"> open-source software</strong> and
+				<strong class="text-red-500"> self-hosting</strong>.
+			</p>
+			<p class="mt-4">
+				If you're interested in working together, check out my
+				<Link href="/resume/" class="underline"> resume</Link>.
+			</p>
 		</section>
-		<section>
-			<div class="flex justify-between items-center p-4">
-				<h2 class="text-lg font-semibold">Tags ({totalTags})</h2>
-				<button id="toggle-tags" class="cursor-pointer"> Show More </button>
-			</div>
 
-			<ul class="flex flex-col">
-				{
-					topTags.map(([tag, count]) => (
-						<li class="p-4 border-t border-yellow-500">
-							<Link href={`/tag/${tag.replace(/\s+/g, "-").toLowerCase()}`}>
-								{tag} ({count})
-							</Link>
-						</li>
-					))
-				}
+		<section class="p-6 border border-yellow-500">
+			<h2 class="text-xl font-semibold mb-4">🧰 Tech Stack</h2>
+			<ul class="grid grid-cols-2 md:grid-cols-3 gap-2 list-inside">
+				<li>
+					<Link href="https://astro.build/" class="underline">Astro</Link>
+				</li>
+
+				<li><Link href="https://react.dev/" class="underline">React</Link></li>
+				<li>
+					<Link href="https://tailwindcss.com/" class="underline"
+						>Tailwind CSS</Link
+					>
+				</li>
+				<li>
+					<Link href="https://www.typescriptlang.org/" class="underline"
+						>TypeScript</Link
+					>
+				</li>
+				<li><Link href="https://bun.sh/" class="underline">Bun</Link></li>
+				<li><Link href="https://mdxjs.com/" class="underline">MDX</Link></li>
+
+				<li><Link href="https://turso.tech/" class="underline">Turso</Link></li>
+				<li>
+					<Link href="https://orm.drizzle.team/" class="underline"
+						>Drizzle ORM</Link
+					>
+				</li>
+				<li>
+					<Link href="https://pages.cloudflare.com/" class="underline"
+						>Cloudflare Pages</Link
+					>
+				</li>
 			</ul>
+		</section>
 
-			<ul id="hidden-tags" class="flex flex-col hidden">
-				{
-					hiddenTags.map(([tag, count]) => (
-						<li class="p-4 border-t border-yellow-500">
-							<Link href={`/tag/${tag.replace(/\s+/g, "-").toLowerCase()}`}>
-								{tag} ({count})
-							</Link>
+		<section class="p-6 border border-yellow-500">
+			<h2 class="text-xl font-semibold mb-4">💻 Currently Using</h2>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<div>
+					<h3 class="text-lg font-medium mb-2">Hardware</h3>
+					<ul class="list-inside space-y-1">
+						<li>
+							<Link
+								href="https://support.apple.com/en-gb/111946"
+								class="underline">MacBook Pro (Retina, 13-inch, Late 2013)</Link
+							>
 						</li>
-					))
-				}
+						<li>
+							<Link
+								href="https://www.logitech.com/en-us/shop/p/m170-wireless-mouse.910-006864"
+								class="underline">Logitech M170 Mouse</Link
+							>
+						</li>
+					</ul>
+				</div>
+
+				<div>
+					<h3 class="text-lg font-medium mb-2">Coding</h3>
+					<ul class="list-inside space-y-1">
+						<li>
+							OS: <Link
+								href="https://www.apple.com/macos/macos-sequoia/"
+								class="underline">macOS</Link
+							> /
+							<Link href="https://ubuntu.com/" class="underline">Ubuntu</Link>
+						</li>
+						<li>
+							Browser: <Link href="https://brave.com/" class="underline"
+								>Brave</Link
+							>
+						</li>
+						<li>
+							Editor: <Link
+								href="https://code.visualstudio.com/"
+								class="underline">Visual Studio Code</Link
+							>
+						</li>
+						<li>
+							AI: <Link
+								href="https://github.com/features/copilot/"
+								class="underline">Copilot</Link
+							> / <Link href="https://chatgpt.com/" class="underline"
+								>ChatGPT</Link
+							>
+						</li>
+						<li>
+							Theme: <Link href="https://draculatheme.com/" class="underline"
+								>Dracula</Link
+							> / <Link href="https://catppuccin.com/" class="underline"
+								>Catppuccin</Link
+							>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<section class="p-6 border border-yellow-500">
+			<h2 class="text-xl font-semibold mb-4">📡 Find me on</h2>
+			<ul class="flex gap-4">
+				<li>
+					<Link href="https://github.com/music47ell" class="underline"
+						>GitHub</Link
+					>
+				</li>
+				<li>
+					<Link href="https://www.linkedin.com/in/music47ell/" class="underline"
+						>LinkedIn</Link
+					>
+				</li>
+				<li>
+					<Link href="/feed.xml" class="underline">RSS</Link>
+				</li>
 			</ul>
 		</section>
 	</main>
-
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			const hiddenTags = document.getElementById("hidden-tags");
-			const toggleButton = document.getElementById("toggle-tags");
-			let isExpanded = false;
-
-			if (toggleButton) {
-				toggleButton.addEventListener("click", function () {
-					isExpanded = !isExpanded;
-					if (hiddenTags) {
-						hiddenTags.classList.toggle("hidden", !isExpanded);
-					}
-					toggleButton.textContent = isExpanded ? "Show Less" : "Show More";
-				});
-			}
-		});
-	</script>
 </BaseLayout>

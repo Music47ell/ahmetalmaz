@@ -1,20 +1,42 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from "astro/types";
 
-export type Props = HTMLAttributes<'a'>
+export type Props = HTMLAttributes<"a">;
 
-const { class: className, rel } = Astro.props
+const { class: className, rel, href } = Astro.props;
 
-const url = new URL(Astro.props.href ?? '', Astro.url)
-const isExternal = url.host !== Astro.url.host
-const isCurrent = url.href === Astro.url.href
+const url = new URL(href ?? "", Astro.url);
+const isExternal = url.host !== Astro.url.host;
+const isCurrent = url.href === Astro.url.href;
+
+const faviconUrl = isExternal
+	? import.meta.env.PROD
+		? `/api/favicon?url=${encodeURIComponent(String(href ?? ""))}`
+		: `http://localhost:4321/api/favicon?url=${encodeURIComponent(String(href ?? ""))}`
+	: null;
 ---
 
 <a
-	class:list={[className, 'text-red-500']}
-	aria-current={isCurrent ? 'page' : null}
-	rel={`${rel} ${isExternal ? 'noopener noreferrer' : ''}`}
+	class:list={[
+		className,
+		isExternal && "inline-flex items-center gap-1",
+		"text-red-500",
+	]}
+	aria-current={isCurrent ? "page" : null}
+	rel={`${rel ?? ""}${isExternal ? " noopener noreferrer" : ""}`}
 	{...Astro.props}
 >
+	{
+		isExternal && (
+			<img
+				src={faviconUrl}
+				alt={url.hostname}
+				width="16"
+				height="16"
+				loading="lazy"
+				class="w-4 h-4 inline-block"
+			/>
+		)
+	}
 	<slot />
 </a>

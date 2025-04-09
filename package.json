@@ -12,8 +12,7 @@
 		"format:check": "biome format .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"update": "bunx npm-check-updates --format group --interactive",
-		"find:depcheck": "bunx depcheck"
+		"update": "bunx npm-check-updates --format group --interactive"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^12.4.0",
@@ -48,5 +47,7 @@
 		"@types/sanitize-html": "^2.15.0",
 		"@types/unist": "^3.0.3"
 	},
-	"trustedDependencies": ["@biomejs/biome"]
+	"trustedDependencies": [
+		"@biomejs/biome"
+	]
 }

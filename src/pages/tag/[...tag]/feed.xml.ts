@@ -8,14 +8,8 @@ import siteMetadata from '../../../data/siteMetadata'
 const parser = new MarkdownIt()
 
 export async function getStaticPaths() {
-	const content: CollectionEntry<'content'>[] = await getCollection('content')
-	const tags = [
-		...new Set(
-			content
-				.filter((item) => item.data.type !== 'page')
-				.flatMap((item) => item.data.tags),
-		),
-	]
+	const content: CollectionEntry<'posts'>[] = await getCollection('posts')
+	const tags = [...new Set(content.flatMap((item) => item.data.tags))]
 
 	return tags.map((tag) => ({
 		params: { tag: (tag ?? '').replace(/\s+/g, '-').toLowerCase() },
@@ -24,14 +18,13 @@ export async function getStaticPaths() {
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function GET(context: any) {
-	const content: CollectionEntry<'content'>[] = await getCollection('content')
+	const content: CollectionEntry<'posts'>[] = await getCollection('posts')
 
 	const tag = context.params.tag
 	const filteredBlog = content
 		.sort(
 			(a, b) => b.data.published_at.getTime() - a.data.published_at.getTime(),
 		)
-		.filter((item) => item.data.type !== 'page')
 		.filter((item) =>
 			(item.data.tags ?? [])
 				.map((tag) => tag.replace(/\s+/g, '-').toLowerCase())
@@ -61,7 +54,7 @@ export async function GET(context: any) {
 				title: item.data.title,
 				description: item.data.description,
 				pubDate: item.data.published_at,
-				link: `/${item.id}`,
+				link: `/blog/${item.id}`,
 				categories: item.data.tags,
 				author: `${siteMetadata.name}`,
 				content: sanitizeHtml(parser.render(item.body ?? ''), {

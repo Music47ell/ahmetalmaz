@@ -1,0 +1,39 @@
+---
+import { getCollection } from "astro:content";
+const content = await getCollection("posts");
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import siteMetadata from "../../data/siteMetadata";
+
+import Link from "../../components/Link.astro";
+import ViewsCounter from "../../components/ViewsCounter.astro";
+
+const items = content.sort(
+	(a, b) => b.data.published_at.getTime() - a.data.published_at.getTime()
+);
+
+const totalPosts = items.length;
+---
+
+<BaseLayout
+	title={siteMetadata.name}
+	description={siteMetadata.description}
+	type="website"
+	slug="/"
+>
+	<main
+		class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500"
+	>
+		<section>
+			<h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
+			{
+				items.map((item) => (
+					<div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
+						<Link href={`/blog/${item.id}`}>{item.data.title}</Link>
+						<ViewsCounter slug={item.id} trackViews={false} />
+					</div>
+				))
+			}
+		</section>
+	</main>
+</BaseLayout>
