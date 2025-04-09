@@ -21,7 +21,6 @@ export default function rehypeExternalUrlsFavicons() {
 						'gap-1',
 					]
 
-					// Prepend the favicon to the children array
 					node.children.unshift({
 						type: 'element',
 						tagName: 'img',
@@ -30,7 +29,7 @@ export default function rehypeExternalUrlsFavicons() {
 							alt: domain,
 							width: '16',
 							height: '16',
-							className: 'w-4 h-4 inline-block mr-1 -mt-px mb-0',
+							className: 'w-4 h-4 inline-block -mt-px mb-0',
 							loading: 'lazy',
 						},
 					})
