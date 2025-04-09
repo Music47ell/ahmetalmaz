@@ -6,6 +6,7 @@ import Title from "../components/Title.astro";
 import Link from "../components/Link.astro";
 import { displayDate } from "../utils/formatters";
 import ViewsCounter from "../components/ViewsCounter.astro";
+import siteMetadata from "../data/siteMetadata";
 
 const {
 	title,
@@ -22,7 +23,7 @@ const {
 ---
 
 <BaseLayout
-	title={title}
+	title={`${title} | ${siteMetadata.name}`}
 	description={description}
 	slug={slug}
 	published_at={published_at}
