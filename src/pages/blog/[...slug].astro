@@ -36,7 +36,7 @@ const { lastModified, readingTime, wordsCount } = remarkPluginFrontmatter;
 	lastModified={lastModified}
 	readingTime={readingTime}
 	wordsCount={wordsCount}
-	slug={item.id}
+	slug={`blog/${item.id}`}
 >
 	<Content components={components} />
 </ContentLayout>
