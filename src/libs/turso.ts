@@ -39,7 +39,7 @@ const getBlogViewsBySlug = async (slug: string) => {
 	const result = await db
 		.select()
 		.from(analyticsTable)
-		.where(eq(analyticsTable.slug, decodeURI(`/${slug}`)))
+		.where(eq(analyticsTable.slug, decodeURI(`/blog/${slug}`)))
 		.all()
 	if (result.length === 0) {
 		return 0
