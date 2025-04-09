@@ -6,9 +6,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Link from "../components/Link.astro";
 import ViewsCounter from "../components/ViewsCounter.astro";
 
-const content = (await getCollection(
-	"content"
-)) as CollectionEntry<"content">[];
+const content = (await getCollection("posts")) as CollectionEntry<"posts">[];
 
 const { title, description } = Astro.props;
 ---
@@ -21,7 +19,6 @@ const { title, description } = Astro.props;
 		<h3 class="text-2xl font-bold p-4">Here's 5 random posts from my blog</h3>
 		{
 			content
-				.filter((item) => item.data.type !== "page")
 				.sort(() => Math.random() - 0.5)
 				.slice(0, 5)
 				.map((item) => (

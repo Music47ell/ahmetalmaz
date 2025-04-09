@@ -10,7 +10,7 @@ const parser = new MarkdownIt()
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function GET(context: any) {
-	const content: CollectionEntry<'content'>[] = await getCollection('content')
+	const content: CollectionEntry<'posts'>[] = await getCollection('posts')
 
 	return rss({
 		title: siteMetadata.name,
@@ -28,7 +28,6 @@ export async function GET(context: any) {
     <atom:link href="${context.site}/feed.xml" rel="self" type="application/rss+xml" />
     `,
 		items: content
-			.filter((item) => item.data.type !== 'page')
 			.sort(
 				(a, b) =>
 					new Date(b.data.published_at).getTime() -
@@ -39,7 +38,7 @@ export async function GET(context: any) {
 					title: item.data.title,
 					description: item.data.description,
 					pubDate: item.data.published_at,
-					link: `/${item.id}`,
+					link: `blog/${item.id}`,
 					categories: item.data.tags,
 					author: `${siteMetadata.name}`,
 					content: sanitizeHtml(parser.render(item.body ?? ''), {

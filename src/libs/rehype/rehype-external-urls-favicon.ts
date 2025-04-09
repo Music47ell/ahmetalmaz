@@ -1,5 +1,7 @@
 import { visit } from 'unist-util-visit'
 
+const isProduction = import.meta.env.PROD
+
 export default function rehypeExternalUrlsFavicons() {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	return (tree: any) => {
@@ -8,17 +10,19 @@ export default function rehypeExternalUrlsFavicons() {
 				const url = node.properties.href
 				if (url.startsWith('http')) {
 					const domain = new URL(url).hostname
-					const faviconUrl = `https://icons.duckduckgo.com/ip3/${domain}.ico`
+					const faviconUrl = isProduction
+						? `/api/favicon?url=${encodeURIComponent(url)}`
+						: `http://localhost:4321/api/favicon?url=${encodeURIComponent(url)}`
 
-					// Ensure the link itself has the necessary Tailwind classes
 					node.properties.className = [
 						...(node.properties.className || []),
 						'inline-flex',
 						'items-center',
-						'gap-1', // Spacing between text and icon
+						'gap-1',
 					]
 
-					node.children.push({
+					// Prepend the favicon to the children array
+					node.children.unshift({
 						type: 'element',
 						tagName: 'img',
 						properties: {
@@ -26,7 +30,7 @@ export default function rehypeExternalUrlsFavicons() {
 							alt: domain,
 							width: '16',
 							height: '16',
-							className: 'w-4 h-4 inline-block ml-1 -mt-px mb-0',
+							className: 'w-4 h-4 inline-block mr-1 -mt-px mb-0',
 							loading: 'lazy',
 						},
 					})

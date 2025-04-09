@@ -1,42 +1,38 @@
 ---
-export const prerender = true
+export const prerender = true;
 
-import { getCollection } from 'astro:content'
-import type { CollectionEntry } from 'astro:content'
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
-import Link from '../../../components/Link.astro'
-import ViewsCounter from '../../../components/ViewsCounter.astro'
-import BaseLayout from '../../../layouts/BaseLayout.astro'
-import siteMetadata from '../../../data/siteMetadata'
+import Link from "../../../components/Link.astro";
+import ViewsCounter from "../../../components/ViewsCounter.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import siteMetadata from "../../../data/siteMetadata";
 
 export async function getStaticPaths() {
-	const content = (await getCollection('content')).filter(
-		(item) => item.data.type !== 'page',
-	) as CollectionEntry<'content'>[]
+	const content = (await getCollection("posts")) as CollectionEntry<"posts">[];
 
-	const tags = [...new Set(content.flatMap((item) => item.data.tags))]
+	const tags = [...new Set(content.flatMap((item) => item.data.tags))];
 	return tags.map((tag) => ({
-		params: { tag: (tag ?? '').replace(/\s+/g, '-').toLowerCase() },
-	}))
+		params: { tag: (tag ?? "").replace(/\s+/g, "-").toLowerCase() },
+	}));
 }
 
-const { tag } = Astro.params
+const { tag } = Astro.params;
 
 const tagTitle =
-	(await getCollection('content'))
-		.filter((item) => item.data.type !== 'page')
+	(await getCollection("posts"))
 		.flatMap((post) => post.data.tags)
 		.filter((t): t is string => t !== undefined)
-		.find((t) => t.replace(/\s+/g, '-').toLowerCase() === tag) || 'Unknown Tag'
+		.find((t) => t.replace(/\s+/g, "-").toLowerCase() === tag) || "Unknown Tag";
 
-const item = (await getCollection('content'))
+const item = (await getCollection("posts"))
 	.sort((a, b) => b.data.published_at.getTime() - a.data.published_at.getTime())
 	.filter((item) =>
 		(item.data.tags ?? [])
-			.map((tag) => tag.replace(/\s+/g, '-').toLowerCase())
-			.includes(tag),
-	)
-	.filter((item) => item.data.type !== 'page')
+			.map((tag) => tag.replace(/\s+/g, "-").toLowerCase())
+			.includes(tag)
+	);
 ---
 
 <BaseLayout
@@ -51,7 +47,7 @@ const item = (await getCollection('content'))
 		{
 			item.map((item) => (
 				<div class="flex no-underline items-baseline justify-between gap-x-4 p-4 max-sm:flex-col">
-					<Link href={`/${item.id}`}>
+					<Link href={`/blog/${item.id}`}>
 						<p class="font-medium">{item.data.title}</p>
 					</Link>
 					<ViewsCounter slug={item.id} trackViews={false} />

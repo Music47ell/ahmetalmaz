@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import siteMetadata from '../data/siteMetadata'
 
 async function generateSitemap() {
-	const content = await getCollection('content')
+	const content = await getCollection('posts')
 
 	return `
     <?xml version="1.0" encoding="UTF-8"?>
@@ -14,11 +14,6 @@ async function generateSitemap() {
         <lastmod>${new Date().toISOString()}</lastmod>
         <priority>1.00</priority>
     </url>
-    <url>
-        <loc>${siteMetadata.siteUrl}/tags</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
-        <priority>1.00</priority>
-    </url>
     ${content
 			.sort((a, b) => {
 				return (
@@ -26,11 +21,11 @@ async function generateSitemap() {
 					new Date(a.data.published_at).getTime()
 				)
 			})
-			.map((page) => {
+			.map((post) => {
 				return `
             <url>
-                <loc>${siteMetadata.siteUrl}/${page.id}</loc>
-                <lastmod>${new Date(page.data.published_at).toISOString()}</lastmod>
+                <loc>${siteMetadata.siteUrl}/blog/${post.id}</loc>
+                <lastmod>${new Date(post.data.published_at).toISOString()}</lastmod>
                 <priority>0.80</priority>
             </url>
         `.trim()
