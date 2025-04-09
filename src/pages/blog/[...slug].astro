@@ -5,7 +5,6 @@ import { getCollection } from "astro:content";
 import { render } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 
-import siteMetadata from "../../data/siteMetadata";
 import ContentLayout from "../../layouts/ContentLayout.astro";
 import { components } from "../../components/mdx/index.astro";
 
@@ -31,7 +30,7 @@ const { lastModified, readingTime, wordsCount } = remarkPluginFrontmatter;
 ---
 
 <ContentLayout
-	title={`${title} | ${siteMetadata.name}`}
+	title={title}
 	description={description}
 	published_at={published_at}
 	lastModified={lastModified}
