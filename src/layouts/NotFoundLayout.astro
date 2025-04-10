@@ -23,7 +23,7 @@ const { title, description } = Astro.props;
 				.slice(0, 5)
 				.map((item) => (
 					<div class="flex no-underline items-baseline justify-between gap-x-4 p-4 max-sm:flex-col">
-						<Link href={`/${item.id}`}>
+						<Link href={`blog/${item.id}`}>
 							<p class="font-medium">{item.data.title}</p>
 						</Link>
 						<ViewsCounter slug={item.id} trackViews={false} />

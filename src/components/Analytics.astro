@@ -1,12 +1,18 @@
----
-const src = import.meta.env.PUBLIC_ANALYTICS_SRC;
-const websiteId = import.meta.env.PUBLIC_ANALYTICS_WEBSITE_ID;
----
+<edge-analytics></edge-analytics>
+<script is:inline async>
+	class EdgeAnalytics extends HTMLElement {
+		constructor() {
+			super();
+			navigator.sendBeacon(
+				"/api/turso/correct-horse-battery-staple",
+				JSON.stringify({
+					title: document.title,
+					slug: window.location.pathname,
+					referrer: document.referrer || "Direct Traffic",
+				})
+			);
+		}
+	}
 
-<script
-	type="text/javascript"
-	is:inline
-	defer
-	src=`/scripts/${src}.js`
-	data-website-id={websiteId}
-	data-do-not-track="true"></script>
+	customElements.define("edge-analytics", EdgeAnalytics);
+</script>
