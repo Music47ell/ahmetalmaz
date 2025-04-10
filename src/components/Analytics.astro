@@ -1,9 +1,10 @@
 ---
-const src = import.meta.env.UMAMI_SCRIPT_SRC;
-const websiteId = import.meta.env.UMAMI_WEBSITE_ID;
+const src = import.meta.env.PUBLIC_ANALYTICS_SRC;
+const websiteId = import.meta.env.PUBLIC_ANALYTICS_WEBSITE_ID;
 ---
 
 <script
+	type="text/javascript"
 	is:inline
 	defer
 	src=`scripts/${src}.js`
