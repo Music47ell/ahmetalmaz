@@ -5,7 +5,7 @@ published_at: 2023-06-13T20:40:52+03:00
 tags: ['How To']
 ---
 
-When working on Node.js projects, it's common to have a large number of dependencies installed in the `node_modules` folder. This folder can be quite large and can slow down the syncing process when backing up or transferring your project to [Dropbox](/recommends/dropbox).
+When working on Node.js projects, it's common to have a large number of dependencies installed in the `node_modules` folder. This folder can be quite large and can slow down the syncing process when backing up or transferring your project to Dropbox.
 
 To overcome this issue, you can use [rsync](https://rsync.samba.org/), a powerful command-line tool for synchronizing files and directories, along with a bash script that excludes the `node_modules` folder and also filter out anything in a `.gitignore` file that you specify. In this article, I'll guide you through the process of setting up and using this bash script to sync your Node.js project while ignoring the `node_modules` folder.
 

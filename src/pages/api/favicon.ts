@@ -1,3 +1,5 @@
+import siteMetadata from "../../data/siteMetadata"
+
 export async function GET(req: Request) {
 	const { searchParams } = new URL(req.url)
 	const siteUrl = searchParams.get('url')
@@ -93,18 +95,34 @@ export async function GET(req: Request) {
 			},
 		})
 	} catch {
-		const fallback = `https://icons.duckduckgo.com/ip3/${new URL(siteUrl).hostname}.ico`
-		const response = await fetch(fallback)
-		if (!response.ok)
-			return new Response('Failed to fetch fallback', { status: 500 })
+		// Try your own public fallback first
+		try {
+			const localFavicon = await fetch(`${siteMetadata.siteUrl}/favicon.ico`) // adjust port as needed
+			if (localFavicon.ok) {
+				const buffer = await localFavicon.arrayBuffer()
+				return new Response(buffer, {
+					status: 200,
+					headers: {
+						'Content-Type': 'image/x-icon',
+						'Cache-Control': 'public, max-age=86400',
+					},
+				})
+			}
+		} catch {
+			// If even that fails, fall back to DuckDuckGo
+			const fallback = `https://icons.duckduckgo.com/ip3/${new URL(siteUrl).hostname}.ico`
+			const response = await fetch(fallback)
+			if (!response.ok)
+				return new Response('Failed to fetch fallback', { status: 500 })
 
-		const buffer = await response.arrayBuffer()
-		return new Response(buffer, {
-			status: 200,
-			headers: {
-				'Content-Type': 'image/x-icon',
-				'Cache-Control': 'public, max-age=86400',
-			},
-		})
+			const buffer = await response.arrayBuffer()
+			return new Response(buffer, {
+				status: 200,
+				headers: {
+					'Content-Type': 'image/x-icon',
+					'Cache-Control': 'public, max-age=86400',
+				},
+			})
+		}
 	}
 }
