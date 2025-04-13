@@ -49,18 +49,6 @@ const {
 					)
 				}
 
-				<div class="flex items-center justify-between text-zinc-100 text-sm">
-					<time
-						datetime={new Date(published_at).toISOString()}
-						class="dt-published"
-						aria-label={`Published at: ${displayDate(published_at)}`}
-						itemprop="dateModified"
-					>
-						{displayDate(lastModified || published_at)}
-					</time>
-					<Link href={slug}>⌘ Permalink</Link>
-				</div>
-
 				{
 					source ? (
 						<Link href={source} class="hover:text-zinc-300">
@@ -71,7 +59,16 @@ const {
 					)
 				}
 
-				<div class="flex items-center text-sm text-zinc-100 space-x-2">
+				<div class="flex items-center text-sm text-zinc-100 justify-between">
+					<time
+						datetime={new Date(published_at).toISOString()}
+						class="dt-published"
+						aria-label={`Published at: ${displayDate(published_at)}`}
+						itemprop="dateModified"
+					>
+						{displayDate(lastModified || published_at)}
+					</time>
+					<span>/</span>
 					<span>{readingTime} min</span>
 					<span>/</span>
 					<span>{wordsCount} words</span>
