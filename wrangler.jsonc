@@ -10,5 +10,11 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+   "routes": [
+    {
+      "pattern": "ahmetalmaz.com",
+      "custom_domain": true
+    }
+  ]
 }
