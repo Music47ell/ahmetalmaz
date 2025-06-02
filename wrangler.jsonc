@@ -2,7 +2,7 @@
   "name": "ahmetalmaz",
   "main": "./dist/_worker.js/index.js",
   // Update to today's date
-  "compatibility_date": "2025-06-03",
+  "compatibility_date": "2025-06-02",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
