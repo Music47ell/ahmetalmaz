@@ -12,7 +12,7 @@
 		"format:check": "biome format .",
 		"lint": "biome lint .",
 		"lint:fix": "biome lint --write .",
-		"update": "bunx npm-check-updates --format group --interactive --packageManager bun"
+		"update": "npx npm-check-updates --format group --interactive"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^12.5.3",
