@@ -83,7 +83,7 @@ const RecentTracks: React.FC<RecentTracksProps> = ({ tracks }) => {
 					className="flex items-center gap-4 p-4 border-b border-yellow-500"
 				>
 					<img
-						src={`https://wsrv.nl/?url=${track.image}`}
+						src={track.image}
 						alt={track.title}
 						className="h-28 w-28 object-cover flex-shrink-0"
 						width="112"

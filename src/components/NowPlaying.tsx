@@ -72,7 +72,7 @@ export default function NowPlaying() {
 			<a href={data.url} className="flex items-center gap-5">
 				<div className="relative flex-shrink-0">
 					<img
-						src={`https://wsrv.nl/?url=${data.image}`}
+						src={data.image}
 						alt={data.title}
 						title={data.title}
 						width={100}

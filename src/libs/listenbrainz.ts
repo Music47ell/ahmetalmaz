@@ -20,18 +20,24 @@ interface TrackInfo {
 	mbid: string | null
 	image: string
 	preview: string | null
+	caa_id?: number | null
+	caa_release_mbid?: string | null
+	release_mbid?: string | null
 }
 
 interface AlbumInfo {
 	artist: string
 	title: string
 	image: string
-	mbid: string
+	release_mbid: string | null
+	caa_id?: number | null
+	caa_release_mbid?: string | null
+	mbid?: string | null
 }
 
 interface ArtistInfo {
 	name: string
-	mbid: string
+	artist_mbid	: string
 	image: string
 }
 
@@ -136,80 +142,93 @@ const getRecentTracks = async (): Promise<TrackInfo[]> => {
 		const { payload } = await response.json()
 
 		const recentTracks: TrackInfo[] = payload.listens.map(
-			(record: { track_metadata: TrackMetadata }) => {
+			(record: { track_metadata: any }) => {
 				const metadata = record.track_metadata
-				const artist =
-					metadata.mbid_mapping?.artists?.[0]?.artist_credit_name ||
-					metadata.artist_name
+				const artist = metadata.mbid_mapping?.artists?.[0]?.artist_credit_name || metadata.artist_name
+				const mbidMapping = metadata.mbid_mapping || {}
 
 				return {
 					artist,
 					title: metadata.track_name,
 					image: '',
 					preview: '',
+					mbid: mbidMapping.recording_mbid || '',
+					release_mbid: mbidMapping.release_mbid || '',
+					caa_id: mbidMapping.caa_id || null,
+					caa_release_mbid: mbidMapping.caa_release_mbid || null
 				}
 			},
 		)
 
 		await Promise.all(
 			recentTracks.map(async (track) => {
-				const trackResponse = await fetch(
-					`https://api.deezer.com/search/track?q=${encodeURIComponent(`${track.title} ${track.artist}`)}`,
-				)
-				const trackData = await trackResponse.json()
+				// Try to get cover art from Cover Art Archive first
+				if (track.caa_id && track.caa_release_mbid) {
+					try {
+						const coverUrl = `https://coverartarchive.org/release/${track.caa_release_mbid}/${track.caa_id}.jpg`
+						const imageResponse = await fetch(coverUrl, { method: 'HEAD' })
 
-				if (trackData.data && trackData.data.length > 0) {
-					const matchedTrack = trackData.data.find(
-						(t: { artist: { name: string }; title: string }) =>
-							normalize(t.artist.name) === normalize(track.artist) &&
-							normalize(t.title) === normalize(track.title),
-					)
+						if (imageResponse.ok) {
+							track.image = coverUrl
+						} else {
+							// Fallback to generic release cover
+							track.image = `https://coverartarchive.org/release/${track.caa_release_mbid}/front`
+						}
+					} catch (error) {
+						console.warn(`Error fetching cover art for ${track.artist} - ${track.title}:`, error)
+					}
+				} else if (track.release_mbid) {
+					// Fallback to release MBID if we don't have caa_id
+					track.image = `https://coverartarchive.org/release/${track.release_mbid}/front`
+				}
 
-					if (matchedTrack) {
-						track.image = matchedTrack.album.cover_xl
-						track.preview = matchedTrack.preview
+				// If we still don't have an image, try Deezer (only for image)
+				if (!track.image) {
+					try {
+						const trackResponse = await fetch(
+							`https://api.deezer.com/search/track?q=${encodeURIComponent(`${track.title} ${track.artist}`)}`,
+						)
+						const trackData = await trackResponse.json()
+
+						if (trackData.data && trackData.data.length > 0) {
+							const matchedTrack = trackData.data.find(
+								(t: { artist: { name: string }; title: string }) =>
+									normalize(t.artist.name) === normalize(track.artist) &&
+									normalize(t.title) === normalize(track.title),
+							)
+
+							if (matchedTrack) {
+								track.image = matchedTrack.album.cover_xl
+							}
+						}
+					} catch (error) {
+						console.warn(`Deezer fallback failed for ${track.artist} - ${track.title}:`, error)
 					}
 				}
 
-				if (!track.image) {
-					const albumResponse = await fetch(
-						`https://api.deezer.com/search/album?q=${encodeURIComponent(track.title)}`,
+				// Always try to get preview from Deezer
+				try {
+					const previewResponse = await fetch(
+						`https://api.deezer.com/search/track?q=${encodeURIComponent(`${track.title} ${track.artist}`)}&limit=1`,
 					)
-					const albumData = await albumResponse.json()
+					const previewData = await previewResponse.json()
 
-					if (albumData.data && albumData.data.length > 0) {
-						const matchedAlbum = albumData.data.find(
-							(album: {
-								artist: { name: string }
-								title: string
-								cover_xl?: string
-							}) =>
-								normalize(album.artist.name) === normalize(track.artist) &&
-								normalize(album.title) === normalize(track.title),
+					if (previewData.data && previewData.data.length > 0) {
+						const exactMatch = previewData.data.find(
+							(t: { artist: { name: string }; title: string; preview: string }) =>
+								normalize(t.artist.name) === normalize(track.artist) &&
+								normalize(t.title) === normalize(track.title),
 						)
 
-						if (matchedAlbum) {
-							track.image = matchedAlbum.cover_xl
+						if (exactMatch) {
+							track.preview = exactMatch.preview
+						} else if (previewData.data[0].preview) {
+							// Fallback to first result if exact match not found
+							track.preview = previewData.data[0].preview
 						}
 					}
-				}
-
-				if (!track.image) {
-					const artistResponse = await fetch(
-						`https://api.deezer.com/search/artist?q=${encodeURIComponent(track.artist)}`,
-					)
-					const artistData = await artistResponse.json()
-
-					if (artistData.data && artistData.data.length > 0) {
-						const matchedArtist = artistData.data.find(
-							(artist: { name: string; picture_xl?: string }) =>
-								normalize(artist.name) === normalize(track.artist),
-						)
-
-						if (matchedArtist) {
-							track.image = matchedArtist.picture_xl
-						}
-					}
+				} catch (error) {
+					console.warn(`Error fetching preview for ${track.artist} - ${track.title}:`, error)
 				}
 
 				if (!track.image) {
@@ -237,89 +256,89 @@ const getTopTracks = async (): Promise<TrackInfo[]> => {
 
 		const { payload } = await response.json()
 		const topTracks: TrackInfo[] = await Promise.all(
-			payload.recordings.map(async (record: TrackMetadata) => {
+			payload.recordings.map(async (record: any) => {
 				const trackInfo: TrackInfo = {
 					artist: record.artist_name,
 					title: record.track_name,
-					mbid: record.mbid_mapping?.caa_release_mbid ?? null,
+					mbid: record.recording_mbid || null,
+					release_mbid: record.release_mbid || null,
+					caa_id: record.caa_id || null,
+					caa_release_mbid: record.caa_release_mbid || null,
 					image: '',
 					preview: '',
 				}
 
-				// Try to fetch track cover
-				if (!trackInfo.image) {
-					const trackResponse = await fetch(
-						`https://api.deezer.com/search/track?q=${encodeURIComponent(`${trackInfo.title} ${trackInfo.artist}`)}`,
-					)
-					const trackData = await trackResponse.json()
+				// Try to get cover art from Cover Art Archive first
+				if (trackInfo.caa_id && trackInfo.caa_release_mbid) {
+					try {
+						const coverUrl = `https://coverartarchive.org/release/${trackInfo.caa_release_mbid}/${trackInfo.caa_id}.jpg`
+						const imageResponse = await fetch(coverUrl, { method: 'HEAD' })
 
-					if (trackData.data && trackData.data.length > 0) {
-						const matchedTrack = trackData.data.find(
-							(t: {
-								artist: { name: string }
-								title: string
-								album: { cover_xl?: string }
-								preview?: string
-							}) =>
+						if (imageResponse.ok) {
+							trackInfo.image = coverUrl
+						} else {
+							// Fallback to generic release cover
+							trackInfo.image = `https://coverartarchive.org/release/${trackInfo.caa_release_mbid}/front`
+						}
+					} catch (error) {
+						console.warn(`Error fetching cover art for ${trackInfo.artist} - ${trackInfo.title}:`, error)
+					}
+				} else if (trackInfo.release_mbid) {
+					// Fallback to release MBID if we don't have caa_id
+					trackInfo.image = `https://coverartarchive.org/release/${trackInfo.release_mbid}/front`
+				}
+
+				// If we still don't have an image, try Deezer (only for image)
+				if (!trackInfo.image) {
+					try {
+						const trackResponse = await fetch(
+							`https://api.deezer.com/search/track?q=${encodeURIComponent(`${trackInfo.title} ${trackInfo.artist}`)}`,
+						)
+						const trackData = await trackResponse.json()
+
+						if (trackData.data && trackData.data.length > 0) {
+							const matchedTrack = trackData.data.find(
+								(t: { artist: { name: string }; title: string; album: { cover_xl?: string } }) =>
+									normalize(t.artist.name) === normalize(trackInfo.artist) &&
+									normalize(t.title) === normalize(trackInfo.title),
+							)
+
+							if (matchedTrack) {
+								trackInfo.image = matchedTrack.album.cover_xl
+							}
+						}
+					} catch (error) {
+						console.warn(`Deezer fallback failed for ${trackInfo.artist} - ${trackInfo.title}:`, error)
+					}
+				}
+
+				// Always try to get preview from Deezer
+				try {
+					const previewResponse = await fetch(
+						`https://api.deezer.com/search/track?q=${encodeURIComponent(`${trackInfo.title} ${trackInfo.artist}`)}&limit=1`,
+					)
+					const previewData = await previewResponse.json()
+
+					if (previewData.data && previewData.data.length > 0) {
+						const exactMatch = previewData.data.find(
+							(t: { artist: { name: string }; title: string; preview: string }) =>
 								normalize(t.artist.name) === normalize(trackInfo.artist) &&
 								normalize(t.title) === normalize(trackInfo.title),
 						)
 
-						if (matchedTrack) {
-							trackInfo.image = matchedTrack.album.cover_xl
-							trackInfo.preview = matchedTrack.preview
+						if (exactMatch) {
+							trackInfo.preview = exactMatch.preview
+						} else if (previewData.data[0].preview) {
+							// Fallback to first result if exact match not found
+							trackInfo.preview = previewData.data[0].preview
 						}
 					}
+				} catch (error) {
+					console.warn(`Error fetching preview for ${trackInfo.artist} - ${trackInfo.title}:`, error)
 				}
 
-				// If track cover doesn't exist, try album cover
 				if (!trackInfo.image) {
-					const albumResponse = await fetch(
-						`https://api.deezer.com/search/album?q=${encodeURIComponent(trackInfo.title)}`,
-					)
-					const albumData = await albumResponse.json()
-
-					if (albumData.data && albumData.data.length > 0) {
-						const matchedAlbum = albumData.data.find(
-							(album: {
-								artist: { name: string }
-								title: string
-								cover_xl?: string
-							}) =>
-								normalize(album.artist.name) === normalize(trackInfo.artist) &&
-								normalize(album.title) === normalize(trackInfo.title),
-						)
-
-						if (matchedAlbum) {
-							trackInfo.image = matchedAlbum.cover_xl
-						}
-					}
-				}
-
-				// If both track and album covers are missing, use artist's image
-				if (!trackInfo.image) {
-					const artistResponse = await fetch(
-						`https://api.deezer.com/search/artist?q=${encodeURIComponent(trackInfo.artist)}`,
-					)
-					const artistData = await artistResponse.json()
-
-					if (artistData.data && artistData.data.length > 0) {
-						const matchedArtist = artistData.data.find(
-							(artist: { name: string; picture_xl?: string }) =>
-								normalize(artist.name) === normalize(trackInfo.artist),
-						)
-
-						if (matchedArtist) {
-							trackInfo.image = matchedArtist.picture_xl
-						}
-					}
-				}
-
-				// If no image is found, log a warning
-				if (!trackInfo.image) {
-					console.warn(
-						`No image found for: ${trackInfo.artist} - ${trackInfo.title}`,
-					)
+					console.warn(`No image found for: ${trackInfo.artist} - ${trackInfo.title}`)
 				}
 
 				return trackInfo
@@ -347,84 +366,47 @@ const getTopAlbums = async (): Promise<AlbumInfo[]> => {
 
 		const topAlbums: AlbumInfo[] = await Promise.all(
 			payload.releases.map(
-				async (release: { artist_name: string; release_name: string }) => {
+				async (release: {
+					artist_name: string;
+					release_name: string;
+					release_mbid: string;
+					caa_id: number | null;
+					caa_release_mbid: string | null;
+				}) => {
 					const albumInfo: AlbumInfo = {
 						artist: release.artist_name,
 						title: release.release_name,
+						release_mbid: release.release_mbid || null,
+						caa_id: release.caa_id || null,
+						caa_release_mbid: release.caa_release_mbid || null,
 						image: '',
-						mbid: '', // Provide a default or fetch the MBID if available
 					}
 
-					// Fetch track cover from Deezer first
-					const trackResponse = await fetch(
-						`https://api.deezer.com/search/track?q=${encodeURIComponent(`${albumInfo.title} ${albumInfo.artist}`)}`,
-					)
-					const trackData = await trackResponse.json()
+					// Try to get cover art from Cover Art Archive
+					if (release.caa_id && release.caa_release_mbid) {
+						// Construct Cover Art Archive URL
+						albumInfo.image = `https://coverartarchive.org/release/${release.caa_release_mbid}/${release.caa_id}.jpg`
 
-					if (trackData.data && trackData.data.length > 0) {
-						const matchedTrack = trackData.data.find(
-							(track: {
-								artist: { name: string }
-								title: string
-								album: { cover_xl?: string }
-							}) =>
-								normalize(track.artist.name) === normalize(albumInfo.artist) &&
-								normalize(track.title) === normalize(albumInfo.title),
-						)
-
-						if (matchedTrack) {
-							albumInfo.image = matchedTrack.album.cover_xl
-						}
-					}
-
-					// If track cover doesn't exist, try album cover
-					if (!albumInfo.image) {
-						const albumResponse = await fetch(
-							`https://api.deezer.com/search/album?q=${encodeURIComponent(albumInfo.title)}`,
-						)
-						const albumData = await albumResponse.json()
-
-						if (albumData.data && albumData.data.length > 0) {
-							const matchedAlbum = albumData.data.find(
-								(album: {
-									artist: { name: string }
-									title: string
-									cover_xl?: string
-								}) =>
-									normalize(album.artist.name) ===
-										normalize(albumInfo.artist) &&
-									normalize(album.title) === normalize(albumInfo.title),
-							)
-
-							if (matchedAlbum) {
-								albumInfo.image = matchedAlbum.cover_xl
+						// Verify the image exists
+						try {
+							const imageResponse = await fetch(albumInfo.image, { method: 'HEAD' })
+							if (!imageResponse.ok) {
+								// If the specific image doesn't exist, try the generic release endpoint
+								albumInfo.image = `https://coverartarchive.org/release/${release.caa_release_mbid}/front`
 							}
+						} catch (error) {
+							console.warn(`Error checking cover art for ${release.release_name}:`, error)
+							albumInfo.image = `https://coverartarchive.org/release/${release.caa_release_mbid}/front`
 						}
+					} else if (release.release_mbid) {
+						// Fallback to generic release endpoint if we don't have caa_id but have release_mbid
+						albumInfo.image = `https://coverartarchive.org/release/${release.release_mbid}/front`
 					}
 
-					// If both track and album covers are missing, use artist's image
+					// If we still don't have an image, fall back to Deezer (optional)
 					if (!albumInfo.image) {
-						const artistResponse = await fetch(
-							`https://api.deezer.com/search/artist?q=${encodeURIComponent(albumInfo.artist)}`,
-						)
-						const artistData = await artistResponse.json()
-
-						if (artistData.data && artistData.data.length > 0) {
-							const matchedArtist = artistData.data.find(
-								(artist: { name: string; picture_xl?: string }) =>
-									normalize(artist.name) === normalize(albumInfo.artist),
-							)
-
-							if (matchedArtist) {
-								albumInfo.image = matchedArtist.picture_xl
-							}
-						}
-					}
-
-					if (!albumInfo.image) {
-						console.warn(
-							`No image found for: ${albumInfo.artist} - ${albumInfo.title}`,
-						)
+						console.warn(`No cover art found in Cover Art Archive for: ${albumInfo.artist} - ${albumInfo.title}`)
+						// You could optionally keep the Deezer fallback here if desired
 					}
 
 					return albumInfo
@@ -452,10 +434,10 @@ const getTopArtists = async (): Promise<ArtistInfo[]> => {
 		const { payload } = await response.json()
 
 		const topArtists: ArtistInfo[] = await Promise.all(
-			payload.artists.map(async (artist: { artist_name: string }) => {
+			payload.artists.map(async (artist: { artist_name: string; artist_mbid: string }) => {
 				const artistInfo: ArtistInfo = {
 					name: artist.artist_name,
-					mbid: '', // Provide a default or fetch the MBID if available
+					artist_mbid: artist.artist_mbid || '',
 					image: '',
 				}
 
