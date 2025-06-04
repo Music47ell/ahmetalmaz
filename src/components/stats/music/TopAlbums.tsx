@@ -26,7 +26,7 @@ const TopAlbums: React.FC<TopAlbumsProps> = ({ albums }) => {
 					className="relative flex items-center gap-5 overflow-hidden p-4"
 				>
 					<img
-						src={`https://wsrv.nl/?url=${album.image}`}
+						src={album.image}
 						alt={album.title}
 						className="h-32 w-32"
 						width="100"
