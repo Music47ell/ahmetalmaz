@@ -23,7 +23,7 @@ const TopLanguages: React.FC<TopLanguagesProps> = ({ topLanguages }) => {
 	}
 
 	return (
-		<div className="flex flex-col border border-yellow-500 shadow-lg bg-black/50">
+		<div className="flex flex-col border border-yellow-500 shadow-lg">
 			{topLanguages.map((language) => (
 				<div
 					key={language.name}
