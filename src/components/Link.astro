@@ -10,9 +10,7 @@ const isExternal = url.host !== Astro.url.host;
 const isCurrent = url.href === Astro.url.href;
 
 const faviconUrl = isExternal
-	? import.meta.env.PROD
-		? `/api/favicon?url=${encodeURIComponent(String(href ?? ""))}`
-		: `http://localhost:4321/api/favicon?url=${encodeURIComponent(String(href ?? ""))}`
+	? `https://favicon.controld.com/${url.hostname}`
 	: null;
 ---
 

@@ -76,7 +76,7 @@ const RecentTracks: React.FC<RecentTracksProps> = ({ tracks }) => {
 	}
 
 	return (
-		<div className="flex flex-col border border-yellow-500 shadow-lg bg-black/50">
+		<div className="flex flex-col border border-yellow-500 shadow-lg">
 			{tracks.map((track, index) => (
 				<div
 					key={`${track.title}-${index}`}

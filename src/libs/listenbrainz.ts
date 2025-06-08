@@ -245,112 +245,112 @@ const getRecentTracks = async (): Promise<TrackInfo[]> => {
 }
 
 // Fetch top tracks
-const getTopTracks = async (): Promise<TrackInfo[]> => {
-	const TOP_TRACKS_ENDPOINT = `https://api.listenbrainz.org/1/stats/user/${USERNAME}/recordings?range=this_month&count=10`
-	try {
-		const response = await fetch(TOP_TRACKS_ENDPOINT)
-		if (!response.ok) {
-			logError(`Failed to fetch top tracks: ${response.statusText}`)
-			return []
-		}
+//const getTopTracks = async (): Promise<TrackInfo[]> => {
+//	const TOP_TRACKS_ENDPOINT = `https://api.listenbrainz.org/1/stats/user/${USERNAME}/recordings?range=this_month&count=10`
+//	try {
+//		const response = await fetch(TOP_TRACKS_ENDPOINT)
+//		if (!response.ok) {
+//			logError(`Failed to fetch top tracks: ${response.statusText}`)
+//			return []
+//		}
 
-		const { payload } = await response.json()
-		const topTracks: TrackInfo[] = await Promise.all(
-			payload.recordings.map(async (record: any) => {
-				const trackInfo: TrackInfo = {
-					artist: record.artist_name,
-					title: record.track_name,
-					mbid: record.recording_mbid || null,
-					release_mbid: record.release_mbid || null,
-					caa_id: record.caa_id || null,
-					caa_release_mbid: record.caa_release_mbid || null,
-					image: '',
-					preview: '',
-				}
+//		const { payload } = await response.json()
+//		const topTracks: TrackInfo[] = await Promise.all(
+//			payload.recordings.map(async (record: any) => {
+//				const trackInfo: TrackInfo = {
+//					artist: record.artist_name,
+//					title: record.track_name,
+//					mbid: record.recording_mbid || null,
+//					release_mbid: record.release_mbid || null,
+//					caa_id: record.caa_id || null,
+//					caa_release_mbid: record.caa_release_mbid || null,
+//					image: '',
+//					preview: '',
+//				}
 
-				// Try to get cover art from Cover Art Archive first
-				if (trackInfo.caa_id && trackInfo.caa_release_mbid) {
-					try {
-						const coverUrl = `https://coverartarchive.org/release/${trackInfo.caa_release_mbid}/${trackInfo.caa_id}.jpg`
-						const imageResponse = await fetch(coverUrl, { method: 'HEAD' })
+//				// Try to get cover art from Cover Art Archive first
+//				if (trackInfo.caa_id && trackInfo.caa_release_mbid) {
+//					try {
+//						const coverUrl = `https://coverartarchive.org/release/${trackInfo.caa_release_mbid}/${trackInfo.caa_id}.jpg`
+//						const imageResponse = await fetch(coverUrl, { method: 'HEAD' })
 
-						if (imageResponse.ok) {
-							trackInfo.image = coverUrl
-						} else {
-							// Fallback to generic release cover
-							trackInfo.image = `https://coverartarchive.org/release/${trackInfo.caa_release_mbid}/front`
-						}
-					} catch (error) {
-						console.warn(`Error fetching cover art for ${trackInfo.artist} - ${trackInfo.title}:`, error)
-					}
-				} else if (trackInfo.release_mbid) {
-					// Fallback to release MBID if we don't have caa_id
-					trackInfo.image = `https://coverartarchive.org/release/${trackInfo.release_mbid}/front`
-				}
+//						if (imageResponse.ok) {
+//							trackInfo.image = coverUrl
+//						} else {
+//							// Fallback to generic release cover
+//							trackInfo.image = `https://coverartarchive.org/release/${trackInfo.caa_release_mbid}/front`
+//						}
+//					} catch (error) {
+//						console.warn(`Error fetching cover art for ${trackInfo.artist} - ${trackInfo.title}:`, error)
+//					}
+//				} else if (trackInfo.release_mbid) {
+//					// Fallback to release MBID if we don't have caa_id
+//					trackInfo.image = `https://coverartarchive.org/release/${trackInfo.release_mbid}/front`
+//				}
 
-				// If we still don't have an image, try Deezer (only for image)
-				if (!trackInfo.image) {
-					try {
-						const trackResponse = await fetch(
-							`https://api.deezer.com/search/track?q=${encodeURIComponent(`${trackInfo.title} ${trackInfo.artist}`)}`,
-						)
-						const trackData = await trackResponse.json()
+//				// If we still don't have an image, try Deezer (only for image)
+//				if (!trackInfo.image) {
+//					try {
+//						const trackResponse = await fetch(
+//							`https://api.deezer.com/search/track?q=${encodeURIComponent(`${trackInfo.title} ${trackInfo.artist}`)}`,
+//						)
+//						const trackData = await trackResponse.json()
 
-						if (trackData.data && trackData.data.length > 0) {
-							const matchedTrack = trackData.data.find(
-								(t: { artist: { name: string }; title: string; album: { cover_xl?: string } }) =>
-									normalize(t.artist.name) === normalize(trackInfo.artist) &&
-									normalize(t.title) === normalize(trackInfo.title),
-							)
+//						if (trackData.data && trackData.data.length > 0) {
+//							const matchedTrack = trackData.data.find(
+//								(t: { artist: { name: string }; title: string; album: { cover_xl?: string } }) =>
+//									normalize(t.artist.name) === normalize(trackInfo.artist) &&
+//									normalize(t.title) === normalize(trackInfo.title),
+//							)
 
-							if (matchedTrack) {
-								trackInfo.image = matchedTrack.album.cover_xl
-							}
-						}
-					} catch (error) {
-						console.warn(`Deezer fallback failed for ${trackInfo.artist} - ${trackInfo.title}:`, error)
-					}
-				}
+//							if (matchedTrack) {
+//								trackInfo.image = matchedTrack.album.cover_xl
+//							}
+//						}
+//					} catch (error) {
+//						console.warn(`Deezer fallback failed for ${trackInfo.artist} - ${trackInfo.title}:`, error)
+//					}
+//				}
 
-				// Always try to get preview from Deezer
-				try {
-					const previewResponse = await fetch(
-						`https://api.deezer.com/search/track?q=${encodeURIComponent(`${trackInfo.title} ${trackInfo.artist}`)}&limit=1`,
-					)
-					const previewData = await previewResponse.json()
+//				// Always try to get preview from Deezer
+//				try {
+//					const previewResponse = await fetch(
+//						`https://api.deezer.com/search/track?q=${encodeURIComponent(`${trackInfo.title} ${trackInfo.artist}`)}&limit=1`,
+//					)
+//					const previewData = await previewResponse.json()
 
-					if (previewData.data && previewData.data.length > 0) {
-						const exactMatch = previewData.data.find(
-							(t: { artist: { name: string }; title: string; preview: string }) =>
-								normalize(t.artist.name) === normalize(trackInfo.artist) &&
-								normalize(t.title) === normalize(trackInfo.title),
-						)
+//					if (previewData.data && previewData.data.length > 0) {
+//						const exactMatch = previewData.data.find(
+//							(t: { artist: { name: string }; title: string; preview: string }) =>
+//								normalize(t.artist.name) === normalize(trackInfo.artist) &&
+//								normalize(t.title) === normalize(trackInfo.title),
+//						)
 
-						if (exactMatch) {
-							trackInfo.preview = exactMatch.preview
-						} else if (previewData.data[0].preview) {
-							// Fallback to first result if exact match not found
-							trackInfo.preview = previewData.data[0].preview
-						}
-					}
-				} catch (error) {
-					console.warn(`Error fetching preview for ${trackInfo.artist} - ${trackInfo.title}:`, error)
-				}
+//						if (exactMatch) {
+//							trackInfo.preview = exactMatch.preview
+//						} else if (previewData.data[0].preview) {
+//							// Fallback to first result if exact match not found
+//							trackInfo.preview = previewData.data[0].preview
+//						}
+//					}
+//				} catch (error) {
+//					console.warn(`Error fetching preview for ${trackInfo.artist} - ${trackInfo.title}:`, error)
+//				}
 
-				if (!trackInfo.image) {
-					console.warn(`No image found for: ${trackInfo.artist} - ${trackInfo.title}`)
-				}
+//				if (!trackInfo.image) {
+//					console.warn(`No image found for: ${trackInfo.artist} - ${trackInfo.title}`)
+//				}
 
-				return trackInfo
-			}),
-		)
+//				return trackInfo
+//			}),
+//		)
 
-		return topTracks
-	} catch (error) {
-		logError('Error fetching top tracks:', error)
-		return []
-	}
-}
+//		return topTracks
+//	} catch (error) {
+//		logError('Error fetching top tracks:', error)
+//		return []
+//	}
+//}
 
 // Fetch top albums
 const getTopAlbums = async (): Promise<AlbumInfo[]> => {
@@ -507,7 +507,7 @@ export {
 	getListenBrainzStats,
 	getNowPlaying,
 	getRecentTracks,
-	getTopTracks,
+	//getTopTracks,
 	getTopAlbums,
 	getTopArtists,
 }
