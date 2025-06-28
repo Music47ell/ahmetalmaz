@@ -31,7 +31,7 @@ export default function NowWatching() {
 			<a href={data.url} className="flex relative items-center gap-5">
 				<div className="relative origin-center">
 					<img
-						src={`https://wsrv.nl/?url=${data.image}`}
+						src={data.image}
 						alt={data.title}
 						title={data.title}
 						width={100}
