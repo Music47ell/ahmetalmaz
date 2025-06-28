@@ -3,13 +3,13 @@ import {
 	getRecentTracks,
 	getTopAlbums,
 	getTopArtists,
-	getTopTracks,
+	//getTopTracks,
 } from '../../.././libs/listenbrainz'
 
 export async function GET() {
 	const stats = await getListenBrainzStats()
 	const recentTracks = await getRecentTracks()
-	const topTracks = await getTopTracks()
+	//const topTracks = await getTopTracks()
 	const topAlbums = await getTopAlbums()
 	const topArtists = await getTopArtists()
 
@@ -17,7 +17,7 @@ export async function GET() {
 		JSON.stringify({
 			stats,
 			recentTracks,
-			topTracks,
+			//topTracks,
 			topAlbums,
 			topArtists,
 		}),

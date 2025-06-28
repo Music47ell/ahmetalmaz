@@ -5,7 +5,7 @@
 - `Tailwind CSS` - A utility-first CSS framework for rapidly building custom user interfaces.
 - `Drizzle ORM` - A lightweight and simple ORM for Node.js that supports multiple databases.
 - `Turso` - A Fast, Easy and Cheap Database.
-- `Cloudflare Pages` - A JAMstack platform for frontend developers.
+- `Cloudflare Workers` - A serverless platform that allows you to run JavaScript code at the edge.
 
 ## Overview
 

@@ -28,7 +28,7 @@ const WatchedMovies: React.FC<WatchedMoviesProps> = ({ movies }) => {
 				>
 					{movie.poster ? (
 						<img
-							src={`https://wsrv.nl/?url=${movie.poster}`}
+							src={movie.poster}
 							alt={movie.title}
 							className="h-40 w-28"
 							width={64}

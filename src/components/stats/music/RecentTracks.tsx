@@ -76,14 +76,14 @@ const RecentTracks: React.FC<RecentTracksProps> = ({ tracks }) => {
 	}
 
 	return (
-		<div className="flex flex-col border border-yellow-500 shadow-lg bg-black/50">
+		<div className="flex flex-col border border-yellow-500 shadow-lg">
 			{tracks.map((track, index) => (
 				<div
 					key={`${track.title}-${index}`}
 					className="flex items-center gap-4 p-4 border-b border-yellow-500"
 				>
 					<img
-						src={`https://wsrv.nl/?url=${track.image}`}
+						src={track.image}
 						alt={track.title}
 						className="h-28 w-28 object-cover flex-shrink-0"
 						width="112"

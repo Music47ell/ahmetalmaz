@@ -26,7 +26,7 @@ const TopArtists: React.FC<TopArtistsProps> = ({ artists }) => {
 					className="relative flex items-center gap-5 overflow-hidden p-4"
 				>
 					<img
-						src={`https://wsrv.nl/?url=${artist.image}`}
+						src={artist.image}
 						alt={artist.name}
 						className="h-32 w-32"
 						width="100"
