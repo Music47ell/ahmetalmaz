@@ -7,7 +7,6 @@ import Meta from "../components/Meta.astro";
 
 export interface Props {
 	title: string;
-	tagTitle?: string;
 	description: string;
 	slug: string;
 	published_at?: Date;
@@ -19,7 +18,6 @@ export interface Props {
 
 const {
 	title,
-	tagTitle,
 	description,
 	slug,
 	published_at,
@@ -33,7 +31,6 @@ const {
 	<head>
 		<Meta
 			title={title}
-			tagTitle={tagTitle ?? ""}
 			description={description}
 			slug={slug}
 			published_at={published_at ?? new Date()}

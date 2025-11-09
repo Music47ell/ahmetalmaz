@@ -4,7 +4,6 @@ import Analytics from "../components/Analytics.astro";
 
 export interface Props {
 	title: string;
-	tagTitle: string;
 	description: string;
 	slug: string;
 	published_at: Date;
@@ -13,16 +12,8 @@ export interface Props {
 	type: string;
 }
 
-const {
-	title,
-	tagTitle,
-	description,
-	slug,
-	published_at,
-	updated_at,
-	wordsCount,
-	type,
-} = Astro.props;
+const { title, description, slug, published_at, updated_at, wordsCount, type } =
+	Astro.props;
 
 const pageTitle =
 	title === siteMetadata.name
@@ -59,16 +50,6 @@ const ogImage = isProduction
 	title={`${siteMetadata.name} » RSS Feed`}
 	href="/feed.xml"
 />
-{
-	Astro.url.pathname.includes("/tag/") ? (
-		<link
-			rel="alternate"
-			type="application/rss+xml"
-			title={`${siteMetadata.name} » ${tagTitle} Tag Feed`}
-			href={`/tag/${Astro.params.tag}/feed.xml`}
-		/>
-	) : null
-}
 
 {/*Favicons Meta Tags*/}
 <link

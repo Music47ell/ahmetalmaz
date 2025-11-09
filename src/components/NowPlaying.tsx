@@ -18,7 +18,7 @@ export default function NowPlaying() {
 	useEffect(() => {
 		const fetchNowPlaying = async () => {
 			try {
-				const res = await fetch('/api/listenbrainz/now-playing')
+				const res = await fetch('https://api.ahmetalmaz.com/listenbrainz/now-playing')
 				const nowPlayingData = await res.json()
 				setData(nowPlayingData)
 			} catch (error) {

@@ -1,42 +1,95 @@
 ---
-export const prerender = true;
-
-import { getCollection } from "astro:content";
-import { render } from "astro:content";
-import type { CollectionEntry } from "astro:content";
-
 import ContentLayout from "../../layouts/ContentLayout.astro";
-import { components } from "../../components/mdx/index.astro";
+import { processPostContent } from "../../libs/processPost";
 
-export async function getStaticPaths() {
-	const content = await getCollection("posts");
+const { slug } = Astro.params;
+const CACHE_KEY = `post:${slug}`;
+const STALE_TIME = 1000 * 60 * 5;
 
-	return content.map((item) => {
-		return {
-			params: { slug: item.id },
-			props: { item },
-		};
-	});
+let cached = await CACHE_KV.get(CACHE_KEY, { type: "json" });
+const now = Date.now();
+
+let post;
+let content;
+
+if (cached) {
+  post = cached.post;
+  content = cached.content;
+
+  if (now - cached.timestamp > STALE_TIME) {
+    Astro.waitUntil(
+      (async () => {
+        const res = await fetch(import.meta.env.WP_GRAPHQL_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: `
+              query SinglePost($slug: ID!) {
+                post(id: $slug, idType: SLUG) {
+                  title
+                  excerpt
+                  readingTime
+                  wordCount
+                  slug
+                  date
+                  modified
+                  content
+                }
+              }
+            `,
+            variables: { slug },
+          }),
+        });
+
+        const json = await res.json();
+        const freshPost = json.data.post;
+        const freshContent = await processPostContent(freshPost.content);
+
+        await CACHE_KV.put(CACHE_KEY, JSON.stringify({ post: freshPost, content: freshContent, timestamp: Date.now() }));
+      })()
+    );
+  }
+} else {
+  const res = await fetch(import.meta.env.WP_GRAPHQL_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `
+        query SinglePost($slug: ID!) {
+          post(id: $slug, idType: SLUG) {
+            title
+            excerpt
+            readingTime
+            wordCount
+            slug
+            date
+            modified
+            content
+          }
+        }
+      `,
+      variables: { slug },
+    }),
+  });
+
+  const json = await res.json();
+  post = json.data.post;
+  content = await processPostContent(post.content);
+
+  Astro.waitUntil(
+    CACHE_KV.put(CACHE_KEY, JSON.stringify({ post, content, timestamp: now }))
+  );
 }
-
-interface Props {
-	item: CollectionEntry<"posts">;
-}
-
-const { item } = Astro.props;
-const { Content, remarkPluginFrontmatter } = await render(item);
-const { title, description, published_at } = item.data;
-const { lastModified, readingTime, wordsCount } = remarkPluginFrontmatter;
 ---
 
 <ContentLayout
-	title={title}
-	description={description}
-	published_at={published_at}
-	lastModified={lastModified}
-	readingTime={readingTime}
-	wordsCount={wordsCount}
-	slug={item.id}
+  title={post.title}
+  description={post.excerpt}
+  published_at={post.date}
+  lastModified={post.modified}
+  readingTime={post.readingTime}
+  wordsCount={post.wordCount}
+  slug={post.slug}
 >
-	<Content components={components} />
+  <div set:html={content} />
 </ContentLayout>

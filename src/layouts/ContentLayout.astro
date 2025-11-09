@@ -17,7 +17,6 @@ const {
 	readingTime,
 	cover,
 	source,
-	tags = [],
 	slug,
 } = Astro.props;
 ---
@@ -73,20 +72,7 @@ const {
 					<span>/</span>
 					<span>{wordsCount} words</span>
 					<span>/</span>
-					<ViewsCounter slug={slug} trackViews={true} />
-				</div>
-
-				<div class="flex flex-wrap gap-2">
-					{
-						tags.map((tag: string) => (
-							<Link
-								class="p-category px-2 py-1 bg-zinc-700 text-sm hover:bg-zinc-600"
-								href={`/tag/${(tag as string).replace(" ", "-").toLowerCase()}`}
-							>
-								#{tag}
-							</Link>
-						))
-					}
+					<!-- <ViewsCounter slug={slug} trackViews={true} /> -->
 				</div>
 			</header>
 			<div class="e-content entry-content">
