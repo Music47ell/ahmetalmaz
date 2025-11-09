@@ -13,7 +13,7 @@ export default function NowWatching() {
 	useEffect(() => {
 		const fetchNowWatching = async () => {
 			try {
-				const res = await fetch('/api/trakt/now-watching')
+				const res = await fetch('https://api.ahmetalmaz.com/trakt/now-watching')
 				const nowWatchingData = await res.json()
 				setData(nowWatchingData)
 			} catch (error) {

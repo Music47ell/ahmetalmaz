@@ -1,39 +1,89 @@
 ---
-import { getCollection } from "astro:content";
-const content = await getCollection("posts");
-
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import siteMetadata from "../../data/siteMetadata";
-
 import Link from "../../components/Link.astro";
-import ViewsCounter from "../../components/ViewsCounter.astro";
 
-const items = content.sort(
-	(a, b) => b.data.published_at.getTime() - a.data.published_at.getTime()
-);
+const CACHE_KEY = `home:posts`;
+const STALE_TIME = 1000 * 60 * 5;
 
-const totalPosts = items.length;
+let cached = await CACHE_KV.get(CACHE_KEY, { type: "json" });
+const now = Date.now();
+
+let posts;
+let totalPosts;
+
+if (cached) {
+  posts = cached.posts;
+  totalPosts = cached.totalPosts;
+
+  if (now - cached.timestamp > STALE_TIME) {
+    Astro.waitUntil(
+      (async () => {
+        const res = await fetch(import.meta.env.WP_GRAPHQL_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            query: `
+              query HomePagePosts {
+                posts(where: { orderby: { field: DATE, order: DESC } }) {
+                  nodes {
+                    slug
+                    title
+                  }
+                }
+              }
+            `,
+          }),
+        });
+        const json = await res.json();
+        const freshPosts = json.data.posts.nodes;
+
+        await CACHE_KV.put(CACHE_KEY, JSON.stringify({ posts: freshPosts, totalPosts: freshPosts.length, timestamp: Date.now() }));
+      })()
+    );
+  }
+} else {
+  const res = await fetch(import.meta.env.WP_GRAPHQL_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `
+        query HomePagePosts {
+          posts(where: { orderby: { field: DATE, order: DESC } }) {
+            nodes {
+              slug
+              title
+            }
+          }
+        }
+      `,
+    }),
+  });
+
+  const json = await res.json();
+  posts = json.data.posts.nodes;
+  totalPosts = posts.length;
+
+  Astro.waitUntil(
+    CACHE_KV.put(CACHE_KEY, JSON.stringify({ posts, totalPosts, timestamp: now }))
+  );
+}
 ---
 
 <BaseLayout
-	title="Blog"
-	description={siteMetadata.description}
-	type="website"
-	slug="/blog"
+  title="Blog"
+  description={siteMetadata.description}
+  type="website"
+  slug="/blog"
 >
-	<main
-		class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500"
-	>
-		<section>
-			<h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
-			{
-				items.map((item) => (
-					<div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
-						<Link href={`blog/${item.id}`}>{item.data.title}</Link>
-						<ViewsCounter slug={item.id} trackViews={false} />
-					</div>
-				))
-			}
-		</section>
-	</main>
+  <main class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500">
+    <section>
+      <h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
+      {posts.map((post: { slug: string; title: string }) => (
+        <div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
+          <Link href={`blog/${post.slug}`}>{post.title}</Link>
+        </div>
+      ))}
+    </section>
+  </main>
 </BaseLayout>

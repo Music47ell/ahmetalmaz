@@ -15,34 +15,32 @@ const MoviesShowsStats = () => {
 		movies: { watched: 0, minutes: 0 },
 		shows: { watched: 0 },
 	})
-	const [shows, setShows] = useState<
-		{
-			title: string
-			poster: string
-			url: string
-		}[]
-	>([])
-	const [movies, setMovies] = useState<
-		{
-			title: string
-			poster: string
-			url: string
-		}[]
-	>([])
+
+	const [shows, setShows] = useState<{ title: string; poster: string; url: string }[]>([])
+	const [movies, setMovies] = useState<{ title: string; poster: string; url: string }[]>([])
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch('/api/trakt')
-				if (response.ok) {
-					const data = await response.json()
+				const [statsRes, moviesRes, showsRes] = await Promise.all([
+					fetch('https://api.ahmetalmaz.com/trakt/stats'),
+					fetch('https://api.ahmetalmaz.com/trakt/watched-movies'),
+					fetch('https://api.ahmetalmaz.com/trakt/watched-shows'),
+				])
 
-					setStats(data.stats)
-					setShows(data.watchedShows)
-					setMovies(data.watchedMovies)
+				if (statsRes.ok && moviesRes.ok && showsRes.ok) {
+					const statsData = await statsRes.json()
+					const moviesData = await moviesRes.json()
+					const showsData = await showsRes.json()
+
+					setStats(statsData)
+					setMovies(moviesData)
+					setShows(showsData)
+				} else {
+					console.error('One or more requests failed.')
 				}
 			} catch (error) {
-				console.error('Error fetching shows:', error)
+				console.error('Error fetching data:', error)
 			}
 		}
 

@@ -12,7 +12,7 @@ type TraktStatsProps = {
 
 const TraktStats: React.FC<TraktStatsProps> = ({ stats }) => {
 	return (
-		<div className="mb-1 grid gap-3 py-2 md:grid-cols-2">
+		<div className="grid gap-3 md:grid-cols-2">
 			<OverviewItem
 				label="Total Days"
 				value={Math.floor(

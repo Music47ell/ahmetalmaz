@@ -1,9 +1,14 @@
 {
+
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ahmetalmaz",
   "main": "./dist/_worker.js/index.js",
   // Update to today's date
-  "compatibility_date": "2025-06-02",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2025-09-29",
+	"compatibility_flags": [
+    "nodejs_compat",
+		"nodejs_compat_populate_process_env"
+  ],
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist"
@@ -15,6 +20,12 @@
     {
       "pattern": "ahmetalmaz.com",
       "custom_domain": true
+    }
+  ],
+   "kv_namespaces": [
+    {
+      "binding": "CACHE_KV",
+      "id": "2cb27fab13784dff9a725d7b6e1c164a"
     }
   ]
 }

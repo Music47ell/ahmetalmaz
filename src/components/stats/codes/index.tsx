@@ -16,6 +16,7 @@ const CodingStats = () => {
 		new_xp: 0,
 		previous_xp: 0,
 	})
+
 	const [topLanguages, setTopLanguages] = useState<
 		{
 			name: string
@@ -29,14 +30,26 @@ const CodingStats = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch('/api/codestats')
-				if (response.ok) {
-					const data = await response.json()
-					setStats(data.stats)
-					setTopLanguages(data.topLanguages)
+				const [statsRes, topLanguagesRes] = await Promise.all([
+					fetch('https://api.ahmetalmaz.com/codestats/stats'),
+					fetch('https://api.ahmetalmaz.com/codestats/top-languages'),
+				])
+
+				if (statsRes.ok) {
+					const data = await statsRes.json()
+					setStats(data)
+				} else {
+					console.error('Failed to fetch codestats stats')
+				}
+
+				if (topLanguagesRes.ok) {
+					const data = await topLanguagesRes.json()
+					setTopLanguages(data)
+				} else {
+					console.error('Failed to fetch top languages')
 				}
 			} catch (error) {
-				console.error('Error fetching top languages:', error)
+				console.error('Error fetching coding stats:', error)
 			}
 		}
 
@@ -51,6 +64,9 @@ const CodingStats = () => {
 				</div>
 				<CodeStatsStats codestatsData={stats} />
 			</section>
+			<div className="border border-red-500 px-4 py-2">
+				<h2 className="uppercase">TOP LANGUAGES</h2>
+			</div>
 			<div className="flex flex-col space-y-4">
 				<TopLanguages topLanguages={topLanguages} />
 			</div>
