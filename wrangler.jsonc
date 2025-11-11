@@ -22,10 +22,4 @@
       "custom_domain": true
     }
   ],
-   "kv_namespaces": [
-    {
-      "binding": "CACHE_KV",
-      "id": "2cb27fab13784dff9a725d7b6e1c164a"
-    }
-  ]
 }
