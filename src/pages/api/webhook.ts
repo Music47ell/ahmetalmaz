@@ -1,5 +1,28 @@
 import { processPostContent } from "../../libs/processPost";
 
+// KV fallback for local dev
+const kv =
+  typeof CACHE_KV !== "undefined"
+    ? CACHE_KV
+    : new Map<string, string>();
+
+async function kvDelete(key: string) {
+  if (kv instanceof Map) {
+    kv.delete(key);
+  } else {
+    await kv.delete(key);
+  }
+}
+
+async function kvPut(key: string, value: any) {
+  const json = JSON.stringify(value);
+  if (kv instanceof Map) {
+    kv.set(key, json);
+  } else {
+    await kv.put(key, json);
+  }
+}
+
 export async function onRequestPost(context) {
   try {
     // Verify secret token
@@ -13,11 +36,9 @@ export async function onRequestPost(context) {
 
     if (!slug || !event) return new Response("Invalid payload", { status: 400 });
 
-    // Invalidate single post cache
-    await CACHE_KV.delete(`post:${slug}`);
-
-    // Invalidate blog index cache
-    await CACHE_KV.delete("home:posts");
+    // Invalidate caches
+    await kvDelete(`post:${slug}`);
+    await kvDelete("home:posts");
 
     // Optional: pre-fetch fresh content
     const response = await fetch(import.meta.env.WP_GRAPHQL_URL, {
@@ -46,10 +67,11 @@ export async function onRequestPost(context) {
     const post = json.data.post;
     const content = await processPostContent(post.content);
 
-    await CACHE_KV.put(`post:${slug}`, JSON.stringify({ post, content, timestamp: Date.now() }));
+    await kvPut(`post:${slug}`, { post, content, timestamp: Date.now() });
 
     return new Response("Cache updated", { status: 200 });
   } catch (err) {
+    console.error(err);
     return new Response("Error processing webhook", { status: 500 });
   }
 }
