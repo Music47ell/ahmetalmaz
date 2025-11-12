@@ -48,16 +48,16 @@ export async function processPostContent(html: string) {
   const document = dom.window.document;
 
   // === Highlight code blocks ===
-  const codeBlocks = document.querySelectorAll("pre code");
-  for (const block of codeBlocks) {
-    const lang = block.className.replace(/^.*language-/, "").trim() || "txt";
-    const code = block.textContent || "";
-    const highlighted = await highlight(code, lang);
+  // const codeBlocks = document.querySelectorAll("pre code");
+  // for (const block of codeBlocks) {
+  //   const lang = block.className.replace(/^.*language-/, "").trim() || "txt";
+  //   const code = block.textContent || "";
+  //   const highlighted = await highlight(code, lang);
 
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = highlighted;
-    block.parentElement?.replaceWith(wrapper.firstElementChild!);
-  }
+  //   const wrapper = document.createElement("div");
+  //   wrapper.innerHTML = highlighted;
+  //   block.parentElement?.replaceWith(wrapper.firstElementChild!);
+  // }
 
   // === Apply Tailwind classes ===
   Object.entries(elementClasses).forEach(([tag, classes]) => {
