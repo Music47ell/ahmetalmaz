@@ -22,12 +22,12 @@
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.17",
 		"@types/markdown-it": "^14.1.2",
-		"@types/react": "^19.2.2",
-		"@types/react-dom": "^19.2.2",
+		"@types/react": "^19.2.4",
+		"@types/react-dom": "^19.2.3",
 		"@yeskunall/astro-umami": "^0.0.7",
-		"astro": "^5.15.4",
+		"astro": "^5.8.1",
 		"astro-expressive-code": "^0.41.3",
-		"jsdom": "^27.1.0",
+		"jsdom": "^27.2.0",
 		"markdown-it": "^14.1.0",
 		"mdast-util-to-string": "^4.0.0",
 		"react": "^19.2.0",
@@ -44,7 +44,7 @@
 		"unist-util-visit": "^5.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.4",
+		"@biomejs/biome": "^2.3.5",
 		"@types/sanitize-html": "^2.16.0",
 		"@types/unist": "^3.0.3"
 	},
