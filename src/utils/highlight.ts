@@ -7,7 +7,7 @@ async function getHighlighter() {
   if (!highlighter) {
     highlighter = await createHighlighter({
       themes: ["dracula"],
-      langs: ["js", "ts", "html", "css", "json", "bash", "md", "php", "tsx", "txt", "shell", "http", "typescript"],
+      langs: ["javascript", "typescript", "html", "css", "json", "bash", "php"],
     });
   }
   return highlighter;
