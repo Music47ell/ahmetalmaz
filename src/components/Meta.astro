@@ -29,9 +29,7 @@ const twitter = {
 
 const isProduction = import.meta.env.PROD;
 
-const ogImage = isProduction
-	? `/api/og.png?title=${encodeURIComponent(title)}`
-	: `localhost:4321/api/og.png?title=${encodeURIComponent(title)}`;
+const ogImage =`${siteMetadata.cdnUrl}/wp-content/uploads/${slug.replace(/^blog\//, '')}/og-image.png`
 ---
 
 <meta charset="utf-8" />
@@ -50,6 +48,7 @@ const ogImage = isProduction
 	title={`${siteMetadata.name} » RSS Feed`}
 	href="/feed.xml"
 />
+
 
 {/*Favicons Meta Tags*/}
 <link
@@ -81,6 +80,10 @@ const ogImage = isProduction
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content={siteMetadata.name} />
 <meta name="og:image" content={ogImage} />
+
+{/*Fediverse Tags*/}
+<link rel="me" href="https://mastodon.social/@Music47ell">
+<meta name="fediverse:creator" content="@Music47ell@mastodon.social">
 
 {/*Twitter Meta Tags*/}
 <meta name="twitter:card" content="summary_large_image" />

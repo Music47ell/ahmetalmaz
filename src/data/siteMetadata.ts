@@ -3,6 +3,7 @@ const siteMetadata = {
 	description: 'Full Stack Developer from Türkiye 🇹🇷',
 	username: 'Music47ell',
 	siteUrl: 'https://ahmetalmaz.com',
+	cdnUrl: 'https://cdn.ahmetalmaz.com',
 	locale: 'en-US',
 	avatar: '/images/others/me.png',
 	altAvatar: '/images/others/doomface.gif',
