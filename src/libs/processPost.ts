@@ -1,8 +1,11 @@
-// src/lib/processPostContent.ts
-import { highlight } from "../utils/highlight";
-import { JSDOM } from "jsdom";
+import { unified } from "unified";
+import rehypeParse from "rehype-parse";
+import rehypeStringify from "rehype-stringify";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import { visit } from "unist-util-visit";
+import rehypeShiki from "@shikijs/rehype";
+import { createHighlighter } from "shiki";
 
-// Tailwind classes for elements
 const elementClasses: Record<string, string> = {
   a: "inline-flex items-center text-red-500 gap-2 underline bg-gray-500/10 hover:bg-red-500/20 rounded-md px-1 transition-colors",
   blockquote: "border-l-2 border-zinc-300 dark:border-zinc-700 pl-3",
@@ -27,7 +30,6 @@ const elementClasses: Record<string, string> = {
   ul: "list-disc marker:text-yellow-500",
 };
 
-// Helper to generate slug/id from heading text
 function slugify(text: string) {
   return text
     .toLowerCase()
@@ -38,81 +40,89 @@ function slugify(text: string) {
 }
 
 export async function processPostContent(html: string) {
-  // Normalize language class names for syntax highlighting
-  const fixedHtml = html.replace(
-    /class="[^"]*lang-(\w+)[^"]*"/g,
-    'class="language-$1"'
-  );
-
-  const dom = new JSDOM(fixedHtml);
-  const document = dom.window.document;
-
-  // === Highlight code blocks ===
-  // const codeBlocks = document.querySelectorAll("pre code");
-  // for (const block of codeBlocks) {
-  //   const lang = block.className.replace(/^.*language-/, "").trim() || "txt";
-  //   const code = block.textContent || "";
-  //   const highlighted = await highlight(code, lang);
-
-  //   const wrapper = document.createElement("div");
-  //   wrapper.innerHTML = highlighted;
-  //   block.parentElement?.replaceWith(wrapper.firstElementChild!);
-  // }
-
-  // === Apply Tailwind classes ===
-  Object.entries(elementClasses).forEach(([tag, classes]) => {
-    const elements = document.querySelectorAll(tag);
-
-    elements.forEach((el) => {
-      if (tag === "code" && el.parentElement?.tagName.toLowerCase() === "pre") {
-        return; // skip block code
-      }
-
-      el.className = classes;
-
-      // Add anchor links for headings
-      if (/^h[1-6]$/.test(tag)) {
-        const text = el.textContent || "";
-        const id = slugify(text);
-        el.setAttribute("id", id);
-        el.textContent = "";
-
-        const anchor = document.createElement("a");
-        anchor.href = `#${id}`;
-        anchor.className =
-          "text-red-500 hover:decoration-yellow-500 transition-colors duration-100 hover:underline mr-2";
-        anchor.textContent = "#";
-
-        el.appendChild(anchor);
-        el.appendChild(document.createTextNode(text));
-      }
-    });
+  const highlighter = await createHighlighter({
+    langs: ["javascript", "typescript", "bash"],
   });
 
-  // === Add favicons to external links ===
-  const links = document.querySelectorAll("a[href]");
-  links.forEach((link) => {
-    const href = link.getAttribute("href");
-    if (!href || !href.startsWith("http")) return;
+  const processor = unified()
+    .use(rehypeParse, { fragment: true })
+    .use(rehypeSanitize, {
+      ...defaultSchema,
+      tagNames: [...(defaultSchema.tagNames || []), "span"],
+      attributes: {
+        ...defaultSchema.attributes,
+        span: ["className"],
+        code: ["className"],
+        pre: ["className"],
+        a: ["href", "className"],
+      },
+    })
+    .use(rehypeShiki, { highlighter, theme: "dracula" })
+    .use(() => (tree) => {
+  visit(tree, "element", (node: any, index, parent: any) => {
+    const tag = node.tagName;
 
-    try {
-      const domain = new URL(href).hostname;
-      const faviconUrl = `https://favicon.controld.com/${domain}`;
+    // Apply custom classes, but skip <code> inside <pre>
+    if (elementClasses[tag]) {
+      node.properties = node.properties || {};
+      if (tag === "code" && parent?.tagName === "pre") {
+        // skip adding code class for code blocks
+      } else {
+        node.properties.className = elementClasses[tag].split(" ");
+      }
+    }
 
-      // Add favicon image before text
-      const img = document.createElement("img");
-      img.src = faviconUrl;
-      img.alt = domain;
-      img.width = 16;
-      img.height = 16;
-      img.loading = "lazy";
-      img.className = "w-4 h-4 inline-block m-0 not-prose";
+    // Heading anchors
+    if (/^h[1-6]$/.test(tag)) {
+      const textNode = node.children.find((c: any) => c.type === "text");
+      const text = textNode?.value || "";
+      const id = slugify(text);
+      node.properties.id = id;
 
-      link.prepend(img);
-    } catch {
-      // ignore malformed URLs
+      const anchorNode = {
+        type: "element",
+        tagName: "a",
+        properties: {
+          href: `#${id}`,
+          className: [
+            "text-red-500",
+            "hover:decoration-yellow-500",
+            "transition-colors",
+            "duration-100",
+            "hover:underline",
+            "mr-2",
+          ],
+        },
+        children: [{ type: "text", value: "#" }],
+      };
+
+      node.children = [anchorNode, { type: "text", value: text }];
+    }
+
+    // External link favicons
+    if (tag === "a" && node.properties?.href?.startsWith("http")) {
+      try {
+        const domain = new URL(node.properties.href).hostname;
+        const imgNode = {
+          type: "element",
+          tagName: "img",
+          properties: {
+            src: `https://favicon.controld.com/${domain}`,
+            alt: domain,
+            width: 16,
+            height: 16,
+            loading: "lazy",
+            className: ["w-4", "h-4", "inline-block", "m-0", "not-prose"],
+          },
+          children: [],
+        };
+        node.children.unshift(imgNode);
+      } catch {}
     }
   });
+    })
+    .use(rehypeStringify);
 
-  return document.body.innerHTML;
+  const file = await processor.process(html);
+  return String(file);
 }
