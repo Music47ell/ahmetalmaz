@@ -27,8 +27,8 @@ export default defineConfig({
     },
     vite: {
         define: {
-            'process.env.WP_GRAPHQL_URL': JSON.stringify(process.env.WP_GRAPHQL_URL),
-            'process.env.WEBHOOK_SECRET': JSON.stringify(process.env.WEBHOOK_SECRET),
+            'import.meta.env.WP_GRAPHQL_URL': JSON.stringify(process.env.WP_GRAPHQL_URL),
+            'import.meta.env.WEBHOOK_SECRET': JSON.stringify(process.env.WEBHOOK_SECRET),
         },
         // ssr: {
         //     external: ['node:fs/promises', 'jsdom'],
