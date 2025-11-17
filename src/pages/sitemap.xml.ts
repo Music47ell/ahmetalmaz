@@ -1,7 +1,7 @@
 import siteMetadata from "../data/siteMetadata"
 
 async function generateSitemap() {
-	const response = await fetch(import.meta.env.WP_GRAPHQL_URL, {
+	const response = await fetch(process.env.WP_GRAPHQL_URL, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({

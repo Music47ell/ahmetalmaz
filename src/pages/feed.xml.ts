@@ -7,7 +7,7 @@ const parser = new MarkdownIt()
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function GET(context: any) {
-	const response = await fetch(import.meta.env.WP_GRAPHQL_URL, {
+	const response = await fetch(process.env.WP_GRAPHQL_URL, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({

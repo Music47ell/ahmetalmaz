@@ -5,9 +5,12 @@ import node from '@astrojs/node';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite'
 import umami from '@yeskunall/astro-umami';
+import dotenv from 'dotenv';
 
 import siteMetadata from './src/data/siteMetadata'
 const { UMAMI_URL, UMAMI_ID } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
+
+dotenv.config();
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,10 +29,6 @@ export default defineConfig({
         defaultStrategy: 'viewport',
     },
     vite: {
-        define: {
-            'import.meta.env.WP_GRAPHQL_URL': JSON.stringify(process.env.WP_GRAPHQL_URL),
-            'import.meta.env.WEBHOOK_SECRET': JSON.stringify(process.env.WEBHOOK_SECRET),
-        },
         // ssr: {
         //     external: ['node:fs/promises', 'jsdom'],
         // },
