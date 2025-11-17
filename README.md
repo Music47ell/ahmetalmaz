@@ -3,9 +3,6 @@
 - `Astro` - A fast, flexible new static site framework for the modern web.
 - `TypeScript` - A typed superset of JavaScript that compiles to plain JavaScript.
 - `Tailwind CSS` - A utility-first CSS framework for rapidly building custom user interfaces.
-- `Drizzle ORM` - A lightweight and simple ORM for Node.js that supports multiple databases.
-- `Turso` - A Fast, Easy and Cheap Database.
-- `Cloudflare Workers` - A serverless platform that allows you to run JavaScript code at the edge.
 
 ## Overview
 
@@ -35,12 +32,6 @@ $ git clone https://github.com/Music47ell/ahmetalmaz.git
 $ cd ahmetalmaz
 $ npm
 $ npm run dev
-```
-
-## Database Schema
-
-```sql
-CREATE TABLE analytics (id integer PRIMARY KEY AUTOINCREMENT NOT NULL, date TIMESTAMP WITH TIME ZONE NOT NULL, title VARCHAR NOT NULL, slug VARCHAR NOT NULL, referrer VARCHAR, flag VARCHAR, country VARCHAR, city VARCHAR, latitude DECIMAL, longitude DECIMAL)
 ```
 
 ## Cloning / Forking

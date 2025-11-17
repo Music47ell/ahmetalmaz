@@ -1,10 +1,9 @@
 import { unified } from "unified";
 import rehypeParse from "rehype-parse";
+import rehypeShiki from '@shikijs/rehype'
 import rehypeStringify from "rehype-stringify";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { visit } from "unist-util-visit";
-import rehypeShiki from "@shikijs/rehype";
-import { createHighlighter } from "shiki";
 
 const elementClasses: Record<string, string> = {
   a: "inline-flex items-center text-red-500 gap-2 underline bg-gray-500/10 hover:bg-red-500/20 rounded-md px-1 transition-colors",
@@ -40,9 +39,6 @@ function slugify(text: string) {
 }
 
 export async function processPostContent(html: string) {
-  const highlighter = await createHighlighter({
-    langs: ["javascript", "typescript", "bash"],
-  });
 
   const processor = unified()
     .use(rehypeParse, { fragment: true })
@@ -57,7 +53,7 @@ export async function processPostContent(html: string) {
         a: ["href", "className"],
       },
     })
-    .use(rehypeShiki, { highlighter, theme: "dracula" })
+    // .use(rehypeShiki, { highlighter, theme: "dracula" })
     .use(() => (tree) => {
   visit(tree, "element", (node: any, index, parent: any) => {
     const tag = node.tagName;
@@ -121,7 +117,11 @@ export async function processPostContent(html: string) {
     }
   });
     })
-    .use(rehypeStringify);
+    .use(rehypeStringify)
+    .use(rehypeShiki, {
+    // or `theme` for a single theme
+    theme: 'dracula'
+  })
 
   const file = await processor.process(html);
   return String(file);
