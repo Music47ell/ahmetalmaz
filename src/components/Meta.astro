@@ -27,7 +27,7 @@ const twitter = {
 	author: siteMetadata.username,
 };
 
-const isProduction = import.meta.env.PROD;
+const isProduction = process.env.PROD;
 
 const ogImage =`${siteMetadata.cdnUrl}/wp-content/uploads/${slug.replace(/^blog\//, '')}/og-image.png`
 ---
