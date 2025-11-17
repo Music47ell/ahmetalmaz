@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "TAILWIND_MODE=watch astro dev",
-		"start": "TAILWIND_MODE=watch astro dev",
+		"start": "TAILWIND_MODE=watch astro preview",
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
