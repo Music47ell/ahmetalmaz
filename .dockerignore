@@ -1,0 +1,12 @@
+node_modules
+bun.lockb
+.git
+.gitignore
+.github
+.env
+.ssh
+.cache
+astro.config.mjs
+**/*.tsbuildinfo
+**/*.log
+/dist
