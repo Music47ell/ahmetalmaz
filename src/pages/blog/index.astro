@@ -1,28 +1,13 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import siteMetadata from "../../data/siteMetadata";
-
 import Link from "../../components/Link.astro";
 
-const response = await fetch(process.env.WP_GRAPHQL_URL, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    query: `
-         query HomePagePosts {
-           posts(where: { orderby: { field: DATE, order: DESC } }) {
-            nodes {
-              slug
-              title
-            }
-          }
-         }
-       `,
-  }),
-});
+const response = await fetch(
+  `${process.env.WP_REST_URL}/posts?orderby=date&order=desc&_fields=slug,title.rendered`
+);
 
-const json = await response.json();
-const posts = json.data.posts.nodes;
+const posts = await response.json();
 const totalPosts = posts.length;
 ---
 
@@ -38,10 +23,10 @@ const totalPosts = posts.length;
     <section>
       <h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
       {
-        posts.map((post: { slug: string; title: string }) => (
+        posts.map((post) => (
           <div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
-            <Link href={`blog/${post.slug}`}>{post.title}</Link>
-            {/* <ViewsCounter slug={post.slug} trackViews={false} /> */}
+            <Link href={`blog/${post.slug}`}>{post.title.rendered}</Link>
+             {/* <ViewsCounter slug={post.slug} trackViews={false} /> */}
           </div>
         ))
       }
