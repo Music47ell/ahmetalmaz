@@ -4,13 +4,20 @@ import { processPostContent } from "../../libs/processPost";
 
 const { slug } = Astro.params;
 
-const response = await fetch(
-  `${process.env.WP_REST_URL}/posts?slug=${slug}&_fields=id,slug,title.rendered,excerpt.rendered,content.rendered,date,modified,readingTime,wordCount`
-);
+// Fetch WP post at runtime
+const getPost = async (slug: string) => {
+  const baseUrl = process.env.WP_REST_URL;
+  if (!baseUrl) throw new Error("WP_REST_URL is not set!");
 
-const posts = await response.json();
-const post = posts[0];
+  const response = await fetch(
+    `${baseUrl}/posts?slug=${slug}&_fields=id,slug,title.rendered,excerpt.rendered,content.rendered,date,modified,readingTime,wordCount`
+  );
+  const posts = await response.json();
+  if (!posts || posts.length === 0) throw new Error(`Post not found: ${slug}`);
+  return posts[0];
+};
 
+const post = await getPost(slug);
 const content = await processPostContent(post.content.rendered);
 ---
 
