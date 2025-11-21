@@ -1,19 +1,35 @@
-import rss from "@astrojs/rss";
-import sanitizeHtml from "sanitize-html";
-import MarkdownIt from "markdown-it";
-import siteMetadata from "../data/siteMetadata";
+import rss from "@astrojs/rss"
+import sanitizeHtml from "sanitize-html"
+import MarkdownIt from "markdown-it"
+import siteMetadata from "../data/siteMetadata"
 
-const parser = new MarkdownIt();
+const parser = new MarkdownIt()
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function GET(context: any) {
-  const baseUrl = process.env.WP_REST_URL;
-  if (!baseUrl) throw new Error("WP_REST_URL is not set!");
+  const response = await fetch(process.env.WP_GRAPHQL_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `
+        query AllPosts {
+          posts(where: { orderby: { field: DATE, order: DESC } }) {
+            nodes {
+              slug
+              title
+              excerpt
+              date
+              modified
+              content
+            }
+          }
+        }
+      `,
+    }),
+  })
 
-  // Fetch posts via WP REST API
-  const response = await fetch(
-    `${baseUrl}/posts?_fields=slug,title,excerpt,date,modified,content`
-  );
-  const posts = await response.json();
+  const json = await response.json()
+  const posts = json.data.posts.nodes
 
   return rss({
     title: siteMetadata.name,
@@ -30,16 +46,18 @@ export async function GET(context: any) {
       <managingEditor>${siteMetadata.name}</managingEditor>
       <atom:link href="${context.site}/feed.xml" rel="self" type="application/rss+xml" />
     `,
-    items: posts.map((post: any) => ({
-      title: post.title.rendered,
-      description: post.excerpt.rendered,
-      pubDate: post.date,
-      link: `blog/${post.slug}`,
-      author: siteMetadata.name,
-      content: sanitizeHtml(parser.render(post.content.rendered ?? ""), {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-      }),
-    })),
+    items: posts.map((post: any) => {
+      return {
+        title: post.title,
+        description: post.excerpt,
+        pubDate: post.date,
+        link: `blog/${post.slug}`,
+        author: siteMetadata.name,
+        content: sanitizeHtml(parser.render(post.content ?? ""), {
+          allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
+        }),
+      }
+    }),
     stylesheet: "/feed.xsl",
-  });
+  })
 }

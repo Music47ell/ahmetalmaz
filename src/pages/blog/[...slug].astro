@@ -2,28 +2,40 @@
 import ContentLayout from "../../layouts/ContentLayout.astro";
 import { processPostContent } from "../../libs/processPost";
 
+// Dynamic slug from URL
 const { slug } = Astro.params;
 
-// Fetch WP post at runtime
-const getPost = async (slug: string) => {
-  const baseUrl = process.env.WP_REST_URL;
-  if (!baseUrl) throw new Error("WP_REST_URL is not set!");
+// Fetch the single post at request time
+const response = await fetch(process.env.WP_GRAPHQL_URL, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    query: `
+      query SinglePost($slug: ID!) {
+        post(id: $slug, idType: SLUG) {
+          title
+          excerpt
+          readingTime
+          wordCount
+          slug
+          date
+          modified
+          content
+        }
+      }
+    `,
+    variables: { slug },
+  }),
+});
 
-  const response = await fetch(
-    `${baseUrl}/posts?slug=${slug}&_fields=id,slug,title.rendered,excerpt.rendered,content.rendered,date,modified,readingTime,wordCount`
-  );
-  const posts = await response.json();
-  if (!posts || posts.length === 0) throw new Error(`Post not found: ${slug}`);
-  return posts[0];
-};
-
-const post = await getPost(slug);
-const content = await processPostContent(post.content.rendered);
+const json = await response.json();
+const post = json.data.post;
+const content = await processPostContent(post.content);
 ---
 
 <ContentLayout
-  title={post.title.rendered}
-  description={post.excerpt.rendered}
+  title={post.title}
+  description={post.excerpt}
   published_at={post.date}
   lastModified={post.modified}
   readingTime={post.readingTime}

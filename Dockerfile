@@ -10,4 +10,4 @@ RUN bun run build
 EXPOSE 4321
 
 # Start the server on all interfaces
-CMD ["bun", "--load-env", "run", "start"]
+CMD ["bun", "run", "start"]
