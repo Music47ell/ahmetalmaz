@@ -5,10 +5,14 @@ import siteMetadata from "../data/siteMetadata";
 
 const parser = new MarkdownIt();
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function GET(context: any) {
+  const baseUrl = process.env.WP_REST_URL;
+  if (!baseUrl) throw new Error("WP_REST_URL is not set!");
+
   // Fetch posts via WP REST API
-  const response = await fetch(`${process.env.WP_REST_URL}/posts?_fields=slug,title,excerpt,date,modified,content`);
+  const response = await fetch(
+    `${baseUrl}/posts?_fields=slug,title,excerpt,date,modified,content`
+  );
   const posts = await response.json();
 
   return rss({

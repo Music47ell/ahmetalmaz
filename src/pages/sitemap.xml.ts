@@ -1,10 +1,11 @@
 import siteMetadata from "../data/siteMetadata";
 
 async function generateSitemap() {
+  const baseUrl = process.env.WP_REST_URL;
+  if (!baseUrl) throw new Error("WP_REST_URL is not set!");
+
   // Fetch posts via WP REST API
-  const response = await fetch(
-    `${process.env.WP_REST_URL}/posts?_fields=slug,date,modified`
-  );
+  const response = await fetch(`${baseUrl}/posts?_fields=slug,date,modified`);
   const posts = await response.json();
 
   return `
@@ -38,7 +39,8 @@ async function generateSitemap() {
 }
 
 export async function GET() {
-  return new Response(await generateSitemap(), {
+  const sitemap = await generateSitemap();
+  return new Response(sitemap, {
     status: 200,
     headers: {
       "content-type": "application/xml",
