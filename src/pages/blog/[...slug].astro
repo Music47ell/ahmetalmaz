@@ -2,40 +2,21 @@
 import ContentLayout from "../../layouts/ContentLayout.astro";
 import { processPostContent } from "../../libs/processPost";
 
-// Dynamic slug from URL
 const { slug } = Astro.params;
 
-// Fetch the single post at request time
-const response = await fetch(process.env.WP_GRAPHQL_URL, {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    query: `
-      query SinglePost($slug: ID!) {
-        post(id: $slug, idType: SLUG) {
-          title
-          excerpt
-          readingTime
-          wordCount
-          slug
-          date
-          modified
-          content
-        }
-      }
-    `,
-    variables: { slug },
-  }),
-});
+const response = await fetch(
+  `${process.env.WP_REST_URL}/posts?slug=${slug}&_fields=id,slug,title.rendered,excerpt.rendered,content.rendered,date,modified,readingTime,wordCount`
+);
 
-const json = await response.json();
-const post = json.data.post;
-const content = await processPostContent(post.content);
+const posts = await response.json();
+const post = posts[0];
+
+const content = await processPostContent(post.content.rendered);
 ---
 
 <ContentLayout
-  title={post.title}
-  description={post.excerpt}
+  title={post.title.rendered}
+  description={post.excerpt.rendered}
   published_at={post.date}
   lastModified={post.modified}
   readingTime={post.readingTime}
