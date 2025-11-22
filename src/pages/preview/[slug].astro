@@ -1,0 +1,32 @@
+---
+import ContentLayout from "../../layouts/ContentLayout.astro";
+import { processPostContent } from "../../libs/processPost";
+import { getPreviewById } from "../api/preview";
+
+const { slug } = Astro.params;
+const previewId = Astro.url.searchParams.get("preview");
+
+let post;
+if (previewId) {
+  post = getPreviewById(previewId);
+} else {
+  const { fetchWpPostBySlug } = await import("../../libs/fetchWpPost");
+  post = await fetchWpPostBySlug(slug);
+}
+
+if (!post) throw new Error("Post not found");
+
+const content = await processPostContent(post.content.rendered);
+---
+
+<ContentLayout
+  title={post.title.rendered}
+  description={post.excerpt?.rendered ?? ""}
+  published_at={post.date}
+  lastModified={post.modified}
+  readingTime={post.readingTime}
+  wordsCount={post.wordCount}
+  slug={post.slug}
+>
+  <div set:html={content} />
+</ContentLayout>
