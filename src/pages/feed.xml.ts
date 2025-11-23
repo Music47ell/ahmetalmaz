@@ -8,7 +8,7 @@ const parser = new MarkdownIt();
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function GET(context: any) {
   // Fetch posts via WP REST API
-  const response = await fetch(`${import.meta.env.WP_REST_URL}/posts?_fields=slug,title,excerpt,date,modified,content`);
+  const response = await fetch(`${process.env.WP_REST_URL}/posts?_fields=slug,title,excerpt,date,modified,content`);
   const posts = await response.json();
 
   return rss({
