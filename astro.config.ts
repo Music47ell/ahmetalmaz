@@ -1,5 +1,4 @@
 import { loadEnv } from "vite";
-import dotenv from 'dotenv';
 import { defineConfig } from 'astro/config'
 import node from '@astrojs/node';
 import react from '@astrojs/react';
@@ -7,9 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 import umami from '@yeskunall/astro-umami';
 
 import siteMetadata from './src/data/siteMetadata'
-const { PUBLIC_UMAMI_URL, PUBLIC_UMAMI_ID } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
-
-dotenv.config();
+const { UMAMI_URL, UMAMI_ID } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 
 // https://astro.build/config
 export default defineConfig({
@@ -42,8 +39,8 @@ export default defineConfig({
     },
     integrations: [react(), umami({
         doNotTrack: true,
-        endpointUrl: PUBLIC_UMAMI_URL,
-        id: PUBLIC_UMAMI_ID,
+        endpointUrl: UMAMI_URL,
+        id: UMAMI_ID,
     })],
     adapter: node({
     mode: 'standalone',
