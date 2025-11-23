@@ -1,6 +1,6 @@
 import { loadEnv } from "vite";
 
-import { defineConfig } from 'astro/config'
+import { defineConfig, envField } from 'astro/config'
 import node from '@astrojs/node';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite'
@@ -8,7 +8,7 @@ import umami from '@yeskunall/astro-umami';
 import dotenv from 'dotenv';
 
 import siteMetadata from './src/data/siteMetadata'
-const { UMAMI_URL, UMAMI_ID, UMAMI_TRACKER_SCRIPT_NAME } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
+const { UMAMI_URL, UMAMI_ID } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 
 dotenv.config();
 
@@ -41,11 +41,24 @@ export default defineConfig({
             },
         },
     },
+    env: {
+        schema: {
+            UMAMI_ID: envField.string({
+                access: 'public',
+                context: 'client',
+                optional: false
+            }),
+            UMAMI_URL: envField.string({
+                access: 'public',
+                context: 'client',
+                optional: false
+            })
+        }
+    },
     integrations: [react(), umami({
         doNotTrack: true,
         endpointUrl: UMAMI_URL,
         id: UMAMI_ID,
-        trackerScriptName: UMAMI_TRACKER_SCRIPT_NAME,
     })],
     adapter: node({
     mode: 'standalone',
