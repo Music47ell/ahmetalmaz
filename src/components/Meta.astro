@@ -28,8 +28,8 @@ const twitter = {
 };
 
 const isProduction = process.env.PROD;
-const UMAMI_URL = import.meta.env.UMAMI_URL
-const UMAMI_ID = import.meta.env.UMAMI_ID
+const UMAMI_URL = import.meta.env.PUBLIC_UMAMI_URL
+const UMAMI_ID = import.meta.env.PUBLIC_UMAMI_ID
 
 const ogImage =`${siteMetadata.cdnUrl}/wp-content/uploads/${slug.replace(/^blog\//, '')}/og-image.png`
 ---
