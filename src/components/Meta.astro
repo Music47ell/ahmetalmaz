@@ -28,6 +28,8 @@ const twitter = {
 };
 
 const isProduction = process.env.PROD;
+const UMAMI_URL = import.meta.env.UMAMI_URL
+const UMAMI_ID = import.meta.env.UMAMI_ID
 
 const ogImage =`${siteMetadata.cdnUrl}/wp-content/uploads/${slug.replace(/^blog\//, '')}/og-image.png`
 ---
@@ -93,6 +95,8 @@ const ogImage =`${siteMetadata.cdnUrl}/wp-content/uploads/${slug.replace(/^blog\
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
+
+<script async is:inline data-astro-rerun src={UMAMI_URL} data-website-id={UMAMI_ID}></script>
 
 {/*JSON-LD*/}
 <script

@@ -3,7 +3,6 @@ import { defineConfig } from 'astro/config'
 import node from '@astrojs/node';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite'
-import umami from '@yeskunall/astro-umami';
 
 import siteMetadata from './src/data/siteMetadata'
 const { UMAMI_URL, UMAMI_ID } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
@@ -37,11 +36,7 @@ export default defineConfig({
             },
         },
     },
-    integrations: [react(), umami({
-        doNotTrack: true,
-        endpointUrl: UMAMI_URL,
-        id: UMAMI_ID,
-    })],
+    integrations: [react()],
     adapter: node({
     mode: 'standalone',
   }),
