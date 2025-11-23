@@ -3,8 +3,8 @@
 	"type": "module",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "TAILWIND_MODE=watch astro dev --port 4321",
-		"start": "TAILWIND_MODE=watch astro preview --port 4321",
+		"dev": "TAILWIND_MODE=watch astro dev --port 4321 --host 0.0.0.0",
+		"start": "TAILWIND_MODE=watch astro preview --port 4321 --host 0.0.0.0",
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
