@@ -32,10 +32,10 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
 
       - name: Build image
-        run: docker build -t ghcr.io/${{ env.REPO }}/sss:latest .
+        run: docker build -t ghcr.io/${{ env.REPO }}/ahmetalmaz:latest .
 
       - name: Push image
-        run: docker push ghcr.io/${{ env.REPO }}/sss:latest
+        run: docker push ghcr.io/${{ env.REPO }}/ahmetalmaz:latest
 
       - name: Send ntfy notification
         if: always()
