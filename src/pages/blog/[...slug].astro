@@ -5,7 +5,7 @@ import { processPostContent } from "../../libs/processPost";
 const { slug } = Astro.params;
 
 const response = await fetch(
-  `${import.meta.env.WP_REST_URL}/posts?slug=${slug}&_fields=id,slug,title.rendered,excerpt.rendered,content.rendered,date,modified,readingTime,wordCount`
+  `${process.env.WP_REST_URL}/posts?slug=${slug}&_fields=id,slug,title.rendered,excerpt.rendered,content.rendered,date,modified,readingTime,wordCount`
 );
 
 const posts = await response.json();
