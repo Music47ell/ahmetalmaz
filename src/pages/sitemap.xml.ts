@@ -3,7 +3,7 @@ import siteMetadata from "../data/siteMetadata";
 async function generateSitemap() {
   // Fetch posts via WP REST API
   const response = await fetch(
-    `${process.env.WP_REST_URL}/posts?_fields=slug,date,modified`
+    `${import.meta.env.WP_REST_URL}/posts?_fields=slug,date,modified`
   );
   const posts = await response.json();
 
