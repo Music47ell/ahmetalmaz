@@ -1,11 +1,11 @@
-import { loadEnv } from "vite";
+import 'dotenv/config';
+
 import { defineConfig } from 'astro/config'
 import node from '@astrojs/node';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite'
 
 import siteMetadata from './src/data/siteMetadata'
-const { UMAMI_URL, UMAMI_ID } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 
 // https://astro.build/config
 export default defineConfig({
