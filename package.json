@@ -27,6 +27,7 @@
 		"@types/react-dom": "^19.2.3",
 		"@yeskunall/astro-umami": "^0.0.7",
 		"astro": "^5.8.1",
+		"dotenv": "^17.2.3",
 		"markdown-it": "^14.1.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0",
