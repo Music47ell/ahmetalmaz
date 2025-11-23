@@ -1,5 +1,5 @@
 import { loadEnv } from "vite";
-
+import dotenv from 'dotenv';
 import { defineConfig } from 'astro/config'
 import node from '@astrojs/node';
 import react from '@astrojs/react';
@@ -8,6 +8,8 @@ import umami from '@yeskunall/astro-umami';
 
 import siteMetadata from './src/data/siteMetadata'
 const { PUBLIC_UMAMI_URL, PUBLIC_UMAMI_ID } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
+
+dotenv.config();
 
 // https://astro.build/config
 export default defineConfig({
