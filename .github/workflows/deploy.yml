@@ -32,10 +32,10 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
 
       - name: Build image
-        run: docker build -t ghcr.io/${{ env.REPO }}/ahmetalmaz:latest .
+        run: docker build -t ghcr.io/${{ env.REPO }}/sss:latest .
 
       - name: Push image
-        run: docker push ghcr.io/${{ env.REPO }}/ahmetalmaz:latest
+        run: docker push ghcr.io/${{ env.REPO }}/sss:latest
 
       - name: Send ntfy notification
         if: always()
@@ -44,5 +44,6 @@ jobs:
           curl -s -X POST \
             -H "Title: Astro SSR Build" \
             -H "Priority: high" \
+            -H "Authorization: Bearer ${{ secrets.NTFY_TOKEN }}" \
             -d "Build status: $STATUS" \
             "${{ secrets.NTFY_URL }}"
