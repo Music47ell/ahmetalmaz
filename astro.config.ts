@@ -41,8 +41,8 @@ export default defineConfig({
     },
     integrations: [react(), umami({
         doNotTrack: true,
-        endpointUrl: process.env.PUBLIC_UMAMI_URL,
-        id: process.env.PUBLIC_UMAMI_ID,
+        endpointUrl: PUBLIC_UMAMI_URL,
+        id: PUBLIC_UMAMI_ID,
     })],
     adapter: node({
     mode: 'standalone',
