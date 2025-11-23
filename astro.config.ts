@@ -8,7 +8,7 @@ import umami from '@yeskunall/astro-umami';
 import dotenv from 'dotenv';
 
 import siteMetadata from './src/data/siteMetadata'
-const { UMAMI_URL, UMAMI_ID } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
+const { UMAMI_URL, UMAMI_ID, UMAMI_TRACKER_SCRIPT_NAME } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
 
 dotenv.config();
 
@@ -45,6 +45,7 @@ export default defineConfig({
         doNotTrack: true,
         endpointUrl: UMAMI_URL,
         id: UMAMI_ID,
+        trackerScriptName: UMAMI_TRACKER_SCRIPT_NAME,
     })],
     adapter: node({
     mode: 'standalone',
