@@ -13,6 +13,7 @@ export default defineConfig({
     trailingSlash: 'never',
     output: 'server',
     server: {
+      host: true,
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
