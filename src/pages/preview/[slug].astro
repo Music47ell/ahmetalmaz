@@ -10,7 +10,7 @@ if (previewId) {
   post = await getPreviewData(previewId);
 }
 if (!post) {
-  const { fetchPreviewPostBySlug } = await import("../libs/fetchWP");
+  const { fetchPreviewPostBySlug } = await import("../../libs/fetchWP");
   post = await fetchPreviewPostBySlug(Astro.params.slug);
 }
 
