@@ -52,7 +52,7 @@ async function initRedis(url: string): Promise<CacheClient | null> {
 export async function getCacheClient(): Promise<CacheClient> {
   if (client) return client;
 
-  const redisUrl = import.meta.env.REDIS_URL;
+  const redisUrl = process.env.REDIS_URL;
   if (redisUrl) {
     const redis = await initRedis(redisUrl);
     if (redis) {
