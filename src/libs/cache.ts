@@ -28,24 +28,23 @@ const MemoryClient: CacheClient = {
 };
 
 // Redis client (for prod)
+let redisClient: any = null;
 async function initRedis(url: string): Promise<CacheClient | null> {
   try {
-    const Redis = (await import("ioredis")).default;
+    const { Redis } = await import('ioredis');
     const redis = new Redis(url, {
       retryStrategy: () => null,
       connectTimeout: 2000,
       lazyConnect: true,
     });
-
     await redis.connect();
-
     return {
       get: (key) => redis.get(key),
-      setex: (key, ttl, value) => redis.setex(key, ttl, value),
+      setex: (key, ttl, val) => redis.setex(key, ttl, val),
       del: (...keys) => redis.del(...keys),
     };
-  } catch {
-    console.warn("[Cache] Redis unavailable. Using memory fallback.");
+  } catch (e) {
+    console.warn('[Cache] Redis unavailable. Using memory fallback.');
     return null;
   }
 }
@@ -53,18 +52,17 @@ async function initRedis(url: string): Promise<CacheClient | null> {
 export async function getCacheClient(): Promise<CacheClient> {
   if (client) return client;
 
-  const redisUrl = process.env.REDIS_URL;
-
+  const redisUrl = import.meta.env.REDIS_URL;
   if (redisUrl) {
     const redis = await initRedis(redisUrl);
     if (redis) {
       client = redis;
-      console.info("[Cache] Using Redis");
+      console.info('[Cache] Using Redis');
       return client;
     }
   }
 
   client = MemoryClient;
-  console.info("[Cache] Using in-memory fallback");
+  console.info('[Cache] Using in-memory fallback');
   return client;
 }
