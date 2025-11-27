@@ -1,15 +1,11 @@
 ---
 import ContentLayout from "../../layouts/ContentLayout.astro";
+import { fetchPublicPostBySlug } from "../../libs/fetchWP";
 import { processPostContent } from "../../libs/processPost";
 
 const { slug } = Astro.params;
 
-const response = await fetch(
-  `${process.env.WP_REST_URL}/posts?slug=${slug}&_fields=id,slug,title.rendered,excerpt.rendered,content.rendered,date,modified,readingTime,wordCount`
-);
-
-const posts = await response.json();
-const post = posts[0];
+const post = await fetchPublicPostBySlug(slug);
 
 const content = await processPostContent(post.content.rendered);
 ---
