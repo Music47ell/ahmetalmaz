@@ -2,7 +2,7 @@
 import { getCacheClient } from './cache';
 
 // ————— PUBLIC (Cached) —————
-const PUBLIC_TTL = import.meta.env.DEV ? 30 : 300; // shorter in dev
+const PUBLIC_TTL = process.env.DEV ? 30 : 7200; // shorter in dev
 
 export async function fetchPublicPostList() {
   const cache = await getCacheClient();
