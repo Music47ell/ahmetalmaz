@@ -7,8 +7,11 @@ const { slug } = Astro.params;
 
 const post = await fetchPublicPostBySlug(slug);
 
+if (!post) return Astro.redirect("/404");
+
 const content = await processPostContent(post.content.rendered);
 ---
+
 
 <ContentLayout
   title={post.title.rendered}
