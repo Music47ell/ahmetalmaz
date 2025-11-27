@@ -2,12 +2,9 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import siteMetadata from "../../data/siteMetadata";
 import Link from "../../components/Link.astro";
+import { fetchPublicPostList } from "../../libs/fetchWP";
+const posts = await fetchPublicPostList();
 
-const response = await fetch(
-  `${process.env.WP_REST_URL}/posts?orderby=date&order=desc&_fields=slug,title.rendered`
-);
-
-const posts = await response.json();
 const totalPosts = posts.length;
 ---
 
