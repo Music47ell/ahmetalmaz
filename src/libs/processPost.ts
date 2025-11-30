@@ -38,6 +38,22 @@ function slugify(text: string) {
     .replace(/^\-+|\-+$/g, "");
 }
 
+function getText(node: any): string {
+  if (node.type === "text") return node.value;
+  if (!node.children) return "";
+  return node.children.map(getText).join("");
+}
+
+function rehypeDecodeEntities() {
+  return (tree: any) => {
+    visit(tree, "text", (node: any) => {
+      node.value = node.value.replace(/&#(\d+);/g, (_, code) =>
+        String.fromCharCode(code)
+      );
+    });
+  };
+}
+
 export async function processPostContent(html: string) {
 
   const processor = unified()
@@ -53,7 +69,7 @@ export async function processPostContent(html: string) {
         a: ["href", "className"],
       },
     })
-    // .use(rehypeShiki, { highlighter, theme: "dracula" })
+    .use(rehypeDecodeEntities)
     .use(() => (tree) => {
   visit(tree, "element", (node: any, index, parent: any) => {
     const tag = node.tagName;
@@ -70,30 +86,29 @@ export async function processPostContent(html: string) {
 
     // Heading anchors
     if (/^h[1-6]$/.test(tag)) {
-      const textNode = node.children.find((c: any) => c.type === "text");
-      const text = textNode?.value || "";
-      const id = slugify(text);
-      node.properties.id = id;
+  const text = getText(node);
+  const id = slugify(text);
+  node.properties.id = id;
 
-      const anchorNode = {
-        type: "element",
-        tagName: "a",
-        properties: {
-          href: `#${id}`,
-          className: [
-            "text-red-500",
-            "hover:decoration-yellow-500",
-            "transition-colors",
-            "duration-100",
-            "hover:underline",
-            "mr-2",
-          ],
-        },
-        children: [{ type: "text", value: "#" }],
-      };
+  const anchorNode = {
+    type: "element",
+    tagName: "a",
+    properties: {
+      href: `#${id}`,
+      className: [
+        "text-red-500",
+        "hover:decoration-yellow-500",
+        "transition-colors",
+        "duration-100",
+        "hover:underline",
+        "mr-2",
+      ],
+    },
+    children: [{ type: "text", value: "#" }],
+  };
 
-      node.children = [anchorNode, { type: "text", value: text }];
-    }
+  node.children = [anchorNode, { type: "text", value: text }];
+}
 
     // External link favicons
     if (tag === "a" && node.properties?.href?.startsWith("http")) {
