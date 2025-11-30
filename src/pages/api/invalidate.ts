@@ -5,7 +5,7 @@ import { invalidatePublicCaches } from "../../libs/fetchWP";
 export const POST: APIRoute = async ({ request }) => {
   // 🔑 Validate secret token from header
   const token = request.headers.get("x-webhook-token");
-  if (token !== import.meta.env.WP_WEBHOOK_SECRET) {
+  if (token !== process.env.WP_WEBHOOK_SECRET) {
     console.warn("[Invalidation] Unauthorized webhook attempt");
     return new Response("Unauthorized", { status: 403 });
   }

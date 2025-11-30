@@ -36,13 +36,13 @@ export async function fetchPublicPostBySlug(slug: string) {
 // ————— PREVIEW (No Cache) —————
 function getAuthHeader() {
   const token = Buffer.from(
-    `${import.meta.env.WP_USERNAME}:${import.meta.env.WP_APP_PASSWORD}`
+    `${process.env.WP_USERNAME}:${process.env.WP_APP_PASSWORD}`
   ).toString('base64');
   return `Basic ${token}`;
 }
 
 export async function fetchPreviewPostById(id: string) {
-  const url = `${import.meta.env.WP_REST_URL}/posts/${id}?context=edit`;
+  const url = `${process.env.WP_REST_URL}/posts/${id}?context=edit`;
   const res = await fetch(url, {
     headers: { Authorization: getAuthHeader() }
   });
@@ -51,7 +51,7 @@ export async function fetchPreviewPostById(id: string) {
 }
 
 export async function fetchPreviewPostBySlug(slug: string) {
-  const url = `${import.meta.env.WP_REST_URL}/posts?slug=${encodeURIComponent(slug)}&context=edit`;
+  const url = `${process.env.WP_REST_URL}/posts?slug=${encodeURIComponent(slug)}&context=edit`;
   const res = await fetch(url, {
     headers: { Authorization: getAuthHeader() }
   });
