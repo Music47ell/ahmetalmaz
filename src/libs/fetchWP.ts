@@ -18,6 +18,20 @@ export async function fetchPublicPostList() {
   return posts;
 }
 
+export async function fetchPublicPostListContent() {
+  const cache = await getCacheClient();
+  const key = 'wp:post-list-content';
+  const cached = await cache.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const url = `${process.env.WP_REST_URL}/posts?_fields=slug,title.rendered,excerpt.rendered,date,modified,content.rendered`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`WP API: ${res.status}`);
+  const posts = await res.json();
+  await cache.setex(key, PUBLIC_TTL, JSON.stringify(posts));
+  return posts;
+}
+
 export async function fetchPublicPostBySlug(slug: string) {
   const cache = await getCacheClient();
   const key = `wp:post:slug:${slug}`;
@@ -43,6 +57,7 @@ function getAuthHeader() {
 
 export async function fetchPreviewPostById(id: string) {
   const url = `${process.env.WP_REST_URL}/posts/${id}?context=edit`;
+
   const res = await fetch(url, {
     headers: { Authorization: getAuthHeader() }
   });
