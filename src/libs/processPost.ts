@@ -1,8 +1,7 @@
 import { unified } from "unified";
 import rehypeParse from "rehype-parse";
-import rehypeShiki from '@shikijs/rehype'
 import rehypeStringify from "rehype-stringify";
-import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import rehypeShiki from "@shikijs/rehype";
 import { visit } from "unist-util-visit";
 
 const elementClasses: Record<string, string> = {
@@ -19,124 +18,84 @@ const elementClasses: Record<string, string> = {
   hr: "border-t border-gray-700 my-4",
   p: "leading-snug text-zinc-100",
   strong: "text-zinc-100 font-bold",
-  input: "border rounded px-2 py-1 text-gray-800",
   table: "w-full text-sm",
   th: "bg-neutral-500 p-4 border-b border-zinc-700",
-  tr: "bg-neutral-600 hover:bg-neutral-700 focus:bg-neutral-700 active:bg-neutral-700",
+  tr: "bg-neutral-600 hover:bg-neutral-700",
   td: "p-4",
   li: "text-zinc-100",
   ol: "list-decimal marker:text-yellow-500",
   ul: "list-disc marker:text-yellow-500",
 };
 
-function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w\-]+/g, "")
-    .replace(/\-+/g, "-")
-    .replace(/^\-+|\-+$/g, "");
-}
-
-function getText(node: any): string {
-  if (node.type === "text") return node.value;
-  if (!node.children) return "";
-  return node.children.map(getText).join("");
-}
-
-function rehypeDecodeEntities() {
+function addHeadingAnchors() {
   return (tree: any) => {
-    visit(tree, "text", (node: any) => {
-      node.value = node.value.replace(/&#(\d+);/g, (_, code) =>
-        String.fromCharCode(code)
-      );
+    visit(tree, "element", (node: any) => {
+      if (!/^h[1-6]$/.test(node.tagName)) return;
+      if (!node.properties?.id) return;
+
+      node.children.unshift({
+        type: "element",
+        tagName: "a",
+        properties: {
+          href: `#${node.properties.id}`,
+          className: [
+            "mr-2",
+            "text-red-500",
+            "hover:underline",
+            "opacity-0",
+            "group-hover:opacity-100",
+            "transition-opacity"
+          ],
+          ariaHidden: "true",
+        },
+        children: [{ type: "text", value: "#" }],
+      });
+
+      node.properties.className ??= [];
+      node.properties.className.push("group");
     });
   };
 }
 
 export async function processPostContent(html: string) {
-
   const processor = unified()
     .use(rehypeParse, { fragment: true })
-    .use(rehypeSanitize, {
-      ...defaultSchema,
-      tagNames: [...(defaultSchema.tagNames || []), "span"],
-      attributes: {
-        ...defaultSchema.attributes,
-        span: ["className"],
-        code: ["className"],
-        pre: ["className"],
-        a: ["href", "className"],
-      },
-    })
-    .use(rehypeDecodeEntities)
+    .use(addHeadingAnchors)
     .use(() => (tree) => {
-  visit(tree, "element", (node: any, index, parent: any) => {
-    const tag = node.tagName;
+      visit(tree, "element", (node: any, _, parent) => {
+        const tag = node.tagName;
+        if (!elementClasses[tag]) return;
 
-    // Apply custom classes, but skip <code> inside <pre>
-    if (elementClasses[tag]) {
-      node.properties = node.properties || {};
-      if (tag === "code" && parent?.tagName === "pre") {
-        // skip adding code class for code blocks
-      } else {
+        if (tag === "code" && parent?.tagName === "pre") return;
+
+        node.properties ??= {};
         node.properties.className = elementClasses[tag].split(" ");
-      }
-    }
+      });
 
-    // Heading anchors
-    if (/^h[1-6]$/.test(tag)) {
-  const text = getText(node);
-  const id = slugify(text);
-  node.properties.id = id;
-
-  const anchorNode = {
-    type: "element",
-    tagName: "a",
-    properties: {
-      href: `#${id}`,
-      className: [
-        "text-red-500",
-        "hover:decoration-yellow-500",
-        "transition-colors",
-        "duration-100",
-        "hover:underline",
-        "mr-2",
-      ],
-    },
-    children: [{ type: "text", value: "#" }],
-  };
-
-  node.children = [anchorNode, { type: "text", value: text }];
-}
-
-    // External link favicons
-    if (tag === "a" && node.properties?.href?.startsWith("http")) {
-      try {
-        const domain = new URL(node.properties.href).hostname;
-        const imgNode = {
-          type: "element",
-          tagName: "img",
-          properties: {
-            src: `https://favicon.controld.com/${domain}`,
-            alt: domain,
-            width: 16,
-            height: 16,
-            loading: "lazy",
-            className: ["w-4", "h-4", "inline-block", "m-0", "not-prose"],
-          },
-          children: [],
-        };
-        node.children.unshift(imgNode);
-      } catch {}
-    }
-  });
+      // external link favicons
+      visit(tree, "element", (node: any) => {
+        if (node.tagName === "a" && node.properties?.href?.startsWith("http")) {
+          try {
+            const domain = new URL(node.properties.href).hostname;
+            node.children.unshift({
+              type: "element",
+              tagName: "img",
+              properties: {
+                src: `https://favicon.controld.com/${domain}`,
+                alt: domain,
+                width: 16,
+                height: 16,
+                loading: "lazy",
+                className: ["w-4", "h-4", "inline-block", "not-prose"],
+              },
+              children: [],
+            });
+          } catch {}
+        }
+      });
     })
-    .use(rehypeStringify)
-    .use(rehypeShiki, {
-    // or `theme` for a single theme
-    theme: 'dracula'
-  })
+    .use(rehypeShiki, { theme: "dracula" })
+    .use(rehypeStringify);
 
   const file = await processor.process(html);
   return String(file);

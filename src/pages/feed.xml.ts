@@ -1,15 +1,11 @@
 import rss from "@astrojs/rss";
-import sanitizeHtml from "sanitize-html";
-import MarkdownIt from "markdown-it";
 import siteMetadata from "../data/siteMetadata";
-
-const parser = new MarkdownIt();
+import { fetchPublicPostListContent } from "../libs/fetchWP";
+import { processPostContent } from "../libs/processPost";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function GET(context: any) {
-  // Fetch posts via WP REST API
-  const response = await fetch(`${process.env.WP_REST_URL}/posts?_fields=slug,title,excerpt,date,modified,content`);
-  const posts = await response.json();
+  const posts = await fetchPublicPostListContent();
 
   return rss({
     title: siteMetadata.name,
@@ -26,16 +22,16 @@ export async function GET(context: any) {
       <managingEditor>${siteMetadata.name}</managingEditor>
       <atom:link href="${context.site}/feed.xml" rel="self" type="application/rss+xml" />
     `,
-    items: posts.map((post: any) => ({
-      title: post.title.rendered,
-      description: post.excerpt.rendered,
-      pubDate: post.date,
-      link: `blog/${post.slug}`,
-      author: siteMetadata.name,
-      content: sanitizeHtml(parser.render(post.content.rendered ?? ""), {
-        allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
-      }),
-    })),
+items: await Promise.all(
+  posts.map(async (post: any) => ({
+    title: post.title.rendered,
+    description: post.excerpt.rendered,
+    pubDate: post.date,
+    link: `blog/${post.slug}`,
+    author: siteMetadata.name,
+    content: await processPostContent(post.content.rendered),
+  }))
+),
     stylesheet: "/feed.xsl",
   });
 }
