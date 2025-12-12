@@ -12,15 +12,15 @@ if (!post) return Astro.redirect("/404");
 const content = await processPostContent(post.content.rendered);
 ---
 
-
 <ContentLayout
-  title={post.title.rendered}
-  description={post.excerpt.rendered}
-  published_at={post.date}
-  lastModified={post.modified}
-  readingTime={post.readingTime}
-  wordsCount={post.wordCount}
-  slug={post.slug}
+	title={post.title.rendered}
+	description={post.excerpt.rendered}
+	published_at={post.date}
+	lastModified={post.modified}
+	readingTime={post.readingTime}
+	wordsCount={post.wordCount}
+	slug={post.slug}
+	mastodon_status={post.mastodon_status}
 >
-  <div set:html={content} />
+	<div set:html={content} />
 </ContentLayout>

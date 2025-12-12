@@ -15,7 +15,7 @@ const elementClasses: Record<string, string> = {
   h4: "md:text-lg font-bold tracking-wide text-zinc-100",
   h5: "md:text-lg font-bold tracking-wide text-zinc-100",
   h6: "md:text-lg font-bold tracking-wide text-zinc-100",
-  hr: "border-t border-gray-700 my-4",
+  hr: "border-t border-red-700 my-4",
   p: "leading-snug text-zinc-100",
   strong: "text-zinc-100 font-bold",
   table: "w-full text-sm",
@@ -33,23 +33,26 @@ function addHeadingAnchors() {
       if (!/^h[1-6]$/.test(node.tagName)) return;
       if (!node.properties?.id) return;
 
-      node.children.unshift({
+      const anchor = {
         type: "element",
         tagName: "a",
         properties: {
           href: `#${node.properties.id}`,
           className: [
-            "mr-2",
+            "ml-2",
             "text-red-500",
-            "hover:underline",
+            "no-underline",
             "opacity-0",
             "group-hover:opacity-100",
-            "transition-opacity"
+            "transition-opacity",
           ],
           ariaHidden: "true",
+          tabIndex: -1,
         },
         children: [{ type: "text", value: "#" }],
-      });
+      };
+
+      node.children.push(anchor);
 
       node.properties.className ??= [];
       node.properties.className.push("group");
@@ -57,43 +60,52 @@ function addHeadingAnchors() {
   };
 }
 
+
 export async function processPostContent(html: string) {
   const processor = unified()
     .use(rehypeParse, { fragment: true })
     .use(addHeadingAnchors)
     .use(() => (tree) => {
-      visit(tree, "element", (node: any, _, parent) => {
-        const tag = node.tagName;
-        if (!elementClasses[tag]) return;
+  visit(tree, "element", (node: any, _, parent) => {
+    const tag = node.tagName;
+    if (!elementClasses[tag]) return;
 
-        if (tag === "code" && parent?.tagName === "pre") return;
+    if (tag === "code" && parent?.tagName === "pre") return;
 
-        node.properties ??= {};
-        node.properties.className = elementClasses[tag].split(" ");
-      });
+    node.properties ??= {};
+    const existing = node.properties.className ?? [];
+    const classes = elementClasses[tag].split(" ");
+    node.properties.className = [...existing, ...classes];
 
-      // external link favicons
-      visit(tree, "element", (node: any) => {
-        if (node.tagName === "a" && node.properties?.href?.startsWith("http")) {
-          try {
-            const domain = new URL(node.properties.href).hostname;
-            node.children.unshift({
-              type: "element",
-              tagName: "img",
-              properties: {
-                src: `https://favicon.controld.com/${domain}`,
-                alt: domain,
-                width: 16,
-                height: 16,
-                loading: "lazy",
-                className: ["w-4", "h-4", "inline-block", "not-prose"],
-              },
-              children: [],
-            });
-          } catch {}
-        }
-      });
-    })
+    // Heading flex + gap
+    if (/^h[1-6]$/.test(tag)) {
+      node.properties.className.push("inline-flex", "items-center", "gap-x-2", "group");
+    }
+  });
+
+  // External link favicons
+  visit(tree, "element", (node: any) => {
+    if (node.tagName === "a" && node.properties?.href?.startsWith("http")) {
+      try {
+        const domain = new URL(node.properties.href).hostname;
+        node.children.unshift({
+          type: "element",
+          tagName: "img",
+          properties: {
+            src: `https://favicon.controld.com/${domain}`,
+            alt: domain,
+            width: 16,
+            height: 16,
+            loading: "lazy",
+            className: ["w-4", "h-4", "inline-block", "not-prose"],
+          },
+          children: [],
+        });
+      } catch {}
+    }
+  });
+})
+
     .use(rehypeShiki, { theme: "dracula" })
     .use(rehypeStringify);
 
