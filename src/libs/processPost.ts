@@ -5,7 +5,7 @@ import rehypeShiki from "@shikijs/rehype";
 import { visit } from "unist-util-visit";
 
 const elementClasses: Record<string, string> = {
-  a: "inline-flex items-center text-red-500 gap-2 underline bg-gray-500/10 hover:bg-red-500/20 rounded-md px-1 transition-colors",
+  a: "not-prose inline-flex items-center align-middle text-red-500 gap-1 bg-gray-500/10 squiggle-link rounded-md transition-colors",
   blockquote: "border-l-2 border-zinc-300 dark:border-zinc-700 pl-3",
   pre: "!mb-3 font-mono overflow-x-auto rounded-lg bg-gray-900 p-3",
   code: "border border-zinc-500 bg-[#282a36] px-1 text-zinc-100",
@@ -15,7 +15,7 @@ const elementClasses: Record<string, string> = {
   h4: "md:text-lg font-bold tracking-wide text-zinc-100",
   h5: "md:text-lg font-bold tracking-wide text-zinc-100",
   h6: "md:text-lg font-bold tracking-wide text-zinc-100",
-  hr: "border-t border-red-700 my-4",
+  hr: "squiggle-hr my-4",
   p: "leading-snug text-zinc-100",
   strong: "text-zinc-100 font-bold",
   table: "w-full text-sm",
@@ -83,27 +83,45 @@ export async function processPostContent(html: string) {
     }
   });
 
-  // External link favicons
-  visit(tree, "element", (node: any) => {
-    if (node.tagName === "a" && node.properties?.href?.startsWith("http")) {
-      try {
-        const domain = new URL(node.properties.href).hostname;
-        node.children.unshift({
-          type: "element",
-          tagName: "img",
-          properties: {
-            src: `https://favicon.controld.com/${domain}`,
-            alt: domain,
-            width: 16,
-            height: 16,
-            loading: "lazy",
-            className: ["w-4", "h-4", "inline-block", "not-prose"],
-          },
-          children: [],
-        });
-      } catch {}
+
+// External link favicons
+visit(tree, "element", (node: any) => {
+  if (
+    node.tagName === "a" &&
+    typeof node.properties?.href === "string" &&
+    node.properties.href.startsWith("http")
+  ) {
+    try {
+      const domain = new URL(node.properties.href).hostname;
+
+      // Prepend favicon
+      node.children.unshift({
+        type: "element",
+        tagName: "img",
+        properties: {
+          src: `https://favicon.controld.com/${domain}`,
+          alt: domain,
+          width: 16,
+          height: 16,
+          loading: "lazy",
+          className: [
+            "w-4",
+            "h-4",
+            "inline-block",
+            "not-prose",
+            "rounded-sm",
+          ],
+        },
+        children: [],
+      });
+    } catch {
+      // ignore invalid URLs
     }
-  });
+  }
+});
+
+
+
 })
 
     .use(rehypeShiki, { theme: "dracula" })
