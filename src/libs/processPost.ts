@@ -119,9 +119,6 @@ visit(tree, "element", (node: any) => {
     }
   }
 });
-
-
-
 })
 
     .use(rehypeShiki, { theme: "dracula" })
