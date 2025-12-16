@@ -1,7 +1,6 @@
 ---
 import ContentLayout from "../../layouts/ContentLayout.astro";
 import { processPostContent } from "../../libs/processPost";
-import { getPreviewById } from "../api/preview";
 import { getPreviewData } from "../../libs/fetchWP";
 
 const previewId = Astro.url.searchParams.get("preview");

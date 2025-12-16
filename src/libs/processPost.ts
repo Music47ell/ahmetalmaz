@@ -1,4 +1,6 @@
 import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
 import rehypeParse from "rehype-parse";
 import rehypeStringify from "rehype-stringify";
 import rehypeShiki from "@shikijs/rehype";
@@ -61,69 +63,77 @@ function addHeadingAnchors() {
 }
 
 
-export async function processPostContent(html: string) {
+export async function processPostContent(markdown: string) {
   const processor = unified()
-    .use(rehypeParse, { fragment: true })
+    // MARKDOWN → MDAST
+    .use(remarkParse)
+
+    // MDAST → HAST
+    .use(remarkRehype, { allowDangerousHtml: true })
+
+    // Your custom rehype transforms
     .use(addHeadingAnchors)
     .use(() => (tree) => {
-  visit(tree, "element", (node: any, _, parent) => {
-    const tag = node.tagName;
-    if (!elementClasses[tag]) return;
+      visit(tree, "element", (node: any, _, parent) => {
+        const tag = node.tagName;
+        if (!elementClasses[tag]) return;
 
-    if (tag === "code" && parent?.tagName === "pre") return;
+        if (tag === "code" && parent?.tagName === "pre") return;
 
-    node.properties ??= {};
-    const existing = node.properties.className ?? [];
-    const classes = elementClasses[tag].split(" ");
-    node.properties.className = [...existing, ...classes];
+        node.properties ??= {};
+        const existing = node.properties.className ?? [];
+        const classes = elementClasses[tag].split(" ");
+        node.properties.className = [...existing, ...classes];
 
-    // Heading flex + gap
-    if (/^h[1-6]$/.test(tag)) {
-      node.properties.className.push("inline-flex", "items-center", "gap-x-2", "group");
-    }
-  });
-
-
-// External link favicons
-visit(tree, "element", (node: any) => {
-  if (
-    node.tagName === "a" &&
-    typeof node.properties?.href === "string" &&
-    node.properties.href.startsWith("http")
-  ) {
-    try {
-      const domain = new URL(node.properties.href).hostname;
-
-      // Prepend favicon
-      node.children.unshift({
-        type: "element",
-        tagName: "img",
-        properties: {
-          src: `https://favicon.controld.com/${domain}`,
-          alt: domain,
-          width: 16,
-          height: 16,
-          loading: "lazy",
-          className: [
-            "w-4",
-            "h-4",
-            "inline-block",
-            "not-prose",
-            "rounded-sm",
-          ],
-        },
-        children: [],
+        if (/^h[1-6]$/.test(tag)) {
+          node.properties.className.push(
+            "inline-flex",
+            "items-center",
+            "gap-x-2",
+            "group"
+          );
+        }
       });
-    } catch {
-      // ignore invalid URLs
-    }
-  }
-});
-})
 
+      // External link favicons
+      visit(tree, "element", (node: any) => {
+        if (
+          node.tagName === "a" &&
+          typeof node.properties?.href === "string" &&
+          node.properties.href.startsWith("http")
+        ) {
+          try {
+            const domain = new URL(node.properties.href).hostname;
+            node.children.unshift({
+              type: "element",
+              tagName: "img",
+              properties: {
+                src: `https://favicon.controld.com/${domain}`,
+                alt: domain,
+                width: 16,
+                height: 16,
+                loading: "lazy",
+                className: [
+                  "w-4",
+                  "h-4",
+                  "inline-block",
+                  "not-prose",
+                  "rounded-sm",
+                ],
+              },
+              children: [],
+            });
+          } catch {}
+        }
+      });
+    })
+
+    // Code highlighting
     .use(rehypeShiki, { theme: "dracula" })
+
+    // HAST → HTML string
     .use(rehypeStringify);
 
-  const file = await processor.process(html);
+  const file = await processor.process(markdown);
   return String(file);
 }
