@@ -29,7 +29,7 @@ items: await Promise.all(
     pubDate: post.date,
     link: `blog/${post.slug}`,
     author: siteMetadata.name,
-    content: await processPostContent(post.content.rendered),
+    content: await processPostContent(post.content.markdown),
   }))
 ),
     stylesheet: "/feed.xsl",

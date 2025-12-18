@@ -1,13 +1,13 @@
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
-import rehypeParse from "rehype-parse";
 import rehypeStringify from "rehype-stringify";
 import rehypeShiki from "@shikijs/rehype";
+import rehypeSlug from "rehype-slug";
 import { visit } from "unist-util-visit";
 
 const elementClasses: Record<string, string> = {
-  a: "not-prose inline-flex items-center align-middle text-red-500 gap-1 bg-gray-500/10 squiggle-link rounded-md transition-colors",
+  a: "not-prose inline-flex items-center align-middle text-red-500 gap-1 squiggle-link",
   blockquote: "border-l-2 border-zinc-300 dark:border-zinc-700 pl-3",
   pre: "!mb-3 font-mono overflow-x-auto rounded-lg bg-gray-900 p-3",
   code: "border border-zinc-500 bg-[#282a36] px-1 text-zinc-100",
@@ -25,8 +25,8 @@ const elementClasses: Record<string, string> = {
   tr: "bg-neutral-600 hover:bg-neutral-700",
   td: "p-4",
   li: "text-zinc-100",
-  ol: "list-decimal marker:text-yellow-500",
-  ul: "list-disc marker:text-yellow-500",
+  ol: "list-decimal marker:text-red-500",
+  ul: "list-disc marker:text-red-500",
 };
 
 function addHeadingAnchors() {
@@ -62,7 +62,6 @@ function addHeadingAnchors() {
   };
 }
 
-
 export async function processPostContent(markdown: string) {
   const processor = unified()
     // MARKDOWN → MDAST
@@ -71,7 +70,10 @@ export async function processPostContent(markdown: string) {
     // MDAST → HAST
     .use(remarkRehype, { allowDangerousHtml: true })
 
-    // Your custom rehype transforms
+    // Generate IDs for headings (modern replacement for remark-slug)
+    .use(rehypeSlug)
+
+    // Custom rehype transforms
     .use(addHeadingAnchors)
     .use(() => (tree) => {
       visit(tree, "element", (node: any, _, parent) => {
@@ -92,38 +94,6 @@ export async function processPostContent(markdown: string) {
             "gap-x-2",
             "group"
           );
-        }
-      });
-
-      // External link favicons
-      visit(tree, "element", (node: any) => {
-        if (
-          node.tagName === "a" &&
-          typeof node.properties?.href === "string" &&
-          node.properties.href.startsWith("http")
-        ) {
-          try {
-            const domain = new URL(node.properties.href).hostname;
-            node.children.unshift({
-              type: "element",
-              tagName: "img",
-              properties: {
-                src: `https://favicon.controld.com/${domain}`,
-                alt: domain,
-                width: 16,
-                height: 16,
-                loading: "lazy",
-                className: [
-                  "w-4",
-                  "h-4",
-                  "inline-block",
-                  "not-prose",
-                  "rounded-sm",
-                ],
-              },
-              children: [],
-            });
-          } catch {}
         }
       });
     })

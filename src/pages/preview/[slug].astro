@@ -13,7 +13,7 @@ if (!post) {
   post = await fetchPreviewPostBySlug(Astro.params.slug);
 }
 
-const content = await processPostContent(post.content.rendered);
+const content = await processPostContent(post.content.markdown);
 ---
 
 <ContentLayout
