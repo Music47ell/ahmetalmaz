@@ -9,7 +9,7 @@ const post = await fetchPublicPostBySlug(slug);
 
 if (!post) return Astro.redirect("/404");
 
-const content = await processPostContent(post.content.rendered);
+const content = await processPostContent(post.content.markdown);
 ---
 
 <ContentLayout
