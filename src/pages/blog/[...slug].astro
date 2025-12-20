@@ -14,7 +14,7 @@ const content = await processPostContent(post.content.markdown);
 
 <ContentLayout
 	title={post.title.rendered}
-	description={post.excerpt.rendered}
+	description={post.excerpt.markdown}
 	published_at={post.date}
 	lastModified={post.modified}
 	readingTime={post.readingTime}

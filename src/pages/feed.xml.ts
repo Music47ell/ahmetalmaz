@@ -25,7 +25,7 @@ export async function GET(context: any) {
 items: await Promise.all(
   posts.map(async (post: any) => ({
     title: post.title.rendered,
-    description: post.excerpt.rendered,
+    description: post.excerpt.markdown,
     pubDate: post.date,
     link: `blog/${post.slug}`,
     author: siteMetadata.name,
