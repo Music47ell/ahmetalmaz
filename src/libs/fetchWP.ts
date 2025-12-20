@@ -10,7 +10,7 @@ export async function fetchPublicPostList() {
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const url = `${process.env.WP_REST_URL}/posts?orderby=date&order=desc&_fields=slug,title.rendered,id`;
+  const url = `${process.env.WP_REST_URL}/all-posts?orderby=date&order=desc&_fields=slug,title.rendered,id`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const posts = await res.json();
@@ -24,7 +24,7 @@ export async function fetchPublicPostListContent() {
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const url = `${process.env.WP_REST_URL}/posts?_fields=slug,title.rendered,excerpt.markdown.markdown,date,modified,content.markdown`;
+  const url = `${process.env.WP_REST_URL}/all-posts?_fields=slug,title.rendered,excerpt.markdown,date,modified,content.markdown`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const posts = await res.json();
@@ -38,7 +38,7 @@ export async function fetchPublicPostBySlug(slug: string) {
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const url = `${process.env.WP_REST_URL}/posts?slug=${encodeURIComponent(slug)}&_fields=id,slug,title.rendered,excerpt.markdown,content.markdown,date,modified,readingTime,wordCount,mastodon_status`;
+  const url = `${process.env.WP_REST_URL}/all-posts?slug=${encodeURIComponent(slug)}&_fields=id,slug,title.rendered,excerpt,date,modified,readingTime,wordCount,content.markdown,mastodon_status`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const posts = await res.json();
