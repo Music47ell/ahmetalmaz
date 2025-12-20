@@ -19,7 +19,7 @@ const siteMetadata = {
 		{ title: 'Stats', href: '/stats', activePath: /^\/stats*/ },
 		{
 			title: 'Resume',
-			href: '/ahmetalmaz-resume.pdf',
+			href: 'https://cdn.ahmetalmaz.com/ahmetalmaz-resume.pdf',
 			activePath: /^\/resume*/,
 		},
 	],
