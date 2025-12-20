@@ -13,12 +13,12 @@ if (!post) {
   post = await fetchPreviewPostBySlug(Astro.params.slug);
 }
 
-const content = await processPostContent(post.content.markdown);
+const content = await processPostContent(post.content.raw);
 ---
 
 <ContentLayout
   title={post.title.rendered}
-  description={post.excerpt?.rendered ?? ""}
+  description={post.excerpt.raw}
   published_at={post.date}
   lastModified={post.modified}
   readingTime={post.readingTime}

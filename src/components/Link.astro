@@ -8,10 +8,6 @@ const { class: className, rel, href } = Astro.props;
 const url = new URL(href ?? "", Astro.url);
 const isExternal = url.host !== Astro.url.host;
 const isCurrent = url.href === Astro.url.href;
-
-const faviconUrl = isExternal
-	? `https://favicon.controld.com/${url.hostname}`
-	: null;
 ---
 
 <a
@@ -24,17 +20,5 @@ const faviconUrl = isExternal
 	rel={`${rel ?? ""}${isExternal ? " noopener noreferrer" : ""}`}
 	{...Astro.props}
 >
-	{
-		isExternal && (
-			<img
-				src={faviconUrl}
-				alt={url.hostname}
-				width="16"
-				height="16"
-				loading="lazy"
-				class="w-4 h-4 inline-block"
-			/>
-		)
-	}
 	<slot />
 </a>
