@@ -14,12 +14,14 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response("Invalid 'slugs' array", { status: 400 });
   }
 
-  if (event === 'post_updated') {
-    for (const slug of slugs) await bumpPostVersion(slug);
-    return new Response(`Post cache bumped: ${slugs.join(', ')}`);
+  // Always bump content-version for any update, publish, or delete
+  await bumpContentVersion();
+
+  if (event === 'post_updated' || event === 'post_published') {
+    for (const slug of slugs) {
+      await bumpPostVersion(slug);
+    }
   }
 
-  // post published or deleted
-  await bumpContentVersion();
-  return new Response('Content cache bumped');
+  return new Response(`Cache bumped for slugs: ${slugs.join(', ')}, event: ${event}`);
 };
