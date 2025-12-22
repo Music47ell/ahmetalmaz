@@ -12,7 +12,7 @@ const keyTotalCount = 'wp:post-count';
 const keyPostSlug = (slug: string) => `wp:post:slug:${slug}`;
 const keyPreview = (previewId: string) => `preview:${previewId}`;
 
-// ————— PUBLIC (Cached) —————
+// ————— PUBLIC FETCHERS —————
 export async function fetchPublicPostList({ page = 1, perPage = 10 } = {}) {
   const cache = await getCacheClient();
   const key = keyListPage(page, perPage);
@@ -72,7 +72,7 @@ export async function fetchPublicPostBySlug(slug: string) {
   return post;
 }
 
-// ————— PREVIEW (No Cache) —————
+// ————— PREVIEW FETCHERS —————
 function getAuthHeader() {
   const token = Buffer.from(`${process.env.WP_USERNAME}:${process.env.WP_APP_PASSWORD}`).toString('base64');
   return `Basic ${token}`;
@@ -107,17 +107,21 @@ export async function getPreviewData(previewId: string) {
   return data ? JSON.parse(data) : null;
 }
 
-// ————— INVALIDATION —————
-export async function invalidatePublicCaches(slug?: string) {
+// ————— CACHE INVALIDATION —————
+export async function invalidatePublicCaches(slugs?: string | string[]) {
   const cache = await getCacheClient();
 
-  // Delete all paginated list keys
+  // Always delete all paginated lists
   const listKeys = await cache.keys('wp:post-list*');
   if (listKeys.length > 0) await cache.del(...listKeys);
 
   // Delete full content list and total count
   await cache.del(keyListContent, keyTotalCount);
 
-  // Delete specific post by slug
-  if (slug) await cache.del(keyPostSlug(slug));
+  // Delete individual post(s)
+  if (slugs) {
+    const slugArray = Array.isArray(slugs) ? slugs : [slugs];
+    const keysToDelete = slugArray.map(keyPostSlug);
+    if (keysToDelete.length > 0) await cache.del(...keysToDelete);
+  }
 }
