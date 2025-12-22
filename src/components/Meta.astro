@@ -31,7 +31,7 @@ const isProduction = import.meta.env.PROD
 const UMAMI_URL = process.env.PUBLIC_UMAMI_URL
 const UMAMI_ID = process.env.PUBLIC_UMAMI_ID
 
-const ogImage =`${siteMetadata.cdnUrl}/wp-content/uploads/${slug.replace(/^blog\//, '')}/og-image.png`
+const ogImage =`${siteMetadata.cdnUrl}/${slug.replace(/^blog\//, '')}/og-image.png`
 ---
 
 <meta charset="utf-8" />
