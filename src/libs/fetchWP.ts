@@ -4,19 +4,36 @@ import { getCacheClient } from './cache';
 // ————— PUBLIC (Cached) —————
 const PUBLIC_TTL = process.env.DEV ? 30 : 7200; // shorter in dev
 
-export async function fetchPublicPostList() {
+// libs/fetchWP.ts
+export async function fetchPublicPostList({ page = 1, perPage = 10 } = {}) {
   const cache = await getCacheClient();
-  const key = 'wp:post-list';
+  const key = `wp:post-list:page-${page}:per-${perPage}`;
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const url = `${process.env.WP_REST_URL}/all-posts?orderby=date&order=desc&_fields=slug,title.rendered,id`;
+  const url = `${process.env.WP_REST_URL}/all-posts?orderby=date&order=desc&_fields=slug,title.rendered,id&page=${page}&per_page=${perPage}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const posts = await res.json();
   await cache.setex(key, PUBLIC_TTL, JSON.stringify(posts));
   return posts;
 }
+
+// Optional: Fetch total post count for pagination
+export async function fetchTotalPostCount() {
+  const cache = await getCacheClient();
+  const key = `wp:post-count`;
+  const cached = await cache.get(key);
+  if (cached) return Number(cached);
+
+  const url = `${process.env.WP_REST_URL}/all-posts?per_page=1`; // WP sends total count in headers
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`WP API: ${res.status}`);
+  const total = Number(res.headers.get("X-WP-Total") || 0);
+  await cache.setex(key, PUBLIC_TTL, total.toString());
+  return total;
+}
+
 
 export async function fetchPublicPostListContent() {
   const cache = await getCacheClient();
@@ -56,7 +73,7 @@ function getAuthHeader() {
 }
 
 export async function fetchPreviewPostById(id: string) {
-  const url = `${process.env.WP_REST_URL}/posts/${id}?context=edit`;
+  const url = `${process.env.WP_REST_URL}/all-posts/${id}?context=edit`;
 
   const res = await fetch(url, {
     headers: { Authorization: getAuthHeader() }
@@ -66,7 +83,7 @@ export async function fetchPreviewPostById(id: string) {
 }
 
 export async function fetchPreviewPostBySlug(slug: string) {
-  const url = `${process.env.WP_REST_URL}/posts?slug=${encodeURIComponent(slug)}&context=edit`;
+  const url = `${process.env.WP_REST_URL}/all-posts?slug=${encodeURIComponent(slug)}&context=edit`;
   const res = await fetch(url, {
     headers: { Authorization: getAuthHeader() }
   });

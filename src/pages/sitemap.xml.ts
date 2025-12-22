@@ -1,40 +1,69 @@
 import siteMetadata from "../data/siteMetadata";
 
+type WPPost = {
+  slug: string;
+  date: string;
+  modified?: string;
+};
+
+async function fetchAllPosts(): Promise<WPPost[]> {
+  const perPage = 100; // max WP allows
+  let page = 1;
+  let totalPages = 1;
+  const allPosts: WPPost[] = [];
+
+  do {
+    const res = await fetch(
+      `${process.env.WP_REST_URL}/all-posts?per_page=${perPage}&page=${page}&_fields=slug,date,modified`,
+      { cache: "no-store" }
+    );
+
+    if (!res.ok) {
+      throw new Error(`WP fetch failed on page ${page}`);
+    }
+
+    const posts: WPPost[] = await res.json();
+    allPosts.push(...posts);
+
+    totalPages = Number(res.headers.get("X-WP-TotalPages")) || 1;
+    page++;
+  } while (page <= totalPages);
+
+  return allPosts;
+}
+
 async function generateSitemap() {
-  // Fetch posts via WP REST API
-  const response = await fetch(
-    `${process.env.WP_REST_URL}/posts?_fields=slug,date,modified`
-  );
-  const posts = await response.json();
+  const posts = await fetchAllPosts();
 
   return `
-    <?xml version="1.0" encoding="UTF-8"?>
-    <?xml-stylesheet href="/sitemap.xsl" type="text/xsl"?>
-    <urlset xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
-      http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" 
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      
-      <url>
-        <loc>${siteMetadata.siteUrl}</loc>
-        <lastmod>${new Date().toISOString()}</lastmod>
-        <priority>1.00</priority>
-      </url>
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="/sitemap.xsl" type="text/xsl"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+    http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
-      ${posts
-        .map(
-          (post: any) => `
-          <url>
-            <loc>${siteMetadata.siteUrl}/blog/${post.slug}</loc>
-            <lastmod>${new Date(post.modified || post.date).toISOString()}</lastmod>
-            <priority>0.80</priority>
-          </url>
-        `.trim()
-        )
-        .join("")}
+  <url>
+    <loc>${siteMetadata.siteUrl}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <priority>1.00</priority>
+  </url>
 
-    </urlset>
-  `.trim();
+  ${posts
+    .map(
+      (post) => `
+  <url>
+    <loc>${siteMetadata.siteUrl}/blog/${post.slug}</loc>
+    <lastmod>${new Date(post.modified || post.date).toISOString()}</lastmod>
+    <priority>0.80</priority>
+  </url>
+  `
+    )
+    .join("")}
+
+</urlset>
+`.trim();
 }
 
 export async function GET() {
