@@ -2,10 +2,15 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import siteMetadata from "../../data/siteMetadata";
 import Link from "../../components/Link.astro";
-import { fetchPublicPostList } from "../../libs/fetchWP";
-const posts = await fetchPublicPostList();
+import { fetchPublicPostList, fetchTotalPostCount } from "../../libs/fetchWP";
 
-const totalPosts = posts.length;
+const perPage = 10;
+const page = 1;
+
+const posts = await fetchPublicPostList({ page, perPage });
+const totalPosts = await fetchTotalPostCount();
+const totalPages = Math.ceil(totalPosts / perPage);
+const nextPage = totalPages > 1 ? 2 : null;
 ---
 
 <BaseLayout
@@ -14,19 +19,18 @@ const totalPosts = posts.length;
   type="website"
   slug="/blog"
 >
-  <main
-    class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500"
-  >
+  <main class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500">
     <section>
       <h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
-      {
-        posts.map((post) => (
-          <div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
-            <Link href={`blog/${post.slug}`}>{post.title.rendered}</Link>
-             {/* <ViewsCounter slug={post.slug} trackViews={false} /> */}
-          </div>
-        ))
-      }
+      {posts.map(post => (
+        <div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
+          <Link href={`/blog/${post.slug}`}>{post.title.rendered}</Link>
+        </div>
+      ))}
     </section>
+
+    <nav class="flex justify-end p-4">
+      {nextPage && <Link href={`/blog/page/${nextPage}`}>NEXT PAGE</Link>}
+    </nav>
   </main>
 </BaseLayout>
