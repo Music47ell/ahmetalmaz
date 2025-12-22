@@ -1,50 +1,49 @@
-// src/libs/fetchWP.ts
 import { getCacheClient } from './cache';
+import { getContentVersion, getPostVersion } from './cacheVersions';
 
-// ————— CONFIG —————
-const PUBLIC_TTL = process.env.DEV ? 30 : 7200; // seconds
-const PREVIEW_TTL = 3600; // 1h
+const TTL = process.env.DEV ? 30 : 7200;
+const PREVIEW_TTL = 3600;
 
-// ————— CACHE KEYS —————
-const keyListPage = (page: number, perPage: number) => `wp:post-list:page-${page}:per-${perPage}`;
-const keyListContent = 'wp:post-list-content';
-const keyTotalCount = 'wp:post-count';
-const keyPostSlug = (slug: string) => `wp:post:slug:${slug}`;
-const keyPreview = (previewId: string) => `preview:${previewId}`;
-
-// ————— PUBLIC FETCHERS —————
+// ————— LIST / RSS / INDEX —————
 export async function fetchPublicPostList({ page = 1, perPage = 10 } = {}) {
   const cache = await getCacheClient();
-  const key = keyListPage(page, perPage);
+  const v = await getContentVersion();
+  const key = `wp:v${v}:post-list:${page}:${perPage}`;
+
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const url = `${process.env.WP_REST_URL}/all-posts?orderby=date&order=desc&_fields=slug,title.rendered,id&page=${page}&per_page=${perPage}`;
+  const url = `${process.env.WP_REST_URL}/all-posts?orderby=date&order=desc&page=${page}&per_page=${perPage}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const posts = await res.json();
 
-  await cache.setex(key, PUBLIC_TTL, JSON.stringify(posts));
+  await cache.setex(key, TTL, JSON.stringify(posts));
   return posts;
 }
 
 export async function fetchTotalPostCount() {
   const cache = await getCacheClient();
-  const cached = await cache.get(keyTotalCount);
+  const v = await getContentVersion();
+  const key = `wp:v${v}:post-count`;
+
+  const cached = await cache.get(key);
   if (cached) return Number(cached);
 
-  const url = `${process.env.WP_REST_URL}/all-posts?per_page=1`;
-  const res = await fetch(url);
+  const res = await fetch(`${process.env.WP_REST_URL}/all-posts?per_page=1`);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const total = Number(res.headers.get("X-WP-Total") || 0);
 
-  await cache.setex(keyTotalCount, PUBLIC_TTL, total.toString());
+  await cache.setex(key, TTL, total.toString());
   return total;
 }
 
 export async function fetchPublicPostListContent() {
   const cache = await getCacheClient();
-  const cached = await cache.get(keyListContent);
+  const v = await getContentVersion();
+  const key = `wp:v${v}:post-list-content`;
+
+  const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
   const url = `${process.env.WP_REST_URL}/all-posts?_fields=slug,title.rendered,excerpt.markdown,date,modified,content.markdown`;
@@ -52,23 +51,24 @@ export async function fetchPublicPostListContent() {
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const posts = await res.json();
 
-  await cache.setex(keyListContent, PUBLIC_TTL, JSON.stringify(posts));
+  await cache.setex(key, TTL, JSON.stringify(posts));
   return posts;
 }
 
+// ————— SINGLE POST —————
 export async function fetchPublicPostBySlug(slug: string) {
   const cache = await getCacheClient();
-  const key = keyPostSlug(slug);
+  const [cv, pv] = await Promise.all([getContentVersion(), getPostVersion(slug)]);
+  const key = `wp:v${cv}:post:${slug}:v${pv}`;
+
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const url = `${process.env.WP_REST_URL}/all-posts?slug=${encodeURIComponent(slug)}&_fields=id,slug,title.rendered,excerpt,date,modified,readingTime,wordCount,content.markdown,mastodon_status`;
-  const res = await fetch(url);
+  const res = await fetch(`${process.env.WP_REST_URL}/all-posts?slug=${encodeURIComponent(slug)}`);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
-  const posts = await res.json();
-  const post = posts[0] || null;
+  const post = (await res.json())[0] ?? null;
 
-  await cache.setex(key, post ? PUBLIC_TTL : 60, JSON.stringify(post));
+  await cache.setex(key, post ? TTL : 60, JSON.stringify(post));
   return post;
 }
 
@@ -97,31 +97,12 @@ export async function fetchPreviewPostBySlug(slug: string) {
 export async function storePreviewData(data: any): Promise<string> {
   const previewId = crypto.randomUUID();
   const cache = await getCacheClient();
-  await cache.setex(keyPreview(previewId), PREVIEW_TTL, JSON.stringify(data));
+  await cache.setex(`preview:${previewId}`, PREVIEW_TTL, JSON.stringify(data));
   return previewId;
 }
 
 export async function getPreviewData(previewId: string) {
   const cache = await getCacheClient();
-  const data = await cache.get(keyPreview(previewId));
+  const data = await cache.get(`preview:${previewId}`);
   return data ? JSON.parse(data) : null;
-}
-
-// ————— CACHE INVALIDATION —————
-export async function invalidatePublicCaches(slugs?: string | string[]) {
-  const cache = await getCacheClient();
-
-  // Always delete all paginated lists
-  const listKeys = await cache.keys('wp:post-list*');
-  if (listKeys.length > 0) await cache.del(...listKeys);
-
-  // Delete full content list and total count
-  await cache.del(keyListContent, keyTotalCount);
-
-  // Delete individual post(s)
-  if (slugs) {
-    const slugArray = Array.isArray(slugs) ? slugs : [slugs];
-    const keysToDelete = slugArray.map(keyPostSlug);
-    if (keysToDelete.length > 0) await cache.del(...keysToDelete);
-  }
 }
