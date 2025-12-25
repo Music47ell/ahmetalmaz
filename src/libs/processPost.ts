@@ -1,11 +1,28 @@
+import { defineConfig } from 'astro/config'
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
-import rehypeShiki from "@shikijs/rehype";
 import rehypeSlug from "rehype-slug";
 import { visit } from "unist-util-visit";
+import rehypeExpressiveCode from "rehype-expressive-code";
+import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 
+// Expressive Code config
+const ecConfig = defineConfig({
+  theme: "dracula",
+  plugins: [pluginLineNumbers()],
+  defaultProps: {
+    // Disable line numbers by default
+    showLineNumbers: false,
+    style: {
+    marginTop: 16,
+    marginBottom: 16,
+  },
+  },
+});
+
+// Tailwind classes for HTML elements
 const elementClasses: Record<string, string> = {
   a: "not-prose inline-flex items-center align-middle text-red-500 gap-1 squiggle-link",
   blockquote: "border-l-2 border-zinc-300 dark:border-zinc-700 pl-3",
@@ -29,6 +46,7 @@ const elementClasses: Record<string, string> = {
   ul: "list-disc marker:text-red-500",
 };
 
+// Adds anchor links to headings
 function addHeadingAnchors() {
   return (tree: any) => {
     visit(tree, "element", (node: any) => {
@@ -55,27 +73,20 @@ function addHeadingAnchors() {
       };
 
       node.children.push(anchor);
-
       node.properties.className ??= [];
       node.properties.className.push("group");
     });
   };
 }
 
+// Main processing function
 export async function processPostContent(markdown: string) {
   const processor = unified()
-    // MARKDOWN → MDAST
-    .use(remarkParse)
-
-    // MDAST → HAST
-    .use(remarkRehype, { allowDangerousHtml: true })
-
-    // Generate IDs for headings (modern replacement for remark-slug)
-    .use(rehypeSlug)
-
-    // Custom rehype transforms
-    .use(addHeadingAnchors)
-    .use(() => (tree) => {
+    .use(remarkParse) // Markdown → MDAST
+    .use(remarkRehype, { allowDangerousHtml: true }) // MDAST → HAST
+    .use(rehypeSlug) // Generate IDs for headings
+    .use(addHeadingAnchors) // Add anchor links
+    .use(() => (tree) => { // Apply Tailwind classes
       visit(tree, "element", (node: any, _, parent) => {
         const tag = node.tagName;
         if (!elementClasses[tag]) return;
@@ -97,12 +108,8 @@ export async function processPostContent(markdown: string) {
         }
       });
     })
-
-    // Code highlighting
-    .use(rehypeShiki, { theme: "dracula" })
-
-    // HAST → HTML string
-    .use(rehypeStringify);
+    .use(rehypeExpressiveCode, ecConfig) // Highlight code with Expressive Code + line numbers plugin
+    .use(rehypeStringify); // HAST → HTML string
 
   const file = await processor.process(markdown);
   return String(file);
