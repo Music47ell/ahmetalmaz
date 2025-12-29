@@ -1,7 +1,7 @@
 import { getCacheClient } from './cache';
 import { getContentVersion, getPostVersion } from './cacheVersions';
 
-const TTL = process.env.DEV ? 30 : 7200;
+const TTL = process.env.DEV ? 30 : 31_536_000;
 const PREVIEW_TTL = 3600;
 
 // ————— LIST / RSS / INDEX —————

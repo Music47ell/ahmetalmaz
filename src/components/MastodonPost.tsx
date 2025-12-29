@@ -112,7 +112,7 @@ export default function TootCard({ mastodon_status }: TootCardProps) {
 
       {/* Content */}
       <div
-        className="p-3 prose prose-invert max-w-none"
+        className="p-3 prose prose-invert prose-p:my-3 max-w-none"
         dangerouslySetInnerHTML={{ __html: mastodon_status.content }}
       />
 
