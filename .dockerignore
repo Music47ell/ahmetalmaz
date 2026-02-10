@@ -5,6 +5,7 @@ bun.lockb
 .github
 .env
 .env.production
+.env.keys
 .env.development
 .ssh
 .cache
