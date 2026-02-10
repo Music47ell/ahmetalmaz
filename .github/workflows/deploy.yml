@@ -19,13 +19,6 @@ jobs:
       - name: Compute lowercase repo name
         run: echo "REPO=${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
 
-      - name: Install + build
-        run: |
-          bun install
-          bun run build
-        env:
-          DOTENV_PRIVATE_KEY_CI: ${{ secrets.DOTENV_PRIVATE_KEY_CI }}
-
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -34,7 +27,7 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
 
       - name: Build image
-        run: docker build -t ghcr.io/${{ env.REPO }}/ahmetalmaz:latest .
+        run: docker build --build-arg DOTENV_PRIVATE_KEY_CI=${{ secrets.DOTENV_PRIVATE_KEY_CI }} -t ghcr.io/${{ env.REPO }}/ahmetalmaz:latest .
 
       - name: Push image
         run: docker push ghcr.io/${{ env.REPO }}/ahmetalmaz:latest
