@@ -23,6 +23,8 @@ jobs:
         run: |
           bun install
           bun run build
+        env:
+        DOTENV_PRIVATE_KEY_CI: ${{ secrets.DOTENV_PRIVATE_KEY_CI }}
 
       - name: Login to GHCR
         uses: docker/login-action@v3
