@@ -1,7 +1,7 @@
 ---
-import {PUBLIC_API_BASE_URL} from 'astro:env/client'
+import {API_BASE_URL} from 'astro:env/client'
 
-const { isPlaying, artist, title, image, url, preview, love } = await fetch(`${PUBLIC_API_BASE_URL}/listenbrainz/now-playing`)
+const { isPlaying, artist, title, image, url, preview, love } = await fetch(`${API_BASE_URL}/listenbrainz/now-playing`)
   .then((res) => res.json())
   .catch((error) => {
     console.error('Error fetching now playing data:', error)

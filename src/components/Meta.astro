@@ -3,7 +3,7 @@ import siteMetadata from "../data/siteMetadata";
 import Insight from "../components/Insight";
 import Favicons from "../components/Favicons.astro";
 
-import {PUBLIC_API_BASE_URL} from 'astro:env/client'
+import {API_BASE_URL} from 'astro:env/client'
 
 export interface Props {
 	title: string;
@@ -48,7 +48,7 @@ const isProduction = import.meta.env.PROD;
 const formattedDate = formatOgDate(published_at);
 
 const ogImage =
-	`${PUBLIC_API_BASE_URL}/og` +
+	`${API_BASE_URL}/og` +
 	`?title=${encodeURIComponent(title)}` +
 	`&description=${encodeURIComponent(description)}` +
 	`&pubdate=${encodeURIComponent(formattedDate)}`;

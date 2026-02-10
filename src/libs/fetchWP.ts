@@ -1,5 +1,6 @@
 import { getCacheClient } from './cache';
 import { getContentVersion, getPostVersion } from './cacheVersions';
+import {WP_REST_URL} from 'astro:env/server'
 
 const TTL = import.meta.env.DEV ? 30 : 31_536_000;
 const PREVIEW_TTL = 3600;
@@ -13,7 +14,7 @@ export async function fetchPublicPostList({ page = 1, perPage = 10 } = {}) {
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const url = `${import.meta.env.WP_REST_URL}/all-posts?orderby=date&order=desc&page=${page}&per_page=${perPage}`;
+  const url = `${WP_REST_URL}/all-posts?orderby=date&order=desc&page=${page}&per_page=${perPage}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const posts = await res.json();
@@ -30,7 +31,7 @@ export async function fetchTotalPostCount() {
   const cached = await cache.get(key);
   if (cached) return Number(cached);
 
-  const res = await fetch(`${import.meta.env.WP_REST_URL}/all-posts?per_page=1`);
+  const res = await fetch(`${WP_REST_URL}/all-posts?per_page=1`);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const total = Number(res.headers.get("X-WP-Total") || 0);
 
@@ -46,7 +47,7 @@ export async function fetchPublicPostListContent() {
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const url = `${import.meta.env.WP_REST_URL}/all-posts?_fields=slug,title.rendered,excerpt.markdown,date,modified,content.markdown`;
+  const url = `${WP_REST_URL}/all-posts?_fields=slug,title.rendered,excerpt.markdown,date,modified,content.markdown`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const posts = await res.json();
@@ -64,7 +65,7 @@ export async function fetchPublicPostBySlug(slug: string) {
   const cached = await cache.get(key);
   if (cached) return JSON.parse(cached);
 
-  const res = await fetch(`${import.meta.env.WP_REST_URL}/all-posts?slug=${encodeURIComponent(slug)}&_fields=id,slug,date,modified,title.rendered,content.markdown,excerpt.markdown,readingTime,wordCount,mastodon_status,relatedPosts`);
+  const res = await fetch(`${WP_REST_URL}/all-posts?slug=${encodeURIComponent(slug)}&_fields=id,slug,date,modified,title.rendered,content.markdown,excerpt.markdown,readingTime,wordCount,mastodon_status,relatedPosts`);
   if (!res.ok) throw new Error(`WP API: ${res.status}`);
   const post = (await res.json())[0] ?? null;
 
@@ -79,14 +80,14 @@ function getAuthHeader() {
 }
 
 export async function fetchPreviewPostById(id: string) {
-  const url = `${import.meta.env.WP_REST_URL}/all-posts/${id}?context=edit`;
+  const url = `${WP_REST_URL}/all-posts/${id}?context=edit`;
   const res = await fetch(url, { headers: { Authorization: getAuthHeader() } });
   if (!res.ok) throw new Error(`Preview failed: ${res.status}`);
   return res.json();
 }
 
 export async function fetchPreviewPostBySlug(slug: string) {
-  const url = `${import.meta.env.WP_REST_URL}/all-posts?slug=${encodeURIComponent(slug)}&context=edit`;
+  const url = `${WP_REST_URL}/all-posts?slug=${encodeURIComponent(slug)}&context=edit`;
   const res = await fetch(url, { headers: { Authorization: getAuthHeader() } });
   if (!res.ok) throw new Error(`Preview failed: ${res.status}`);
   const posts = await res.json();

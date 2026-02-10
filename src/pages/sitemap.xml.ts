@@ -1,4 +1,5 @@
 import siteMetadata from "../data/siteMetadata";
+import {WP_REST_URL} from 'astro:env/server'
 
 type WPPost = {
   slug: string;
@@ -14,7 +15,7 @@ async function fetchAllPosts(): Promise<WPPost[]> {
 
   do {
     const res = await fetch(
-      `${import.meta.env.WP_REST_URL}/all-posts?per_page=${perPage}&page=${page}&_fields=slug,date,modified`,
+      `${WP_REST_URL}/all-posts?per_page=${perPage}&page=${page}&_fields=slug,date,modified`,
       { cache: "no-store" }
     );
 

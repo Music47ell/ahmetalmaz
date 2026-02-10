@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {PUBLIC_API_BASE_URL, PUBLIC_INSIGHT_TOKEN} from 'astro:env/client'
+import {API_BASE_URL, INSIGHT_TOKEN} from 'astro:env/client'
 
 type PostViewsProps = {
   slug: string;
@@ -11,11 +11,11 @@ const PostViews: React.FC<PostViewsProps> = ({ slug }) => {
 
   useEffect(() => {
     const fetchViews = async () => {
-      const res = await fetch(`${PUBLIC_API_BASE_URL}/insight/${slug}`, {
+      const res = await fetch(`${API_BASE_URL}/insight/${slug}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${PUBLIC_INSIGHT_TOKEN}`,
+          Authorization: `Bearer ${INSIGHT_TOKEN}`,
         },
       });
 

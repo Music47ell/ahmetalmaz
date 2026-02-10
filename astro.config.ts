@@ -18,11 +18,14 @@ export default defineConfig({
     },
     env: {
         schema: {
-            PUBLIC_API_BASE_URL: envField.string({
+            API_BASE_URL: envField.string({
                 context: "client", access: "public", optional: true
             }),
-             PUBLIC_INSIGHT_TOKEN: envField.string({
+            INSIGHT_TOKEN: envField.string({
                 context: "client", access: "public", optional: true
+            }),
+            WP_REST_URL: envField.string({
+                context: "server", access: "secret", optional: true
             }),
         }
     },
