@@ -5,7 +5,7 @@ import TraktStats from './TraktStats'
 import WatchedMovies from './MoviesWatched'
 import WatchedShows from './ShowsWatched'
 
-import {API_BASE_URL} from 'astro:env/client'
+import {PUBLIC_API_BASE_URL} from 'astro:env/client'
 
 const MoviesShowsStats = () => {
 	const [stats, setStats] = useState<{
@@ -25,9 +25,9 @@ const MoviesShowsStats = () => {
 		const fetchData = async () => {
 			try {
 				const [statsRes, moviesRes, showsRes] = await Promise.all([
-					fetch(`${API_BASE_URL}/trakt/stats`),
-					fetch(`${API_BASE_URL}/trakt/watched-movies`),
-					fetch(`${API_BASE_URL}/trakt/watched-shows`),
+					fetch(`${PUBLIC_API_BASE_URL}/trakt/stats`),
+					fetch(`${PUBLIC_API_BASE_URL}/trakt/watched-movies`),
+					fetch(`${PUBLIC_API_BASE_URL}/trakt/watched-shows`),
 				])
 
 				if (statsRes.ok && moviesRes.ok && showsRes.ok) {
