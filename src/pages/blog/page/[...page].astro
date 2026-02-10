@@ -6,7 +6,7 @@ import {
 	fetchPublicPostList,
 	fetchTotalPostCount,
 } from "../../../libs/fetchWP";
-import Views from "../../../components/Views.astro";
+import Views from "../../../components/Views";
 
 const perPage = 10;
 const page = Number(Astro.params.page);
@@ -49,7 +49,7 @@ const nextPage = page < totalPages ? `/blog/page/${page + 1}` : null;
 								<Link href={`/blog/${post.slug}`}>{post.title.rendered}</Link>
 							</td>
 							<td class="p-4">
-								<Views slug={post.slug} />
+								<Views slug={post.slug} client:load/>
 							</td>
 						</tr>
 					))

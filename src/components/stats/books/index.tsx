@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import GoodreadsStats from './GoodreadsStats'
 import BooksRead from './BooksRead'
 
-const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+import {API_BASE_URL} from 'astro:env/client'
 
 const BooksStats = () => {
 	const [stats, setStats] = useState<{
@@ -38,8 +38,8 @@ const BooksStats = () => {
 		const fetchData = async () => {
 			try {
 				const [statsRes, booksRes] = await Promise.all([
-					fetch(`${apiBaseUrl}/goodreads/stats`),
-					fetch(`${apiBaseUrl}/goodreads/books-read`),
+					fetch(`${API_BASE_URL}/goodreads/stats`),
+					fetch(`${API_BASE_URL}/goodreads/books-read`),
 				])
 
 				if (statsRes.ok && booksRes.ok) {
