@@ -15,13 +15,13 @@ const Stats: React.FC<Props> = ({
 }) => {
 	return (
 		<div>
-			<div className="border border-red-500 px-4 py-2">
+			<div className="border border-dracula-dracula px-4 py-2">
 				<h2 className="uppercase">{title}</h2>
 			</div>
 
 			<div className="grid grid-cols-1 gap-3 lg:grid-cols-2 xl:grid-cols-2">
 				{lastDay.length > 0 && (
-					<div className="flex flex-col space-y-1 border border-yellow-500 px-4 py-3 sm:col-span-1">
+					<div className="flex flex-col space-y-1 border border-dracula-dracula px-4 py-3 sm:col-span-1">
 						<span className="text-sm">Last 24 hours</span>
 						{lastDay.map(({ total }) => (
 							<span key={total}>{total}</span>
@@ -30,7 +30,7 @@ const Stats: React.FC<Props> = ({
 				)}
 
 				{lastWeek.length > 0 && (
-					<div className="flex flex-col space-y-1 border border-yellow-500 px-4 py-3 sm:col-span-1">
+					<div className="flex flex-col space-y-1 border border-dracula-dracula px-4 py-3 sm:col-span-1">
 						<span className="text-sm">Last 7 days</span>
 						{lastWeek.map(({ total }) => (
 							<span key={total}>{total}</span>
@@ -39,7 +39,7 @@ const Stats: React.FC<Props> = ({
 				)}
 
 				{lastMonth.length > 0 && (
-					<div className="flex flex-col space-y-1 border border-yellow-500 px-4 py-3 sm:col-span-1">
+					<div className="flex flex-col space-y-1 border border-dracula-dracula px-4 py-3 sm:col-span-1">
 						<span className="text-sm">Last 30 days</span>
 						{lastMonth.map(({ total }) => (
 							<span key={total}>{total}</span>
@@ -48,7 +48,7 @@ const Stats: React.FC<Props> = ({
 				)}
 
 				{lastYear.length > 0 && (
-					<div className="flex flex-col space-y-1 border border-yellow-500 px-4 py-3 sm:col-span-1">
+					<div className="flex flex-col space-y-1 border border-dracula-dracula px-4 py-3 sm:col-span-1">
 						<span className="text-sm">Last 365 days</span>
 						{lastYear.map(({ total }) => (
 							<span key={total}>{total}</span>

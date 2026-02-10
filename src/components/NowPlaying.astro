@@ -1,0 +1,119 @@
+---
+const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+
+const { isPlaying, artist, title, image, url, preview, love } = await fetch(`${apiBaseUrl}/listenbrainz/now-playing`)
+  .then((res) => res.json())
+  .catch((error) => {
+    console.error('Error fetching now playing data:', error)
+    return {}
+  })
+---
+
+
+  <!-- LOVE ICON -->
+  {love && (
+    <div class="absolute top-3 right-3 select-none cursor-default">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="red"
+        class="w-6 h-6"
+      >
+				<title>Loved track</title>
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42
+          4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3
+          19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      </svg>
+    </div>
+  )}
+
+  {isPlaying && (
+    <div class="relative overflow-hidden p-4 border border-dracula-dracula shadow-lg">
+    <a href={url} class="flex items-center gap-5">
+      <div class="relative flex-shrink-0">
+        <img
+          src={image}
+          alt={title}
+          title={title}
+          width={100}
+          height={100}
+          class="block animate-spin-slow rounded-full"
+        />
+      </div>
+      <div class="flex flex-col">
+        <p class="text-sm font-medium text-gray-300 md:text-lg">{artist}</p>
+        <p class="text-lg font-semibold text-dracula-cullen md:text-2xl">{title}</p>
+      </div>
+    </a>
+  </div>
+  )}
+
+  {preview && (
+    <div class="mt-2 flex flex-col gap-2">
+      <button
+        type="button"
+        id="playPauseBtn"
+        class="bg-dracula-marcelin text-black px-3 py-1 rounded shadow-md transition"
+      >
+        Play
+      </button>
+
+      <!-- Hidden audio player -->
+      <audio
+        id="audioPlayer"
+        src={preview}
+        class="hidden"
+        controls
+      />
+
+      <div class="flex items-center gap-2 text-dracula-cullen text-sm mt-2">
+        <span id="currentTime">0:00</span>
+        <input
+          type="range"
+          id="timeRange"
+          min="0"
+          max="30"
+          value="0"
+          class="w-full cursor-pointer appearance-none bg-black"
+        />
+        <span>0:30</span>
+      </div>
+    </div>
+  )}
+
+
+<script is:inline type="module">
+  document.addEventListener("DOMContentLoaded", () => {
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const timeRange = document.getElementById("timeRange");
+    const currentTimeElement = document.getElementById("currentTime");
+
+    if (!playPauseBtn || !audioPlayer || !timeRange || !currentTimeElement) {
+      console.error("Audio player elements missing");
+      return;
+    }
+
+    playPauseBtn.addEventListener("click", () => {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        playPauseBtn.textContent = "Pause";
+      } else {
+        audioPlayer.pause();
+        playPauseBtn.textContent = "Play";
+      }
+    });
+
+    audioPlayer.addEventListener("timeupdate", () => {
+      const currentTime = audioPlayer.currentTime;
+      const minutes = Math.floor(currentTime / 60);
+      const seconds = Math.floor(currentTime % 60);
+      currentTimeElement.textContent = `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+      timeRange.value = currentTime;
+    });
+
+    timeRange.addEventListener("input", (e) => {
+      audioPlayer.currentTime = e.target.value;
+    });
+  });
+</script>

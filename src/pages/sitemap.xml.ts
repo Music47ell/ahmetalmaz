@@ -14,7 +14,7 @@ async function fetchAllPosts(): Promise<WPPost[]> {
 
   do {
     const res = await fetch(
-      `${process.env.WP_REST_URL}/all-posts?per_page=${perPage}&page=${page}&_fields=slug,date,modified`,
+      `${import.meta.env.WP_REST_URL}/all-posts?per_page=${perPage}&page=${page}&_fields=slug,date,modified`,
       { cache: "no-store" }
     );
 

@@ -24,10 +24,10 @@ const ecConfig = defineConfig({
 
 // Tailwind classes for HTML elements
 const elementClasses: Record<string, string> = {
-  a: "not-prose inline-flex items-center align-middle text-red-500 gap-1 squiggle-link",
+  a: "not-prose inline-flex items-center align-middle text-dracula-marcelin hover:text-dracula-marcelin-500 gap-1 squiggle-link",
   blockquote: "border-l-2 border-zinc-300 dark:border-zinc-700 pl-3",
   pre: "!mb-3 font-mono overflow-x-auto rounded-lg bg-gray-900 p-3",
-  code: "border border-zinc-500 bg-[#282a36] px-1 text-zinc-100",
+  code: "border border-dracula-dracula bg-[#282a36] px-1 text-zinc-100",
   h1: "text-3xl md:text-4xl font-bold tracking-wide text-zinc-100",
   h2: "text-2xl md:text-3xl font-bold tracking-wide text-zinc-100",
   h3: "text-lg md:text-xl font-bold tracking-wide text-zinc-100",
@@ -42,8 +42,8 @@ const elementClasses: Record<string, string> = {
   tr: "bg-neutral-600 hover:bg-neutral-700",
   td: "p-4",
   li: "text-zinc-100",
-  ol: "list-decimal marker:text-red-500",
-  ul: "list-disc marker:text-red-500",
+  ol: "list-decimal marker:text-dracula-marcelin",
+  ul: "list-disc marker:text-dracula-marcelin",
 };
 
 // Adds anchor links to headings
@@ -60,7 +60,7 @@ function addHeadingAnchors() {
           href: `#${node.properties.id}`,
           className: [
             "ml-2",
-            "text-red-500",
+            "text-dracula-marcelin",
             "no-underline",
             "opacity-0",
             "group-hover:opacity-100",

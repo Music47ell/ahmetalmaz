@@ -20,9 +20,12 @@
             theme: {
               extend: {
                 colors: {
-                  draculaLc: "#E30A17",
-                  draculaTc: "#282a36",
-                  draculaBg: "#282a36",
+                   dracula: {
+            nosferatu: "#282a36",
+            cullen: "#f8f8f2",
+            marcelin: "#ff5555",
+            lincoln: "#f1fa8c",
+          },
                 },
               },
             },
@@ -31,10 +34,10 @@
       </head>
 
       <body
-        class="bg-draculaBg text-draculaTc font-sans text-base leading-6 text-zinc-700 max-w-[60ch] mx-auto p-2"
+        class="bg-dracula-nosferatu font-sans text-base leading-6 text-dracula-cullen max-w-[60ch] mx-auto p-2"
       >
         <nav class="container mx-auto py-4">
-          <div class="bg-yellow-200 px-4 py-2 mb-2">
+          <div class="text-dracula-nosferatu bg-dracula-lincoln px-4 py-2 mb-2">
             <p>
               <strong>This is a web feed,</strong> also known as an RSS feed.
             </p>
@@ -43,9 +46,9 @@
                 newsreader.</small>
             </p>
           </div>
-          <p class="text-white">
+          <p class="text-dracula-cullen">
             Visit
-            <a class="text-draculaLc" href="https://aboutfeeds.com">About Feeds</a>
+            <a class="text-dracula-marcelin" href="https://aboutfeeds.com">About Feeds</a>
             to get started with newsreaders and subscribing. It's free.
           </p>
         </nav>
@@ -56,7 +59,7 @@
             </xsl:attribute>
           </a>
           <hr class="my-4" />
-          <h2 class="border-0 text-white flex items-center">
+          <h2 class="border-0 text-dracula-cullen flex items-center">
             <xsl:value-of select="/rss/channel/title" /> RSS Feed
           </h2>
           <hr class="my-4" />
@@ -64,14 +67,14 @@
         <xsl:for-each select="/rss/channel/item">
           <div class="pb-5">
             <h3 class="mb-0 text-2xl font-semibold">
-              <a class="text-draculaLc" target="_blank">
+              <a class="text-dracula-marcelin" target="_blank">
                 <xsl:attribute name="href">
                   <xsl:value-of select="link" />
                 </xsl:attribute>
                 <xsl:value-of select="title" />
               </a>
             </h3>
-            <small class="text-white">
+            <small class="text-dracula-cullen">
               Published: <xsl:value-of select="pubDate" /> by
 	              <xsl:value-of select="author" />
             </small>

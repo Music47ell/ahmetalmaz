@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import siteMetadata from "../data/siteMetadata";
-
 import Link from "../components/Link.astro";
 ---
 
@@ -12,117 +11,214 @@ import Link from "../components/Link.astro";
 	slug="/"
 >
 	<main>
-		<section class="p-6 border border-yellow-500">
-			<h1 class="text-2xl font-semibold mb-4">
-				Hey, I'm a Full-Stack Developer from Türkiye 🇹🇷
-			</h1>
+		<div class="p-6 border border-dracula-dracula">
 			<p class="leading-relaxed">
-				A self-taught developer who began his journey back in 2013. I'm
-				passionate about
-				<strong class="text-red-500"> open-source software</strong> and
-				<strong class="text-red-500"> self-hosting</strong>
+				I began this journey back in 2013. Currently my focus is on
+				<strong class="text-dracula-marcelin"> back-end web development</strong>, 
+				<strong class="text-dracula-marcelin"> open-source software</strong> and
+				<strong class="text-dracula-marcelin"> self-hosting</strong>
 			</p>
-			<p class="mt-4">
-				If you're interested in working together, check out my
-				<Link href="/ahmetalmaz-resume.pdf" class="underline"> resume</Link>
-			</p>
-		</section>
+		</div>
 
-		<section class="p-6 border border-yellow-500">
-			<h2 class="text-xl font-semibold mb-4">🧰 Tech Stack</h2>
-			<ul class="grid grid-cols-2 md:grid-cols-3 gap-2 list-inside">
-				<li>
-					<Link href="https://astro.build/" class="underline">Astro</Link>
-				</li>
-				<li><Link href="https://wordpress.org/" class="underline">WordPress</Link></li>
+        <div class="p-6 border border-dracula-dracula">
+		  <div id="wave-container" class="w-full h-[120px]"></div>
+        </div>
 
-				<li><Link href="https://react.dev/" class="underline">React</Link></li>
-				<li>
-					<Link href="https://tailwindcss.com/" class="underline"
-						>Tailwind CSS</Link
-					>
-				</li>
-				<li>
-					<Link href="https://www.typescriptlang.org/" class="underline"
-						>TypeScript</Link
-					>
-				</li>
-				<li><Link href="https://bun.sh/" class="underline">Bun</Link></li>
+		<div class="p-6 border border-dracula-dracula">
+			<h2 class="text-xl font-semibold mb-4">Donate</h2>
+			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
+				{
+					siteMetadata.donate.map((badge) => (
+						<li>
+							<a
+								href={badge.url}
+								class="block w-[88px] h-[31px] hover:opacity-80 transition"
+							>
+								<img
+									src={badge.img}
+									alt=""
+									class="w-full h-full object-contain"
+								/>
+							</a>
+						</li>
+					))
+				}
 			</ul>
-		</section>
-
-		<section class="p-6 border border-yellow-500">
-			<h2 class="text-xl font-semibold mb-4">💻 Currently Using</h2>
-
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-				<div>
-					<h3 class="text-lg font-medium mb-2">Hardware</h3>
-					<ul class="list-inside space-y-1">
+			<h2 class="text-xl font-semibold mb-4">Social</h2>
+			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
+				{
+					siteMetadata.social.map((badge) => (
 						<li>
-							<Link
-								href="https://support.apple.com/en-gb/111946"
-								class="underline">MacBook Pro (Retina, 13-inch, Late 2013)</Link
+							<a
+								href={badge.url}
+								class="block w-[88px] h-[31px] hover:opacity-80 transition"
 							>
+								<img
+									src={badge.img}
+									alt=""
+									class="w-full h-full object-contain"
+								/>
+							</a>
 						</li>
-						<li>
-							<Link
-								href="https://www.logitech.com/en-us/shop/p/m170-wireless-mouse.910-006864"
-								class="underline">Logitech M170 Mouse</Link
-							>
-						</li>
-					</ul>
-				</div>
-
-				<div>
-					<h3 class="text-lg font-medium mb-2">Coding</h3>
-					<ul class="list-inside space-y-1">
-						<li>
-							<Link href="https://ubuntu.com/" class="underline">Ubuntu</Link>
-						</li>
-						<li>
-							<Link
-								href="https://brave.com/download-nightly/"
-								class="underline">Brave Nightly</Link
-							>
-						</li>
-						<li>
-							<Link href="https://code.visualstudio.com/" class="underline"
-								>Visual Studio Code</Link
-							>
-						</li>
-						<li>
-							<Link
-								href="https://github.com/features/copilot/"
-								class="underline">Copilot</Link
-							>
-						</li>
-						<li>
-							<Link href="https://draculatheme.com/" class="underline"
-								>Dracula</Link
-							>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</section>
-
-		<section class="p-6 border border-yellow-500">
-			<h2 class="text-xl font-semibold mb-4">📡 Find me on</h2>
-			<ul class="flex gap-4">
-				<li>
-					<Link href="https://github.com/music47ell" class="underline"
-						>GitHub</Link
-					>
-				</li>
-				<li>
-					<Link href="https://www.linkedin.com/in/music47ell/" class="underline"
-						>LinkedIn</Link
-					>
-				</li>
-				<li>
-					<Link href="/feed.xml" class="underline">RSS</Link>
-				</li>
+					))
+				}
 			</ul>
-		</section>
+			<h2 class="text-xl font-semibold mb-4">Uses</h2>
+			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
+				{
+					siteMetadata.uses.map((badge) => (
+						<li>
+							<a
+								href={badge.url}
+								class="block w-[88px] h-[31px] hover:opacity-80 transition"
+							>
+								<img
+									src={badge.img}
+									alt=""
+									class="w-full h-full object-contain"
+								/>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<h2 class="text-xl font-semibold mb-4">Stack</h2>
+			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
+				{
+					siteMetadata.stack.map((badge) => (
+						<li>
+							<a
+								href={badge.url}
+								class="block w-[88px] h-[31px] hover:opacity-80 transition"
+							>
+								<img
+									src={badge.img}
+									alt=""
+									class="w-full h-full object-contain"
+								/>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
 	</main>
 </BaseLayout>
+
+<script>
+function SiriWave9Curve(opt){
+  opt=opt||{}
+  this.controller=opt.controller
+  this.color=opt.color
+  this.tick=0
+  this.respawn()
+}
+SiriWave9Curve.prototype.respawn=function(){
+  this.amplitude=0.3+Math.random()*0.7
+  this.seed=Math.random()
+  this.open_class=2+(Math.random()*3)|0
+}
+SiriWave9Curve.prototype.equation=function(i){
+  var p=this.tick
+  var y=-1*Math.abs(Math.sin(p))*this.controller.amplitude*this.amplitude*this.controller.MAX*Math.pow(1/(1+Math.pow(this.open_class*i,2)),2)
+  if(Math.abs(y)<0.001){this.respawn()}
+  return y
+}
+SiriWave9Curve.prototype._draw=function(m){
+  this.tick+=this.controller.speed*(1-0.5*Math.sin(this.seed*Math.PI))
+  var ctx=this.controller.ctx
+  ctx.beginPath()
+  var x_base=this.controller.width/2+(-this.controller.width/4+this.seed*(this.controller.width/2))
+  var y_base=this.controller.height/2
+  var x,y,x_init
+  var i=-3
+  while(i<=3){
+    x=x_base+i*this.controller.width/4
+    y=y_base+(m*this.equation(i))
+    x_init=x_init||x
+    ctx.lineTo(x,y)
+    i+=0.01
+  }
+  var h=Math.abs(this.equation(0))
+  var gradient=ctx.createRadialGradient(x_base,y_base,h*1.15,x_base,y_base,h*0.3)
+  gradient.addColorStop(0,'rgba('+this.color.join(',')+',0.4)')
+  gradient.addColorStop(1,'rgba('+this.color.join(',')+',0.2)')
+  ctx.fillStyle=gradient
+  ctx.lineTo(x_init,y_base)
+  ctx.closePath()
+  ctx.fill()
+}
+SiriWave9Curve.prototype.draw=function(){
+  this._draw(-1)
+  this._draw(1)
+}
+
+function SiriWave9(opt){
+  opt=opt||{}
+  this.tick=0
+  this.run=false
+  this.ratio=window.devicePixelRatio||1
+
+  this.container=opt.container
+  this.width=this.ratio*this.container.offsetWidth
+  this.height=this.ratio*(opt.height||120)
+
+  this.MAX=this.height/2
+  this.speed=opt.speed||0.05
+  this.amplitude=opt.amplitude||1
+
+  this.canvas=document.createElement('canvas')
+  this.canvas.width=this.width
+  this.canvas.height=this.height
+  this.canvas.style.width="100%"
+  this.canvas.style.height=(this.height/this.ratio)+"px"
+
+  this.container.appendChild(this.canvas)
+  this.ctx=this.canvas.getContext('2d')
+
+  this.curves=[]
+  for(var i=0;i<SiriWave9.prototype.COLORS.length;i++){
+    var color=SiriWave9.prototype.COLORS[i]
+    for(var j=0;j<(3*Math.random())|0;j++){
+      this.curves.push(new SiriWave9Curve({controller:this,color:color}))
+    }
+  }
+
+  if(opt.autostart){this.start()}
+}
+SiriWave9.prototype._clear=function(){
+  this.ctx.globalCompositeOperation='destination-out'
+  this.ctx.fillRect(0,0,this.width,this.height)
+  this.ctx.globalCompositeOperation='lighter'
+}
+SiriWave9.prototype._draw=function(){
+  if(this.run===false)return
+  this._clear()
+  for(var i=0;i<this.curves.length;i++){
+    this.curves[i].draw()
+  }
+  requestAnimationFrame(this._draw.bind(this))
+}
+SiriWave9.prototype.start=function(){
+  this.tick=0
+  this.run=true
+  this._draw()
+}
+SiriWave9.prototype.stop=function(){
+  this.tick=0
+  this.run=false
+}
+SiriWave9.prototype.COLORS=[
+  [32,133,252],
+  [94,252,169],
+  [253,71,103]
+]
+
+new SiriWave9({
+  height:120,
+  speed:0.01,
+  amplitude:1,
+  container:document.getElementById('wave-container'),
+  autostart:true
+})
+</script>

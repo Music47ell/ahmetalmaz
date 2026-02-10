@@ -18,9 +18,12 @@
             theme: {
               extend: {
                 colors: {
-                  draculaLc: "#E30A17",
-                  draculaTc: "#282a36",
-                  draculaBg: "#282a36",
+                   dracula: {
+            nosferatu: "#282a36",
+            cullen: "#f8f8f2",
+            marcelin: "#ff5555",
+            lincoln: "#f1fa8c",
+          },
                 },
               },
             },
@@ -29,10 +32,10 @@
       </head>
 
       <body
-        class="bg-draculaBg text-draculaTc font-sans text-base leading-6 text-zinc-700 max-w-[60ch] mx-auto p-2"
+        class="bg-dracula-nosferatu font-sans text-base leading-6 text-dracula-cullen max-w-[60ch] mx-auto p-2"
       >
         <nav class="container mx-auto py-4">
-          <div class="bg-yellow-200 px-4 py-2 mb-2">
+          <div class="text-dracula-nosferatu bg-dracula-lincoln px-4 py-2 mb-2">
             <p>
               <strong>This is a sitemap for AhmetALMAZ.com</strong>
             </p>
@@ -43,9 +46,9 @@
               >
             </p>
           </div>
-          <p class="text-zinc-500">
+          <p class="text-dracula-cullen">
             Visit
-            <a href="https://www.sitemaps.org/" class="text-draculaLc"
+            <a href="https://www.sitemaps.org/" class="text-dracula-marcelin"
               >sitemaps.org</a
             >
             for more information about sitemaps.
@@ -60,10 +63,10 @@
             </xsl:attribute>
           </a>
           <hr class="my-4" />
-          <h2 class="border-0 text-white flex items-center">
+          <h2 class="border-0 text-dracula-cullen flex items-center">
             Ahmet ALMAZ Sitemap
           </h2>
-          <p class="text-white">
+          <p class="text-dracula-cullen">
             <xsl:value-of select="sitemap:urlset/sitemap:description" />
           </p>
           <hr class="my-4" />
@@ -71,14 +74,14 @@
         <xsl:for-each select="/sitemap:urlset/sitemap:url">
           <div class="pb-5">
             <h3 class="mb-0 text-2xl font-semibold">
-              <a class="text-draculaLc" target="_blank">
+              <a class="text-dracula-marcelin" target="_blank">
                 <xsl:attribute name="href">
                   <xsl:value-of select="sitemap:loc" />
                 </xsl:attribute>
                 <xsl:value-of select="sitemap:loc" />
               </a>
             </h3>
-            <small class="text-zinc-500">
+            <small class="text-dracula-cullen">
               Last updated:
               <xsl:value-of select="substring(sitemap:lastmod, 1, 10)" />
             </small>

@@ -1,6 +1,9 @@
 ---
 import siteMetadata from "../data/siteMetadata";
-import Analytics from "../components/Analytics.astro";
+import Insight from "../components/Insight.astro";
+import Favicons from "../components/Favicons.astro";
+
+const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
 
 export interface Props {
 	title: string;
@@ -12,6 +15,19 @@ export interface Props {
 	type: string;
 }
 
+function formatOgDate(input: string | Date) {
+	const d = new Date(input);
+	if (isNaN(d.getTime())) return "";
+
+	return d
+		.toLocaleDateString("en-US", {
+			month: "short",
+			day: "2-digit",
+			year: "numeric",
+		})
+		.toUpperCase();
+}
+
 const { title, description, slug, published_at, updated_at, wordsCount, type } =
 	Astro.props;
 
@@ -20,18 +36,22 @@ const pageTitle =
 		? siteMetadata.name
 		: type === "article"
 			? title
-			: `${title} | ${siteMetadata.name}`;
+			: title;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const twitter = {
 	site: "@",
 	author: siteMetadata.username,
 };
 
-const isProduction = import.meta.env.PROD
-const UMAMI_URL = process.env.PUBLIC_UMAMI_URL
-const UMAMI_ID = process.env.PUBLIC_UMAMI_ID
+const isProduction = import.meta.env.PROD;
 
-const ogImage =`${siteMetadata.cdnUrl}/${slug.replace(/^blog\//, '')}/og-image.png`
+const formattedDate = formatOgDate(published_at);
+
+const ogImage =
+	`${apiBaseUrl}/og` +
+	`?title=${encodeURIComponent(title)}` +
+	`&description=${encodeURIComponent(description)}` +
+	`&pubdate=${encodeURIComponent(formattedDate)}`;
 ---
 
 <meta charset="utf-8" />
@@ -83,8 +103,9 @@ const ogImage =`${siteMetadata.cdnUrl}/${slug.replace(/^blog\//, '')}/og-image.p
 <meta name="og:image" content={ogImage} />
 
 {/*Fediverse Tags*/}
-<link rel="me" href="https://mastodon.social/@Music47ell">
-<meta name="fediverse:creator" content="@Music47ell@mastodon.social">
+<link rel="me" href="https://mastodon.social/@Music47ell" />
+<link rel="me" href="https://mastodon.social/@ahmetalmaz" />
+<meta name="fediverse:creator" content="@Music47ell@mastodon.social" />
 
 {/*Twitter Meta Tags*/}
 <meta name="twitter:card" content="summary_large_image" />
@@ -95,8 +116,6 @@ const ogImage =`${siteMetadata.cdnUrl}/${slug.replace(/^blog\//, '')}/og-image.p
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
-
-{isProduction ? <script async is:inline data-astro-rerun src={UMAMI_URL} data-website-id={UMAMI_ID}></script> : null}
 
 {/*JSON-LD*/}
 <script
@@ -220,3 +239,5 @@ const ogImage =`${siteMetadata.cdnUrl}/${slug.replace(/^blog\//, '')}/og-image.p
 	})}
 />
 
+{isProduction ? <Insight /> : null}
+{isProduction ? <Favicons /> : null}

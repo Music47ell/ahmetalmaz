@@ -6,7 +6,7 @@ import Title from "../components/Title.astro";
 import Link from "../components/Link.astro";
 import MastodonPost from "../components/MastodonPost";
 import { displayDate } from "../utils/formatters";
-// import ViewsCounter from "../components/ViewsCounter.astro";
+import Views from '../components/Views.astro'
 import siteMetadata from "../data/siteMetadata";
 
 const {
@@ -20,11 +20,12 @@ const {
 	source,
 	slug,
 	mastodon_status,
+	relatedPosts = [],
 } = Astro.props;
 ---
 
 <BaseLayout
-	title={`${title} | ${siteMetadata.name}`}
+	title={title}
 	description={description}
 	slug={`blog/${slug}`}
 	published_at={published_at}
@@ -33,10 +34,10 @@ const {
 	image={cover?.src.src}
 	type="article"
 >
-	<main class="col-span-10 flex flex-col lg:col-span-7">
+	<div class="col-span-10 flex flex-col lg:col-span-7">
 		<Prose>
 			<header
-				class="relative w-full flex flex-col border-b border-zinc-500 pb-4 space-y-3 print:hidden"
+				class="relative w-full flex flex-col border-b border-dracula-dracula pb-4 space-y-3 print:hidden"
 			>
 				{
 					cover && (
@@ -52,7 +53,7 @@ const {
 
 				{
 					source ? (
-						<Link href={source} class="hover:text-zinc-300">
+						<Link href={source} class="hover:text-dracula-cullen">
 							<Title>{title} &#8599;</Title>
 						</Link>
 					) : (
@@ -60,31 +61,108 @@ const {
 					)
 				}
 
-				<div class="flex items-center text-sm text-zinc-100 justify-between">
-					<time
-						datetime={new Date(published_at).toISOString()}
-						class="dt-published"
-						aria-label={`Published at: ${displayDate(published_at)}`}
-						itemprop="dateModified"
-					>
-						{displayDate(lastModified || published_at)}
-					</time>
-					<span>/</span>
-					<span>{readingTime} min</span>
-					<span>/</span>
-					<span>{wordsCount} words</span>
-					<span>/</span>
-					<!-- <ViewsCounter slug={slug} trackViews={true} /> -->
-				</div>
+						<div class="p-4 text-sm text-[#F8F8F2]">
+	<div class="space-y-2">
+		<div class="flex items-center">
+			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+				permalink:
+			</span>
+			<Link
+				href={`${siteMetadata.siteUrl}/${slug}`}
+				class="text-[#8BE9FD]"
+			>
+				{siteMetadata.siteUrl}/{slug}
+			</Link>
+		</div>
+
+		<div class="flex items-center">
+			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+				updated:
+			</span>
+			<time
+				datetime={new Date(lastModified).toISOString()}
+				class="dt-published text-[#F1FA8C]"
+				itemprop="dateModified"
+			>
+				{displayDate(lastModified)}
+			</time>
+		</div>
+
+		<div class="flex items-center">
+			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+				created:
+			</span>
+			<time
+				datetime={new Date(published_at).toISOString()}
+				class="dt-published text-[#F1FA8C]"
+				itemprop="dateModified"
+			>
+				{displayDate(published_at)}
+			</time>
+		</div>
+
+		<div class="flex items-center">
+			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+				words:
+			</span>
+			<span class="text-[#50FA7B]">{wordsCount} words</span>
+		</div>
+
+		<div class="flex items-center">
+			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+				time:
+			</span>
+			<span class="text-[#BD93F9]">{readingTime} min</span>
+		</div>
+
+				<div class="flex items-center">
+			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye" style="display: inline;">
+  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+  <circle cx="12" cy="12" r="3"></circle>
+</svg>
+				</span>
+			<Views slug={slug} TrackViews={true}/>
+		</div>
+	</div>
+</div>
 			</header>
 			<div class="e-content entry-content">
 				<slot />
 			</div>
-			<hr class="border-t-2 border-red-500"/>
+			{mastodon_status && (
+			<hr class="border-t-2 border-dracula-dracula"/>
 			<MastodonPost
 				mastodon_status={mastodon_status}
 				client:load
 			/>
+			)}
+			{relatedPosts.length > 0 && (
+			<hr class="border-t-2 border-dracula-dracula"/>
+		<h3 class="text-lg font-semibold mb-4 text-dracula-cullen">
+			Related posts
+		</h3>
+
+		<ul class="not-prose">
+					{relatedPosts.map((post: { slug: string; title: string; excerpt?: string }) => (
+						<li class="border border-dracula-dracula p-2">
+							<Link
+								href={`/blog/${post.slug}`}
+								class="block hover:text-dracula-marcelin"
+							>
+								<div class="font-medium">
+									{post.title}
+								</div>
+								{post.excerpt && (
+									<div class="text-sm text-dracula-cullen">
+										{post.excerpt}
+									</div>
+								)}
+							</Link>
+						</li>
+					))}
+				</ul>
+)}
 		</Prose>
-	</main>
+	</div>
 </BaseLayout>

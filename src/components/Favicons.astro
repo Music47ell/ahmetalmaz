@@ -1,0 +1,163 @@
+---
+---
+
+<script>
+	// code from: https://sizeof.cat/
+	(function () {
+		const services = [
+			{
+				name: "reddit",
+				get() {
+					return {
+						title: "Reddit - Dive into anything",
+						favicon: "/images/favicons/reddit.png",
+					};
+				},
+			},
+			{
+				name: "x",
+				get() {
+					return {
+						title: "X. It's what's happening / X",
+						favicon: "/images/favicons/x.png",
+					};
+				},
+			},
+			{
+				name: "bluesky",
+				get() {
+					return {
+						title: "Discover - Bluesky",
+						favicon: "/images/favicons/bluesky.png",
+					};
+				},
+			},
+			{
+				name: "wikipedia",
+				get() {
+					return {
+						title: "Wikipedia",
+						favicon: "/images/favicons/wikipedia.ico",
+					};
+				},
+			},
+			{
+				name: "imdb",
+				get() {
+					return {
+						title: "Friends (TV Series 1994–2004) - IMDb",
+						favicon: "/images/favicons/imdb.png",
+					};
+				},
+			},
+			{
+				name: "twitter",
+				get() {
+					return {
+						title: "Twitter",
+						favicon: "/images/favicons/twitter.ico",
+					};
+				},
+			},
+			{
+				name: "tiktok",
+				get() {
+					return {
+						title: "Explore - Find your favourite videos on TikTok",
+						favicon: "/images/favicons/tiktok.png",
+					};
+				},
+			},
+			{
+				name: "facebook",
+				get() {
+					const count = Math.floor(Math.random() * 99) + 1;
+					return {
+						title: `(${count}) Facebook`,
+						favicon: "/images/favicons/facebook.ico",
+					};
+				},
+			},
+			{
+				name: "instagram",
+				get() {
+					const count = Math.floor(Math.random() * 10) + 1;
+					return {
+						title: `(${count}) Instagram`,
+						favicon: "/images/favicons/instagram.png",
+					};
+				},
+			},
+			{
+				name: "gmail",
+				get() {
+					let count = Math.floor(Math.random() * 12);
+					let display = count;
+
+					if (count === 11) {
+						count = 50;
+						display = "50+";
+					} else if (count === 12) {
+						count = 100;
+						display = "100+";
+					}
+
+					return {
+						title: display ? `Inbox (${display})` : "Inbox",
+						favicon: `/images/favicons/gmail_${count}.png`,
+					};
+				},
+			},
+		];
+
+		const originalTitle = document.title;
+
+		const originalLinks = Array.from(
+			document.querySelectorAll("link[rel~='icon'], link[rel='shortcut icon']"),
+		).map((l) => l.cloneNode(true));
+
+		if (!originalLinks.length) return;
+
+		function randomService() {
+			return services[Math.floor(Math.random() * services.length)].get();
+		}
+
+		function clearFavicons() {
+			document
+				.querySelectorAll("link[rel~='icon'], link[rel='shortcut icon']")
+				.forEach((l) => l.remove());
+		}
+
+		function setFavicon(href) {
+			clearFavicons();
+
+			const link = document.createElement("link");
+			link.rel = "icon";
+			link.type = "image/x-icon";
+			link.href = href + "?v=" + Date.now();
+
+			document.head.appendChild(link);
+		}
+
+		function restoreFavicons() {
+			clearFavicons();
+			originalLinks.forEach((l) =>
+				document.head.appendChild(l.cloneNode(true)),
+			);
+		}
+
+		document.addEventListener("visibilitychange", () => {
+			if (document.hidden) {
+				const service = randomService();
+				document.title = service.title;
+				setFavicon(service.favicon);
+			} else {
+				document.title = originalTitle;
+				restoreFavicons();
+			}
+		});
+
+		// Optional: expose data
+		window.FaviconServices = services.map((s) => s.get());
+	})();
+</script>
