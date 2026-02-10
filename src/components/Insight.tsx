@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import {API_BASE_URL, INSIGHT_TOKEN} from 'astro:env/client'
+import {PUBLIC_API_BASE_URL, PUBLIC_INSIGHT_TOKEN} from 'astro:env/client'
 
 const TrackPageView: React.FC = () => {
   useEffect(() => {
 
-    fetch(`${API_BASE_URL}/correct-horse-battery-staple`, {
+    fetch(`${PUBLIC_API_BASE_URL}/correct-horse-battery-staple`, {
       method: "POST",
       headers: {
-        Authorization: INSIGHT_TOKEN,
+        Authorization: PUBLIC_INSIGHT_TOKEN,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

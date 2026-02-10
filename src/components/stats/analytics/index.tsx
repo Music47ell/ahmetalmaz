@@ -7,7 +7,7 @@ import CitiesStats from '../../../components/stats/analytics/CitiesStats'
 import CountriesStats from '../../../components/stats/analytics/CountriesStats'
 import ReferrersStats from '../../../components/stats/analytics/ReferrersStats'
 
-import {API_BASE_URL, INSIGHT_TOKEN} from 'astro:env/client'
+import {PUBLIC_API_BASE_URL, PUBLIC_INSIGHT_TOKEN} from 'astro:env/client'
 
 const AnalyticsStats = () => {
 	const [data, setData] = useState<{
@@ -24,11 +24,11 @@ const AnalyticsStats = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-					const response = await fetch(`${API_BASE_URL}/insight`, {
+					const response = await fetch(`${PUBLIC_API_BASE_URL}/insight`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: `Bearer ${INSIGHT_TOKEN}`,
+				Authorization: `Bearer ${PUBLIC_INSIGHT_TOKEN}`,
 			},
 		});
 

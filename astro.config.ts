@@ -18,10 +18,10 @@ export default defineConfig({
     },
     env: {
         schema: {
-            API_BASE_URL: envField.string({
+            PUBLIC_API_BASE_URL: envField.string({
                 context: "client", access: "public", optional: true
             }),
-             INSIGHT_TOKEN: envField.string({
+             PUBLIC_INSIGHT_TOKEN: envField.string({
                 context: "client", access: "public", optional: true
             }),
         }
