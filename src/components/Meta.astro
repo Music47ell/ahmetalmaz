@@ -1,9 +1,9 @@
 ---
 import siteMetadata from "../data/siteMetadata";
-import Insight from "../components/Insight.astro";
+import Insight from "../components/Insight";
 import Favicons from "../components/Favicons.astro";
 
-const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+import {API_BASE_URL} from 'astro:env/client'
 
 export interface Props {
 	title: string;
@@ -48,7 +48,7 @@ const isProduction = import.meta.env.PROD;
 const formattedDate = formatOgDate(published_at);
 
 const ogImage =
-	`${apiBaseUrl}/og` +
+	`${API_BASE_URL}/og` +
 	`?title=${encodeURIComponent(title)}` +
 	`&description=${encodeURIComponent(description)}` +
 	`&pubdate=${encodeURIComponent(formattedDate)}`;
@@ -241,3 +241,4 @@ const ogImage =
 
 {isProduction ? <Insight /> : null}
 {isProduction ? <Favicons /> : null}
+<Insight client:load/>

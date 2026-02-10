@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config'
+import { defineConfig, envField } from 'astro/config'
 import node from '@astrojs/node';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite'
@@ -15,6 +15,16 @@ export default defineConfig({
       headers: {
         "Access-Control-Allow-Origin": "*",
       },
+    },
+    env: {
+        schema: {
+            API_BASE_URL: envField.string({
+                context: "client", access: "public"
+            }),
+             INSIGHT_TOKEN: envField.string({
+                context: "client", access: "public"
+            }),
+        }
     },
     build: {
         format: 'file',

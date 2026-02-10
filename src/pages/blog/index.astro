@@ -3,7 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import siteMetadata from "../../data/siteMetadata";
 import Link from "../../components/Link.astro";
 import { fetchPublicPostList, fetchTotalPostCount } from "../../libs/fetchWP";
-import Views from "../../components/Views.astro";
+import Views from "../../components/Views";
 
 const perPage = 10;
 const page = 1;
@@ -39,7 +39,7 @@ const nextPage = totalPages > 1 ? 2 : null;
 							</td>
 
 							<td class="p-4">
-								<Views slug={post.slug} />
+								<Views slug={post.slug} client:load />
 							</td>
 						</tr>
 					))

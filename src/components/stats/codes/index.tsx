@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import CodeStatsStats from './CodeStatsStats'
 import TopLanguages from './TopLanguages'
 
-const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+import {API_BASE_URL} from 'astro:env/client'
 
 const CodingStats = () => {
 	const [stats, setStats] = useState<{
@@ -33,8 +33,8 @@ const CodingStats = () => {
 		const fetchData = async () => {
 			try {
 				const [statsRes, topLanguagesRes] = await Promise.all([
-					fetch(`${apiBaseUrl}/codestats/stats`),
-					fetch(`${apiBaseUrl}/codestats/top-languages`),
+					fetch(`${API_BASE_URL}/codestats/stats`),
+					fetch(`${API_BASE_URL}/codestats/top-languages`),
 				])
 
 				if (statsRes.ok) {
@@ -67,7 +67,7 @@ const CodingStats = () => {
   </h2>
 
   <span className="text-xs text-yellow-400 tracking-wider whitespace-nowrap flex items-center">
-    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="360px" height="360px" viewBox="0 0 360 360" class="h-6 w-6">
+    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width="360px" height="360px" viewBox="0 0 360 360" className="h-6 w-6">
     <title>Powered by CodeStats</title>
 <path d="M174,81.741v27.509C161.913,104,133.5,93.5,109.789,94.6c-23.859,1.107-42.172,7.301-54.859,21.902
 	c-12.689,14.603-19.033,35.71-19.033,63.326c0,27.524,6.344,48.585,19.033,63.186c12.687,14.603,30.974,21.901,54.859,21.901
