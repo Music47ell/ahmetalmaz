@@ -1,7 +1,7 @@
 ---
-import {PUBLIC_API_BASE_URL} from 'astro:env/client'
+import {API_BASE_URL} from 'astro:env/client'
 
-const res = await fetch(`${PUBLIC_API_BASE_URL}/trakt/now-watching`);
+const res = await fetch(`${API_BASE_URL}/trakt/now-watching`);
 const data = await res.json();
 
 // Pass the data into the component, ensuring it's always fresh on the server

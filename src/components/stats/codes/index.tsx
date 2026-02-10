@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import CodeStatsStats from './CodeStatsStats'
 import TopLanguages from './TopLanguages'
 
-import {PUBLIC_API_BASE_URL} from 'astro:env/client'
+import {API_BASE_URL} from 'astro:env/client'
 
 const CodingStats = () => {
 	const [stats, setStats] = useState<{
@@ -33,8 +33,8 @@ const CodingStats = () => {
 		const fetchData = async () => {
 			try {
 				const [statsRes, topLanguagesRes] = await Promise.all([
-					fetch(`${PUBLIC_API_BASE_URL}/codestats/stats`),
-					fetch(`${PUBLIC_API_BASE_URL}/codestats/top-languages`),
+					fetch(`${API_BASE_URL}/codestats/stats`),
+					fetch(`${API_BASE_URL}/codestats/top-languages`),
 				])
 
 				if (statsRes.ok) {
