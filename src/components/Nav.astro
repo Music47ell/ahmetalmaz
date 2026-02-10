@@ -2,14 +2,14 @@
 import siteMetadata from "../data/siteMetadata";
 ---
 
-<nav class="w-full border-y border-zinc-500 px-6 shadow-inner print:hidden">
+<nav class="w-full border-y border-dracula-dracula px-6 shadow-inner print:hidden">
 	<ul class="nav-menu flex flex-row items-center justify-center gap-1">
 		{
 			siteMetadata.NavLinks.map((navLink) => (
 				<li class="w-full md:w-auto">
 					<a
 						href={navLink.href}
-						class="block px-6 py-3 text-white transition-colors duration-300 hover:bg-zinc-700 hover:text-gray-200"
+						class="block px-6 py-3 hover:bg-dracula-aro text-dracula-marcelin hover:text-dracula-marcelin-300 transition-colors duration-300"
 					>
 						{navLink.title}
 					</a>

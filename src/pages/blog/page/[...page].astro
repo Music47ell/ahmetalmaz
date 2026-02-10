@@ -2,43 +2,64 @@
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import siteMetadata from "../../../data/siteMetadata";
 import Link from "../../../components/Link.astro";
-import { fetchPublicPostList, fetchTotalPostCount } from "../../../libs/fetchWP";
+import {
+	fetchPublicPostList,
+	fetchTotalPostCount,
+} from "../../../libs/fetchWP";
+import Views from "../../../components/Views.astro";
 
 const perPage = 10;
 const page = Number(Astro.params.page);
 
 // Redirect /blog/page/1 to /blog
 if (page === 1) {
-  return Astro.redirect('/blog'); // 301 permanent redirect
+	return Astro.redirect("/blog"); // 301 permanent redirect
 }
 
 const posts = await fetchPublicPostList({ page, perPage });
 const totalPosts = await fetchTotalPostCount();
 const totalPages = Math.ceil(totalPosts / perPage);
 
-const prevPage = page > 1 ? (page === 2 ? "/blog" : `/blog/page/${page - 1}`) : null;
+const prevPage =
+	page > 1 ? (page === 2 ? "/blog" : `/blog/page/${page - 1}`) : null;
 const nextPage = page < totalPages ? `/blog/page/${page + 1}` : null;
 ---
 
 <BaseLayout
-  title={`Blog - Page ${page}`}
-  description={siteMetadata.description}
-  type="website"
-  slug={`/blog/page/${page}`}
+	title={`Blog - Page ${page}`}
+	description={siteMetadata.description}
+	type="website"
+	slug={`/blog/page/${page}`}
 >
-  <main class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500">
-    <section>
-      <h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
-      {posts.map(post => (
-        <div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
-          <Link href={`/blog/${post.slug}`}>{post.title.rendered}</Link>
-        </div>
-      ))}
-    </section>
+	<main class="overflow-hidden border border-dracula-dracula">
+		<table class="w-full border-collapse">
+			<thead>
+				<tr class="border-b border-dracula-dracula">
+					<th class="border-r border-dracula-dracula p-4 text-left">
+						Posts ({totalPosts})
+					</th>
+					<th class="p-4 text-left">Views</th>
+				</tr>
+			</thead>
+			<tbody>
+				{
+					posts.map((post: { slug: string; title: { rendered: string } }) => (
+						<tr class="border-b border-dracula-dracula">
+							<td class="border-r border-dracula-dracula p-4">
+								<Link href={`/blog/${post.slug}`}>{post.title.rendered}</Link>
+							</td>
+							<td class="p-4">
+								<Views slug={post.slug} />
+							</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
 
-    <nav class="flex justify-between p-4">
-      {prevPage && <Link href={prevPage}>PREVIOUS PAGE</Link>}
-      {nextPage && <Link href={nextPage}>NEXT PAGE</Link>}
-    </nav>
-  </main>
+		<nav class="flex justify-between p-4">
+			{prevPage && <Link href={prevPage}>PREVIOUS PAGE</Link>}
+			{nextPage && <Link href={nextPage}>NEXT PAGE</Link>}
+		</nav>
+	</main>
 </BaseLayout>

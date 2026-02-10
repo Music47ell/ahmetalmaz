@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import siteMetadata from "../../data/siteMetadata";
 import Link from "../../components/Link.astro";
 import { fetchPublicPostList, fetchTotalPostCount } from "../../libs/fetchWP";
+import Views from "../../components/Views.astro";
 
 const perPage = 10;
 const page = 1;
@@ -14,23 +15,39 @@ const nextPage = totalPages > 1 ? 2 : null;
 ---
 
 <BaseLayout
-  title="Blog"
-  description={siteMetadata.description}
-  type="website"
-  slug="/blog"
+	title="Blog"
+	description={siteMetadata.description}
+	type="website"
+	slug="/blog"
 >
-  <main class="divide-y divide-yellow-500 overflow-hidden border border-yellow-500">
-    <section>
-      <h2 class="p-4 text-lg font-semibold">Posts ({totalPosts})</h2>
-      {posts.map(post => (
-        <div class="flex justify-between gap-x-4 p-4 max-sm:flex-col border-t border-yellow-500">
-          <Link href={`/blog/${post.slug}`}>{post.title.rendered}</Link>
-        </div>
-      ))}
-    </section>
+	<main class="overflow-hidden border border-dracula-dracula">
+		<table class="w-full border-collapse">
+			<thead>
+				<tr class="border-b border-dracula-dracula">
+					<th class="border-r border-dracula-dracula p-4 text-left">
+						Posts ({totalPosts})
+					</th>
+					<th class="p-4 text-left">Views</th>
+				</tr>
+			</thead>
+			<tbody>
+				{
+					posts.map((post: { slug: string; title: { rendered: string } }) => (
+						<tr class="border-b border-dracula-dracula">
+							<td class="border-r border-dracula-dracula p-4">
+								<Link href={`/blog/${post.slug}`}>{post.title.rendered}</Link>
+							</td>
 
-    <nav class="flex justify-end p-4">
-      {nextPage && <Link href={`/blog/page/${nextPage}`}>NEXT PAGE</Link>}
-    </nav>
-  </main>
+							<td class="p-4">
+								<Views slug={post.slug} />
+							</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+		<nav class="flex justify-end p-4">
+			{nextPage && <Link href={`/blog/page/${nextPage}`}>NEXT PAGE</Link>}
+		</nav>
+	</main>
 </BaseLayout>

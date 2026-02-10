@@ -14,8 +14,18 @@ module.exports = {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
-      colors: {
-        türkiye: '#E30A17',
+       animation: {
+        'spin-slow': 'spin 3s linear infinite',
+        'equalizer-1': 'equalizer 0.5s ease-in-out infinite',
+        'equalizer-2': 'equalizer 0.6s ease-in-out infinite 0.1s',
+        'equalizer-3': 'equalizer 0.4s ease-in-out infinite 0.2s',
+        'equalizer-4': 'equalizer 0.55s ease-in-out infinite 0.05s',
+      },
+      keyframes: {
+        equalizer: {
+          '0%, 100%': { height: '0.25rem' },
+          '50%': { height: '0.75rem' },
+        },
       },
       typography: ({ theme }) => ({
         // default disables all prose styling globally
@@ -24,49 +34,6 @@ module.exports = {
         lg: { css: disabledCss },
         xl: { css: disabledCss },
         '2xl': { css: disabledCss },
-
-        // custom blog styling applied only when wrapping with `blog-prose`
-        'blog-prose': {
-          css: {
-            h1: {
-              color: theme('colors.blue.600'),
-              fontWeight: '700',
-              fontSize: theme('fontSize.4xl')[0],
-            },
-            h2: {
-              color: theme('colors.blue.500'),
-              fontWeight: '600',
-              fontSize: theme('fontSize.3xl')[0],
-            },
-            a: {
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem', // Tailwind's gap-2
-              color: theme('colors.red.500'),
-              textDecoration: 'underline',
-              backgroundColor: 'rgba(156,163,175,0.1)', // bg-gray-500/10
-              borderRadius: '0.375rem', // rounded-md
-              padding: '0 0.25rem', // px-1
-              transitionProperty: 'background-color',
-              transitionDuration: '200ms',
-              '&:hover': {
-                backgroundColor: 'rgba(239,68,68,0.2)', // hover:bg-red-500/20
-              },
-            },
-            pre: {
-              backgroundColor: theme('colors.gray.900'),
-              color: theme('colors.white'),
-              padding: '1rem',
-              borderRadius: '0.5rem',
-              overflowX: 'auto',
-            },
-            code: {
-              backgroundColor: theme('colors.gray.100'),
-              padding: '0.2rem 0.4rem',
-              borderRadius: '0.25rem',
-            },
-          },
-        },
       }),
     },
   },

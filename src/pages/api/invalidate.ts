@@ -1,5 +1,5 @@
-import type { APIRoute } from 'astro';
-import { bumpContentVersion, bumpPostVersion } from '../../libs/cacheVersions';
+import { getContentVersion, bumpContentVersion, bumpPostVersion } from '../../libs/cacheVersions';
+import { getCacheClient } from '../../libs/cache';
 
 export const POST: APIRoute = async ({ request }) => {
   const token = request.headers.get('x-webhook-token');
@@ -17,7 +17,16 @@ export const POST: APIRoute = async ({ request }) => {
   // Always bump content-version for any update, publish, or delete
   await bumpContentVersion();
 
+  // Fetch the current content version dynamically
+  const contentVersion = await getContentVersion();
+  const cacheKey = `wp:v${contentVersion}:post-list-content`; // Use the dynamic version for the cache key
+
+  // Invalidate the RSS feed cache when a post is updated or published
   if (event === 'post_updated' || event === 'post_published') {
+    const cache = await getCacheClient();
+    await cache.del(cacheKey);  // Invalidate the cache using the dynamic version
+    
+    // Bump post version for each updated or new post
     for (const slug of slugs) {
       await bumpPostVersion(slug);
     }

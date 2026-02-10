@@ -23,7 +23,7 @@ export async function GET(context: any) {
       <atom:link href="${context.site}/feed.xml" rel="self" type="application/rss+xml" />
     `,
 items: await Promise.all(
-  posts.map(async (post: any) => ({
+  posts.map(async (post: { title: { rendered: string }; excerpt: { markdown: string }; date: string; slug: string; content: { markdown: string } }) => ({
     title: post.title.rendered,
     description: post.excerpt.markdown,
     pubDate: post.date,

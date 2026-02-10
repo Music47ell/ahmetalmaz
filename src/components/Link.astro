@@ -14,7 +14,7 @@ const isCurrent = url.href === Astro.url.href;
 	class:list={[
 		className,
 		isExternal && "inline-flex items-center gap-1",
-		"text-red-500",
+		"text-dracula-marcelin",
 	]}
 	aria-current={isCurrent ? "page" : null}
 	rel={`${rel ?? ""}${isExternal ? " noopener noreferrer" : ""}`}

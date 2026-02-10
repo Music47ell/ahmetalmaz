@@ -14,7 +14,7 @@ const formatNumberWithCommas = (num: number): string => {
 
 const OverviewItem: React.FC<OverviewItemProps> = ({ label, value }) => {
 	return (
-		<div className="flex flex-col space-y-1 border border-yellow-500 px-4 py-3 sm:col-span-1">
+		<div className="flex flex-col space-y-1 border border-dracula-dracula px-4 py-3 sm:col-span-1">
 			<span className="text-sm">{label}</span>
 			<span>{formatNumberWithCommas(value)}</span>
 		</div>

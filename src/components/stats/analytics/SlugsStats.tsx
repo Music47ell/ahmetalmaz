@@ -9,19 +9,19 @@ const SlugList: React.FC<Slug> = ({ title, slugs }) => {
 	if (!slugs || slugs.length === 0) {
 		return (
 			<div className="flex justify-center items-center py-10">
-				<div className="border-t-4 border-yellow-500 border-solid w-16 h-16 rounded-full animate-spin" />
+				<div className="border-t-4 border-dracula-dracula border-solid w-16 h-16 rounded-full animate-spin" />
 			</div>
 		)
 	}
 
 	return (
 		<div className="flex flex-col gap-y-2">
-			<div className="border border-red-500 px-4 py-2">
+			<div className="border border-dracula-dracula px-4 py-2">
 				<h2 className="uppercase">{title}</h2>
 			</div>
 
 			{slugs.length > 0 ? (
-				<ul className="m-0 p-0 border border-yellow-500 px-4 py-2">
+				<ul className="m-0 p-0 border border-dracula-dracula px-4 py-2">
 					{slugs.map(({ slug, title, total }, index) => (
 						<li
 							key={`${slug}-${total}-${title}`}

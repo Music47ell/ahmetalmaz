@@ -4,9 +4,9 @@ import { fetchPublicPostBySlug } from "../../libs/fetchWP";
 import { processPostContent } from "../../libs/processPost";
 
 const { slug } = Astro.params;
+if (!slug) return Astro.redirect("/404");
 
 const post = await fetchPublicPostBySlug(slug);
-
 if (!post) return Astro.redirect("/404");
 
 const content = await processPostContent(post.content.markdown);
@@ -21,6 +21,7 @@ const content = await processPostContent(post.content.markdown);
 	wordsCount={post.wordCount}
 	slug={post.slug}
 	mastodon_status={post.mastodon_status}
+	relatedPosts={post.relatedPosts}
 >
 	<div set:html={content} />
 </ContentLayout>

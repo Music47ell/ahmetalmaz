@@ -1,11 +1,13 @@
 ---
-import NowPlaying from './NowPlaying'
-import NowWatching from './NowWatching'
+import NowPlaying from "./NowPlaying.astro";
+import NowWatching from "./NowWatching.astro";
 ---
 
-<footer class="m-auto p-4 flex max-w-md flex-col items-center gap-4 print:hidden">
+<footer
+	class="container mx-auto flex max-w-screen-sm gap-4 flex-col py-8 px-4 print:my-0 print:items-center print:justify-center print:py-0 print:px-0 print:hidden"
+>
 	<div class="grid grid-cols-1 gap-y-2">
-		<NowPlaying client:load />
-		<NowWatching client:load />
+		<NowPlaying />
+		<NowWatching />
 	</div>
 </footer>

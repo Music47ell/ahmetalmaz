@@ -39,15 +39,15 @@ const {
 			type={type}
 		/>
 	</head>
-	<body class="bg-black/80 text-zinc-100 antialiased">
+	<body class="bg-dracula-nosferatu text-dracula-cullen antialiased">
 		<div class="flex flex-col justify-between">
 			<Header />
 			<Nav />
-			<section
+			<div
 				class="container mx-auto flex max-w-screen-sm gap-4 flex-col py-8 px-4 print:my-0 print:items-center print:justify-center print:py-0 print:px-0"
 			>
 				<slot />
-			</section>
+			</div>
 			<Footer />
 		</div>
 	</body>

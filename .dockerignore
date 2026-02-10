@@ -4,6 +4,8 @@ bun.lockb
 .gitignore
 .github
 .env
+.env.production
+.env.development
 .ssh
 .cache
 astro.config.mjs

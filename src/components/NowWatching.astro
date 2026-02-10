@@ -1,0 +1,33 @@
+---
+const apiBaseUrl = import.meta.env.PUBLIC_API_BASE_URL;
+
+const res = await fetch(`${apiBaseUrl}/trakt/now-watching`);
+const data = await res.json();
+
+// Pass the data into the component, ensuring it's always fresh on the server
+const { title, image, url, isWatching } = data || {};
+---
+
+{
+	isWatching && (
+		<div class="overflow-hidden p-4 border border-dracula-dracula shadow-lg transition transform hover:scale-105 hover:shadow-xl">
+			<a href={url} class="flex relative items-center gap-5">
+				<div class="relative origin-center">
+					<img
+						src={image}
+						alt={title}
+						title={title}
+						width={100}
+						height={100}
+						class="block rounded-full"
+					/>
+				</div>
+				<div>
+					<p class="origin-left text-base font-semibold text-dracula-cullen md:text-xl">
+						{title}
+					</p>
+				</div>
+			</a>
+		</div>
+	)
+}
