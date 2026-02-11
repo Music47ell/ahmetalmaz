@@ -239,6 +239,5 @@ const ogImage =
 	})}
 />
 
-{isProduction ? <Insight /> : null}
+{isProduction ? <Insight client:load/> : null}
 {isProduction ? <Favicons /> : null}
-<Insight client:load/>
