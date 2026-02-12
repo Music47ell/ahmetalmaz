@@ -3,6 +3,7 @@ import NotFoundLayout from "../layouts/NotFoundLayout.astro";
 
 const title = "Internal Server Error";
 const description = "Oops, what have you done now!";
+Astro.response.status = 500;
 ---
 
 <NotFoundLayout title={title} description={description} />

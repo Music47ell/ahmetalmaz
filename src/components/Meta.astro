@@ -5,6 +5,8 @@ import Favicons from "../components/Favicons.astro";
 
 import {API_BASE_URL} from 'astro:env/client'
 
+const { status } = Astro.response;
+
 export interface Props {
 	title: string;
 	description: string;
@@ -239,5 +241,5 @@ const ogImage =
 	})}
 />
 
-{isProduction ? <Insight client:load/> : null}
+{isProduction ? <Insight statusCode={status} client:load/> : null}
 {isProduction ? <Favicons /> : null}
