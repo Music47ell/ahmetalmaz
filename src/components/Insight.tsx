@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 import Bowser from "bowser";
 import { API_BASE_URL, INSIGHT_TOKEN } from "astro:env/client";
-import { capitalize } from "../utils/formatters"
+import { capitalize } from "../utils/formatters";
 
-const TrackPageView: React.FC = () => {
+interface TrackPageViewProps {
+  statusCode?: number;
+}
+
+const TrackPageView: React.FC<TrackPageViewProps> = ({ statusCode }) => {
   useEffect(() => {
     const getClientInfo = () => {
       const parser = Bowser.getParser(window.navigator.userAgent);
@@ -37,12 +41,13 @@ const TrackPageView: React.FC = () => {
         title: document.title,
         slug: window.location.pathname,
         referrer: document.referrer || "Direct Traffic",
+        statusCode,
         ...clientInfo,
         eventType: "pageview",
       }),
       keepalive: true,
     });
-  }, []);
+  }, [statusCode]);
 
   return null;
 };
