@@ -14,18 +14,20 @@ const TrackPageView: React.FC<TrackPageViewProps> = ({ statusCode }) => {
       const browser = parser.getBrowser();
       const os = parser.getOS();
       const platform = parser.getPlatform();
-      const deviceType = parser.getPlatformType(true) || "desktop";
 
       return {
         os: os.name || "Unknown",
         osVersion: os.version || "Unknown",
         browser: browser.name || "Unknown",
         browserVersion: browser.version || "Unknown",
-        platform: capitalize(platform.type || "Unknown"),
+
+        deviceType: platform.type || "Unknown",
+        deviceVendor: platform.vendor || "Unknown",
+        deviceModel: platform.model || "Unknown",
+
         userAgent: navigator.userAgent,
         language: navigator.language || "Unknown",
         screenResolution: `${window.screen.width}x${window.screen.height}`,
-        deviceType: capitalize(deviceType),
       };
     };
 
