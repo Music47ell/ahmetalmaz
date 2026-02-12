@@ -2,10 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import OverviewItem from '../../../components/stats/Overview'
-import SlugsStats from '../../../components/stats/analytics/SlugsStats'
-import CitiesStats from '../../../components/stats/analytics/CitiesStats'
-import CountriesStats from '../../../components/stats/analytics/CountriesStats'
 import ReferrersStats from '../../../components/stats/analytics/ReferrersStats'
+import SlugsStats from '../../../components/stats/analytics/SlugsStats'
+import CountriesStats from '../../../components/stats/analytics/CountriesStats'
+import CitiesStats from '../../../components/stats/analytics/CitiesStats'
+import BrowsersStats from '../../../components/stats/analytics/BrowsersStats'
+import OperatingSystemsStats from '../../../components/stats/analytics/OperatingSystemsStats'
+import DeviceTypesStats from '../../../components/stats/analytics/DeviceTypesStats'
+import DeviceModelsStats from '../../../components/stats/analytics/DeviceModelsStats'
+import DeviceVendorsStats from '../../../components/stats/analytics/DeviceVendorsStats'
 
 import {API_BASE_URL, INSIGHT_TOKEN} from 'astro:env/client'
 
@@ -19,6 +24,9 @@ const AnalyticsStats = () => {
 		topTenCities: { flag: string; city: string; total: number }[]
 		topTenCountries: { flag: string; country: string; total: number }[]
 		topTenReferrers: { referrer: string; total: number }[]
+		topTenDeviceTypes: { type: string; total: number }[]
+		topTenDeviceModels: { model: string; total: number }[]
+		topTenDeviceVendors: { vsndor: string; total: number }[]
 	}>()
 
 	useEffect(() => {
@@ -63,6 +71,14 @@ const AnalyticsStats = () => {
 					<OverviewItem label="Last Month" value={data?.lastMonth ?? 0} />
 					<OverviewItem label="Last Year" value={data?.lastYear ?? 0} />
 				</div>
+				<ReferrersStats
+					title="Top 10 Referrers"
+					referrers={(data?.topTenReferrers ?? []).map((referrer) => ({
+						referrer: referrer.referrer,
+						total: referrer.total,
+					}))}
+				/>
+
 				<SlugsStats
 					title="Top 10 Pages"
 					slugs={(data?.topTenSlugs ?? []).map((slug) => ({
@@ -71,14 +87,7 @@ const AnalyticsStats = () => {
 						total: slug.total,
 					}))}
 				/>
-				<CitiesStats
-					title="Top 10 Cities"
-					cities={(data?.topTenCities ?? []).map((city) => ({
-						city: city.city,
-						flag: city.flag,
-						total: city.total,
-					}))}
-				/>
+
 				<CountriesStats
 					title="Top 10 Countries"
 					countries={(data?.topTenCountries ?? []).map((country) => ({
@@ -87,11 +96,51 @@ const AnalyticsStats = () => {
 						total: country.total,
 					}))}
 				/>
-				<ReferrersStats
-					title="Top 10 Referrers"
-					referrers={(data?.topTenReferrers ?? []).map((referrer) => ({
-						referrer: referrer.referrer,
-						total: referrer.total,
+
+				<CitiesStats
+					title="Top 10 Cities"
+					cities={(data?.topTenCities ?? []).map((city) => ({
+						city: city.city,
+						flag: city.flag,
+						total: city.total,
+					}))}
+				/>
+
+				<BrowsersStats
+					title="Top 10 Browsers"
+					browsers={(data?.topTenBrowsers ?? []).map((browser) => ({
+						browser: browser.browser,
+						total: browser.total,
+					}))}
+				/>
+
+				<OperatingSystemsStats
+					title="Top 10 Operating Systems"
+					operatingSystems={(data?.topTenOperatingSystems ?? []).map((os) => ({
+						os: os.os,
+						total: os.total,
+					}))}
+				/>
+
+				<DeviceTypesStats
+					title="Top 10 Device Types"
+					devices={(data?.topTenDeviceTypes ?? []).map((device) => ({
+						device: device.device,
+						total: device.total,
+					}))}
+				/>
+				<DeviceModelsStats
+					title="Top 10 Device Models"
+					devices={(data?.topTenDeviceModels ?? []).map((device) => ({
+						device: device.device,
+						total: device.total,
+					}))}
+				/>
+				<DeviceVendorsStats
+					title="Top 10 Devices Vandors"
+					devices={(data?.topTenDeviceVendors ?? []).map((device) => ({
+						device: device.device,
+						total: device.total,
 					}))}
 				/>
 			</>
