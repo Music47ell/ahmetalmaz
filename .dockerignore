@@ -3,7 +3,9 @@ bun.lockb
 .git
 .gitignore
 .github
+.env
 .env.keys
+.env.development
 .ssh
 .cache
 astro.config.mjs
