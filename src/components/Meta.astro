@@ -242,19 +242,37 @@ const ogImage =
 
 {isProduction ? <Favicons /> : null}
 
-{import.meta.env.PROD ? <astro-track data-status={status}></astro-track> : null}
+{import.meta.env.PROD ? <astro-analytics data-status="200"></astro-analytics> : null}
 
 <script>
   if (import.meta.env.PROD) {
-    class AstroTrack extends HTMLElement {
-      connectedCallback() {
-        const status = this.dataset.status;
-        import('../components/Insight.ts').then(module => {
-          module.trackPageView(status);
-        });
-      }
+    class AstroAnalytics extends HTMLElement {
+    connectedCallback() {
+      const status = this.dataset.status;
+      import('../components/Insight.ts').then(module => {
+        module.trackPageView(status);
+        module.startHeartbeat(); // automatically start heartbeat
+      });
     }
-
-    customElements.define('astro-track', AstroTrack);
   }
+
+  customElements.define('astro-analytics', AstroAnalytics);
+  }
+</script>
+
+
+<astro-analytics data-status={status}></astro-analytics>
+
+
+<script>
+    class AstroAnalytics extends HTMLElement {
+    connectedCallback() {
+      const status = this.dataset.status;
+      import('../components/Insight.ts').then(module => {
+        module.trackPageView(status);
+      });
+    }
+  }
+
+  customElements.define('astro-analytics', AstroAnalytics);
 </script>
