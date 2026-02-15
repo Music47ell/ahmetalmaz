@@ -240,20 +240,21 @@ const ogImage =
 	})}
 />
 
-{isProduction ? <Insight statusCode={status} client:load/> : null}
 {isProduction ? <Favicons /> : null}
 
-<astro-track data-status={status}></astro-track>
+{import.meta.env.PROD ? <astro-track data-status={status}></astro-track> : null}
 
 <script>
-  class AstroTrack extends HTMLElement {
-    connectedCallback() {
-      const status = this.dataset.status;
-      import('../components/Insight.js').then(module => {
-        module.trackPageView(status);
-      });
+  if (import.meta.env.PROD) {
+    class AstroTrack extends HTMLElement {
+      connectedCallback() {
+        const status = this.dataset.status;
+        import('../components/Insight.ts').then(module => {
+          module.trackPageView(status);
+        });
+      }
     }
-  }
 
-  customElements.define('astro-track', AstroTrack);
+    customElements.define('astro-track', AstroTrack);
+  }
 </script>
