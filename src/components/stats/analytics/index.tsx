@@ -9,24 +9,26 @@ import CitiesStats from '../../../components/stats/analytics/CitiesStats'
 import BrowsersStats from '../../../components/stats/analytics/BrowsersStats'
 import OperatingSystemsStats from '../../../components/stats/analytics/OperatingSystemsStats'
 import DeviceTypesStats from '../../../components/stats/analytics/DeviceTypesStats'
-import DeviceModelsStats from '../../../components/stats/analytics/DeviceModelsStats'
-import DeviceVendorsStats from '../../../components/stats/analytics/DeviceVendorsStats'
 
 import {API_BASE_URL, INSIGHT_TOKEN} from 'astro:env/client'
 
 const AnalyticsStats = () => {
 	const [data, setData] = useState<{
-		lastDay: number
-		lastWeek: number
-		lastMonth: number
-		lastYear: number
-		topTenSlugs: { slug: string; title: string; total: number }[]
-		topTenCities: { flag: string; city: string; total: number }[]
-		topTenCountries: { flag: string; country: string; total: number }[]
-		topTenReferrers: { referrer: string; total: number }[]
-		topTenDeviceTypes: { type: string; total: number }[]
-		topTenDeviceModels: { model: string; total: number }[]
-		topTenDeviceVendors: { vsndor: string; total: number }[]
+		monthlyPageViewsStats: number
+		monthlyVisitsStats: number
+		monthlyVisitorsStats: number
+		monthlyVisitDurationStats: number
+		monthlyBounceRateStats: number
+		monthlyEntryPagesStats: { slug: string; title: string; total: number }[]
+		monthlyExitPagesStats: { slug: string; title: string; total: number }[]
+		monthlyLanguageStats: { language: string; total: number }[]
+		monthlySlugs: { slug: string; title: string; total: number }[]
+		monthlyCities: { flag: string; city: string; total: number }[]
+		monthlyCountries: { flag: string; country: string; total: number }[]
+		monthlyReferrers: { referrer: string; total: number }[]
+		monthlyDeviceTypes: { type: string; total: number }[]
+		monthlyOperatingSystems: { os: string; total: number }[]
+		monthlyBrowsers: { browser: string; total: number }[]
 	}>()
 
 	useEffect(() => {
@@ -56,7 +58,7 @@ const AnalyticsStats = () => {
 			<div className="flex flex-col gap-y-2">
 			<div className="border border-dracula-dracula px-4 py-3 flex items-center justify-between">
   <h2 className="uppercase font-semibold tracking-wide">
-    Site Stats
+    Site Stats (Last 30 Days)
   </h2>
 
   <span className="text-xs text-yellow-400 tracking-wider whitespace-nowrap flex items-center">
@@ -66,31 +68,53 @@ const AnalyticsStats = () => {
 
 			<>
 				<div className="grid gap-3 md:grid-cols-2">
-					<OverviewItem label="Last Day" value={data?.lastDay ?? 0} />
-					<OverviewItem label="Last Week" value={data?.lastWeek ?? 0} />
-					<OverviewItem label="Last Month" value={data?.lastMonth ?? 0} />
-					<OverviewItem label="Last Year" value={data?.lastYear ?? 0} />
+					<OverviewItem label="Page Views" value={data?.monthlyPageViewsStats ?? 0} />
+					<OverviewItem label="Visits" value={data?.monthlyVisitsStats ?? 0} />
+					<OverviewItem label="Visitors" value={data?.monthlyVisitorsStats ?? 0} />
+					<OverviewItem
+					  label="Visit Duration"
+					  value={
+					    data?.monthlyVisitDurationStats
+					      ? (() => {
+					          const totalMs = data.monthlyVisitDurationStats
+					          const totalSeconds = Math.floor(totalMs / 1000)
+					          const minutes = Math.floor(totalSeconds / 60)
+					          const seconds = totalSeconds % 60
+					          return `${minutes}m ${seconds}s`
+					        })()
+					      : "0m 0s"
+					  }
+					/>
+					<OverviewItem
+					  label="Bounce Rate"
+					  value={
+					    data?.monthlyBounceRateStats !== undefined
+					      ? `${data.monthlyBounceRateStats.toFixed(0)}%`
+					      : "0%"
+					  }
+					/>
 				</div>
-				<ReferrersStats
-					title="Top 10 Referrers"
-					referrers={(data?.topTenReferrers ?? []).map((referrer) => ({
-						referrer: referrer.referrer,
-						total: referrer.total,
-					}))}
-				/>
 
 				<SlugsStats
-					title="Top 10 Pages"
-					slugs={(data?.topTenSlugs ?? []).map((slug) => ({
+					title="Pages"
+					slugs={(data?.monthlySlugs ?? []).map((slug) => ({
 						slug: slug.slug,
 						title: slug.title,
 						total: slug.total,
 					}))}
 				/>
 
+				<ReferrersStats
+					title="Referrers"
+					referrers={(data?.monthlyReferrers ?? []).map((referrer) => ({
+						referrer: referrer.referrer,
+						total: referrer.total,
+					}))}
+				/>
+
 				<CountriesStats
-					title="Top 10 Countries"
-					countries={(data?.topTenCountries ?? []).map((country) => ({
+					title="Countries"
+					countries={(data?.monthlyCountries ?? []).map((country) => ({
 						country: country.country,
 						flag: country.flag,
 						total: country.total,
@@ -98,8 +122,8 @@ const AnalyticsStats = () => {
 				/>
 
 				<CitiesStats
-					title="Top 10 Cities"
-					cities={(data?.topTenCities ?? []).map((city) => ({
+					title="Cities"
+					cities={(data?.monthlyCities ?? []).map((city) => ({
 						city: city.city,
 						flag: city.flag,
 						total: city.total,
@@ -107,39 +131,25 @@ const AnalyticsStats = () => {
 				/>
 
 				<BrowsersStats
-					title="Top 10 Browsers"
-					browsers={(data?.topTenBrowsers ?? []).map((browser) => ({
+					title="Browsers"
+					browsers={(data?.monthlyBrowsers ?? []).map((browser) => ({
 						browser: browser.browser,
 						total: browser.total,
 					}))}
 				/>
 
 				<OperatingSystemsStats
-					title="Top 10 Operating Systems"
-					operatingSystems={(data?.topTenOperatingSystems ?? []).map((os) => ({
+					title="Operating Systems"
+					operatingSystems={(data?.monthlyOperatingSystems ?? []).map((os) => ({
 						os: os.os,
 						total: os.total,
 					}))}
 				/>
 
 				<DeviceTypesStats
-					title="Top 10 Device Types"
-					devices={(data?.topTenDeviceTypes ?? []).map((device) => ({
-						device: device.device,
-						total: device.total,
-					}))}
-				/>
-				<DeviceModelsStats
-					title="Top 10 Device Models"
-					devices={(data?.topTenDeviceModels ?? []).map((device) => ({
-						device: device.device,
-						total: device.total,
-					}))}
-				/>
-				<DeviceVendorsStats
-					title="Top 10 Devices Vandors"
-					devices={(data?.topTenDeviceVendors ?? []).map((device) => ({
-						device: device.device,
+					title="Device Types"
+					devices={(data?.monthlyDeviceTypes ?? []).map((device) => ({
+						type: device.type,
 						total: device.total,
 					}))}
 				/>
