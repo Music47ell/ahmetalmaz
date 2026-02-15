@@ -1,0 +1,26 @@
+---
+import { API_BASE_URL } from 'astro:env/client';
+
+let onlineCount = 0;
+
+try {
+  const res = await fetch(`${API_BASE_URL}/insight/online`);
+  const data = await res.json();
+  onlineCount = data?.count ?? 0;
+}
+catch (err) {
+  console.error('Failed to fetch online users', err);
+}
+---
+{onlineCount > 0 && (
+  <div class="overflow-hidden p-4 border border-dracula-dracula shadow-lg transition transform hover:scale-105 hover:shadow-xl">
+    <div class="flex items-center gap-5">
+      <div class="text-dracula-cullen font-bold text-xl">
+        {onlineCount}
+      </div>
+      <p class="text-base md:text-xl">
+        {onlineCount === 1 ? 'person is' : 'people are'} online right now
+      </p>
+    </div>
+  </div>
+)}

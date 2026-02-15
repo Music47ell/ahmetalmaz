@@ -2,6 +2,8 @@ import Bowser from "bowser";
 import { API_BASE_URL, INSIGHT_TOKEN } from "astro:env/client";
 
 const TIMEOUT = 30 * 60 * 1000;
+const HEARTBEAT_INTERVAL = 15000; // 15s
+let heartbeatTimer: number | null = null;
 
 const getVisitorId = () => {
   let id = localStorage.getItem("v_id");
@@ -58,14 +60,10 @@ const getClientInfo = () => {
   };
 };
 
-const sendEvent = async (payload: Record<string, any>) => {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
+const sendEvent = async (payload: Record<string, any>, path = "/correct-horse-battery-staple") => {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
 
-  if (INSIGHT_TOKEN) headers.Authorization = INSIGHT_TOKEN;
-
-  fetch(`${API_BASE_URL}/correct-horse-battery-staple`, {
+  fetch(`${API_BASE_URL}${path}`, {
     method: "POST",
     headers,
     body: JSON.stringify(payload),
@@ -73,6 +71,7 @@ const sendEvent = async (payload: Record<string, any>) => {
   });
 };
 
+// --- PAGEVIEW TRACKING ---
 export const trackEvent = (eventType: string, eventName = "", extra = {}) => {
   const visitorId = getVisitorId();
   const sessionId = getSessionId();
@@ -93,4 +92,41 @@ export const trackEvent = (eventType: string, eventName = "", extra = {}) => {
 
 export const trackPageView = (statusCode = 200) => {
   trackEvent("pageview", "", { statusCode });
+};
+
+// --- HEARTBEAT TRACKING ---
+export const trackHeartbeat = () => {
+  if (import.meta.env.DEV) return;
+
+  const visitorId = getVisitorId();
+
+  fetch(`${API_BASE_URL}/insight/heartbeat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      // ...(INSIGHT_TOKEN ? { Authorization: INSIGHT_TOKEN } : {}),
+    },
+    body: JSON.stringify({ visitorId }),
+    keepalive: true,
+  });
+};
+
+export const startHeartbeat = () => {
+  if (import.meta.env.DEV) return;
+  if (heartbeatTimer) return;
+
+  trackHeartbeat(); // send immediately
+
+  heartbeatTimer = window.setInterval(() => {
+    if (document.visibilityState === "visible") {
+      trackHeartbeat();
+    }
+  }, HEARTBEAT_INTERVAL);
+};
+
+export const stopHeartbeat = () => {
+  if (heartbeatTimer) {
+    clearInterval(heartbeatTimer);
+    heartbeatTimer = null;
+  }
 };
