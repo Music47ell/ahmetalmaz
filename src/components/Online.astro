@@ -12,8 +12,7 @@ catch (err) {
   console.error('Failed to fetch online users', err);
 }
 ---
-{onlineCount > 0 && (
-  <div class="overflow-hidden p-4 border border-dracula-dracula shadow-lg transition transform hover:scale-105 hover:shadow-xl">
+  <div class="overflow-hidden p-4 border border-dracula-dracula shadow-lg">
     <div class="flex items-center gap-5">
       <div class="text-dracula-cullen font-bold text-xl">
         {onlineCount}
@@ -23,4 +22,3 @@ catch (err) {
       </p>
     </div>
   </div>
-)}

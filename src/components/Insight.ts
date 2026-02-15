@@ -2,7 +2,7 @@ import Bowser from "bowser";
 import { API_BASE_URL, INSIGHT_TOKEN } from "astro:env/client";
 
 const TIMEOUT = 30 * 60 * 1000;
-const HEARTBEAT_INTERVAL = 15000; // 15s
+const HEARTBEAT_INTERVAL = 5000; // 5s
 let heartbeatTimer: number | null = null;
 
 const getVisitorId = () => {
@@ -99,17 +99,19 @@ export const trackHeartbeat = () => {
   if (import.meta.env.DEV) return;
 
   const visitorId = getVisitorId();
+  const slug = window.location.pathname;
 
-  fetch(`${API_BASE_URL}/heartbeat`, {
+  fetch(`${API_BASE_URL}/api/heartbeat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      // ...(INSIGHT_TOKEN ? { Authorization: INSIGHT_TOKEN } : {}),
+      ...(INSIGHT_TOKEN ? { Authorization: INSIGHT_TOKEN } : {}),
     },
-    body: JSON.stringify({ visitorId }),
+    body: JSON.stringify({ visitorId, slug }),
     keepalive: true,
   });
 };
+
 
 export const startHeartbeat = () => {
   if (import.meta.env.DEV) return;
