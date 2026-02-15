@@ -4,7 +4,7 @@ import { API_BASE_URL } from 'astro:env/client';
 let onlineCount = 0;
 
 try {
-  const res = await fetch(`${API_BASE_URL}/insight/online`);
+  const res = await fetch(`${API_BASE_URL}/online`);
   const data = await res.json();
   onlineCount = data?.count ?? 0;
 }

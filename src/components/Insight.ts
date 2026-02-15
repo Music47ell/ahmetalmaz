@@ -100,7 +100,7 @@ export const trackHeartbeat = () => {
 
   const visitorId = getVisitorId();
 
-  fetch(`${API_BASE_URL}/insight/heartbeat`, {
+  fetch(`${API_BASE_URL}/heartbeat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
