@@ -101,7 +101,7 @@ export const trackHeartbeat = () => {
   const visitorId = getVisitorId();
   const slug = window.location.pathname;
 
-  fetch(`${API_BASE_URL}/api/heartbeat`, {
+  fetch(`${API_BASE_URL}/heartbeat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
