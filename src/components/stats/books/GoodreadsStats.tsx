@@ -15,7 +15,7 @@ type GoodreadsStatsProps = {
 const GoodreadsStats: React.FC<GoodreadsStatsProps> = ({ stats }) => {
 	return (
 		<div className="grid gap-3 md:grid-cols-2">
-			<OverviewItem label="Reading Since" value={stats.accountAgeYears} />
+			<OverviewItem label="Account Age in Years" value={stats.accountAgeYears} />
 			<OverviewItem label="Total Books" value={stats.totalBooks} />
 			<OverviewItem label="Total Pages" value={stats.totalPages} />
 			<OverviewItem label="Total Words" value={stats.totalWords.toLocaleString()} />

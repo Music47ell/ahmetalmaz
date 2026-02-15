@@ -1,5 +1,5 @@
 interface DeviceType {
-	devices: { device: string; total: number }[]
+	devices: { type: string; total: number }[]
 	title: string
 }
 
@@ -20,9 +20,9 @@ const DeviceTypeList: React.FC<DeviceType> = ({ title, devices }) => {
 
 			{devices.length > 0 ? (
 				<ul className="m-0 p-0 border border-dracula-dracula px-4 py-2">
-					{devices.map(({ device, total }, index) => (
+					{devices.map(({ type, total }, index) => (
 						<li
-							key={`${device}-${total}`}
+							key={`${type}-${total}`}
 							className="m-0 p-0 flex items-center gap-4 leading-[3rem]"
 						>
 							<small className="flex shrink-0 items-center justify-center w-6 h-6 font-bold leading-4 border-2">
@@ -30,7 +30,7 @@ const DeviceTypeList: React.FC<DeviceType> = ({ title, devices }) => {
 							</small>
 
 							<div className="truncate capitalize text-sm">
-								{device}
+								{type}
 							</div>
 
 							<strong className="flex justify-end grow">{`x${total}`}</strong>
