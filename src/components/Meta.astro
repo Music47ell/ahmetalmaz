@@ -259,20 +259,3 @@ const ogImage =
   customElements.define('astro-analytics', AstroAnalytics);
   }
 </script>
-
-
-<astro-analytics data-status={status}></astro-analytics>
-
-
-<script>
-    class AstroAnalytics extends HTMLElement {
-    connectedCallback() {
-      const status = this.dataset.status;
-      import('../components/Insight.ts').then(module => {
-        module.trackPageView(status);
-      });
-    }
-  }
-
-  customElements.define('astro-analytics', AstroAnalytics);
-</script>
