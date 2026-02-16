@@ -6,6 +6,8 @@ import {API_BASE_URL} from 'astro:env/client'
 
 const { status } = Astro.response;
 
+const isProduction = import.meta.env.PROD;
+
 export interface Props {
 	title: string;
 	description: string;
@@ -43,8 +45,6 @@ const twitter = {
 	site: "@",
 	author: siteMetadata.username,
 };
-
-const isProduction = import.meta.env.PROD;
 
 const formattedDate = formatOgDate(published_at);
 
