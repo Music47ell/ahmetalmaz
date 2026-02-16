@@ -30,22 +30,40 @@ export default function OnlineCount(): JSX.Element {
   const togglePages = () => setShowPages((prev) => !prev);
 
   return (
-    <div className="overflow-hidden p-4 border border-dracula-dracula shadow-lg">
-      <div className="flex items-center gap-5 cursor-pointer" onClick={togglePages}>
+    <div>
+      <div
+        className="flex items-center gap-5 cursor-pointer p-4 border border-dracula-dracula shadow-lg"
+        onClick={togglePages}
+      >
         <div className="text-dracula-cullen font-bold text-xl">{onlineData.total}</div>
         <p className="text-base md:text-xl">
-          {onlineData.total === 1 ? 'person is' : 'people are'} online right now
+          {onlineData.total === 1 ? "person is" : "people are"} online right now
         </p>
       </div>
 
       {showPages && onlineData.total > 0 && (
-        <ul className="mt-2 border-t border-dracula-dracula pt-2">
-          {Object.entries(onlineData.pages).map(([slug, count]) => (
-            <li key={slug} className="text-sm md:text-base py-1">
-              <span className="font-semibold">{count}</span> {count === 1 ? 'person' : 'people'} viewing <code>{slug}</code>
-            </li>
-          ))}
-        </ul>
+        <table className="w-full border border-dracula-dracula">
+          <thead>
+            <tr className="border-b border-dracula-dracula">
+              <th className="border-r border-dracula-dracula p-4 text-left">
+                Users ({onlineData.total})
+              </th>
+              <th className="p-4 text-left">Page</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(onlineData.pages).map(([slug, count]) => (
+              <tr key={slug} className="border-b border-dracula-dracula">
+                <td className="border-r border-dracula-dracula p-4 font-semibold">
+                  {count}
+                </td>
+                <td className="p-4">
+                  <code>{slug}</code>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
