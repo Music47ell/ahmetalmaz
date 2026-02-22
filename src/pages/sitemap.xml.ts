@@ -1,5 +1,5 @@
 import siteMetadata from "../data/siteMetadata";
-import {WP_REST_URL} from 'astro:env/server'
+import {WP_REST_URL} from 'astro:env/client'
 
 type WPPost = {
   slug: string;

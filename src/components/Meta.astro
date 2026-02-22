@@ -242,10 +242,10 @@ const ogImage =
 
 {isProduction ? <Favicons /> : null}
 
-{import.meta.env.PROD ? <astro-analytics data-status="200"></astro-analytics> : null}
+{isProduction ? <astro-analytics data-status="200"></astro-analytics> : null}
 
 <script>
-  if (import.meta.env.PROD) {
+  if (isProduction) {
     class AstroAnalytics extends HTMLElement {
     connectedCallback() {
       const status = this.dataset.status;

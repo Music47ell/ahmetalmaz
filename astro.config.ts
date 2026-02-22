@@ -25,7 +25,7 @@ export default defineConfig({
                 context: "client", access: "public", optional: true
             }),
             WP_REST_URL: envField.string({
-                context: "server", access: "secret", optional: true
+                context: "client", access: "public", optional: true
             }),
         }
     },
