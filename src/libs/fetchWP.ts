@@ -1,6 +1,6 @@
 import { getCacheClient } from './cache';
 import { getContentVersion, getPostVersion } from './cacheVersions';
-import {WP_REST_URL} from 'astro:env/server'
+import {WP_REST_URL} from 'astro:env/client'
 
 const TTL = import.meta.env.DEV ? 30 : 31_536_000;
 const PREVIEW_TTL = 3600;
