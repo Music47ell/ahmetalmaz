@@ -245,7 +245,7 @@ const ogImage =
 {isProduction ? <astro-analytics data-status="200"></astro-analytics> : null}
 
 <script>
-  if (isProduction) {
+  if (import.meta.env.PROD) {
     class AstroAnalytics extends HTMLElement {
     connectedCallback() {
       const status = this.dataset.status;
