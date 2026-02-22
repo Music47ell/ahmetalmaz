@@ -56,8 +56,8 @@ async function initRedis(url: string): Promise<CacheClient | null> {
 export async function getCacheClient(): Promise<CacheClient> {
   if (client) return client;
 
-  if (process.env.REDIS_URL) {
-    const redis = await initRedis(process.env.REDIS_URL);
+  if (import.meta.env.REDIS_URL) {
+    const redis = await initRedis(import.meta.env.REDIS_URL);
     if (redis) return (client = redis);
   }
 

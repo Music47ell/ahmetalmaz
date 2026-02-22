@@ -3,7 +3,7 @@ import { getCacheClient } from '../../libs/cache';
 
 export const POST: APIRoute = async ({ request }) => {
   const token = request.headers.get('x-webhook-token');
-  if (token !== process.env.WP_WEBHOOK_SECRET) {
+  if (token !== import.meta.env.WP_WEBHOOK_SECRET) {
     return new Response('Unauthorized', { status: 403 });
   }
 
