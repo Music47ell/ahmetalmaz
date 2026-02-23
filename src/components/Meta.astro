@@ -242,7 +242,7 @@ const ogImage =
 
 {isProduction ? <Favicons /> : null}
 
-{isProduction ? <astro-analytics data-status="200"></astro-analytics> : null}
+{isProduction ? <astro-analytics data-status={status}></astro-analytics> : null}
 
 <script>
   if (import.meta.env.PROD) {
