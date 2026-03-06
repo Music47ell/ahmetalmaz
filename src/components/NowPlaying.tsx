@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import siteMetadata from "../data/siteMetadata";
+import siteMetadata from '../data/siteMetadata'
 
 interface NowPlayingData {
 	artist: string
@@ -33,7 +33,9 @@ export default function NowPlaying() {
 	useEffect(() => {
 		const fetchNowPlaying = async () => {
 			try {
-				const res = await fetch(`${siteMetadata.apiUrl}/listenbrainz/now-playing`)
+				const res = await fetch(
+					`${siteMetadata.apiUrl}/listenbrainz/now-playing`,
+				)
 				const nowPlayingData = await res.json()
 				setData(nowPlayingData)
 			} catch (error) {
@@ -103,7 +105,7 @@ export default function NowPlaying() {
 		seed: number
 		open_class: number
 
-		constructor(opt: { controller: SiriWave9, color: number[] }) {
+		constructor(opt: { controller: SiriWave9; color: number[] }) {
 			this.controller = opt.controller
 			this.color = opt.color
 			this.tick = 0
@@ -129,20 +131,30 @@ export default function NowPlaying() {
 		}
 
 		_draw(m: number) {
-			this.tick += this.controller.speed * (1 - 0.5 * Math.sin(this.seed * Math.PI))
+			this.tick +=
+				this.controller.speed * (1 - 0.5 * Math.sin(this.seed * Math.PI))
 			const ctx = this.controller.ctx
 			ctx.beginPath()
-			const x_base = this.controller.width / 2 + (-this.controller.width / 4 + this.seed * (this.controller.width / 2))
+			const x_base =
+				this.controller.width / 2 +
+				(-this.controller.width / 4 + this.seed * (this.controller.width / 2))
 			const y_base = this.controller.height / 2
 			let x_init: number | undefined
 			for (let i = -3; i <= 3; i += 0.01) {
-				const x = x_base + i * this.controller.width / 4
+				const x = x_base + (i * this.controller.width) / 4
 				const y = y_base + m * this.equation(i)
 				x_init = x_init ?? x
 				ctx.lineTo(x, y)
 			}
 			const h = Math.abs(this.equation(0))
-			const gradient = ctx.createRadialGradient(x_base, y_base, h * 1.15, x_base, y_base, h * 0.3)
+			const gradient = ctx.createRadialGradient(
+				x_base,
+				y_base,
+				h * 1.15,
+				x_base,
+				y_base,
+				h * 0.3,
+			)
 			gradient.addColorStop(0, `rgba(${this.color.join(',')},0.4)`)
 			gradient.addColorStop(1, `rgba(${this.color.join(',')},0.2)`)
 			ctx.fillStyle = gradient
@@ -176,7 +188,13 @@ export default function NowPlaying() {
 		ctx: CanvasRenderingContext2D
 		container: HTMLDivElement
 
-		constructor(opt: { container: HTMLDivElement; height?: number; speed?: number; amplitude?: number; autostart?: boolean }) {
+		constructor(opt: {
+			container: HTMLDivElement
+			height?: number
+			speed?: number
+			amplitude?: number
+			autostart?: boolean
+		}) {
 			this.container = opt.container
 			this.width = this.ratio * this.container.offsetWidth
 			this.height = this.ratio * (opt.height || 120)
@@ -194,7 +212,7 @@ export default function NowPlaying() {
 
 			for (let i = 0; i < this.COLORS.length; i++) {
 				const color = this.COLORS[i]
-				for (let j = 0; j < (3 * Math.random()) | 0; j++) {
+				for (let j = 0; (j < 3 * Math.random()) | 0; j++) {
 					this.curves.push(new SiriWave9Curve({ controller: this, color }))
 				}
 			}
@@ -238,9 +256,11 @@ export default function NowPlaying() {
 						className="w-6 h-6"
 					>
 						<title>Loved track</title>
-						<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42
+						<path
+							d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42
 							4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3
-							19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+							19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+						/>
 					</svg>
 				</div>
 			)}
@@ -257,8 +277,12 @@ export default function NowPlaying() {
 					/>
 				</div>
 				<div className="flex flex-col">
-					<p className="text-sm font-medium text-gray-300 md:text-lg">{data.artist}</p>
-					<p className="text-lg font-semibold text-dracula-cullen md:text-2xl">{data.title}</p>
+					<p className="text-sm font-medium text-gray-300 md:text-lg">
+						{data.artist}
+					</p>
+					<p className="text-lg font-semibold text-dracula-cullen md:text-2xl">
+						{data.title}
+					</p>
 				</div>
 			</a>
 

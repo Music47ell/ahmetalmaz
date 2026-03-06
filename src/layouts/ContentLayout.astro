@@ -1,13 +1,13 @@
 ---
-import { Image } from "astro:assets";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Prose from "../components/Prose.astro";
-import Title from "../components/Title.astro";
-import Link from "../components/Link.astro";
-import TootCard from "../components/MastodonPost";
-import { displayDate } from "../utils/formatters";
-import Views from "../components/Views";
-import siteMetadata from "../data/siteMetadata";
+import { Image } from 'astro:assets'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Prose from '../components/Prose.astro'
+import Title from '../components/Title.astro'
+import Link from '../components/Link.astro'
+import TootCard from '../components/MastodonPost'
+import { displayDate } from '../utils/formatters'
+import Views from '../components/Views'
+import siteMetadata from '../data/siteMetadata'
 
 const {
 	title,
@@ -21,7 +21,7 @@ const {
 	slug,
 	toot,
 	relatedPosts = [],
-} = Astro.props;
+} = Astro.props
 ---
 
 <BaseLayout

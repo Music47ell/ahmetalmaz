@@ -24,26 +24,35 @@ const siteMetadata = {
 		},
 	],
 	donate: [
-	{ img: "/images/badges/donate.gif", url: "https://github.com/sponsors/Music47ell" },
-],
-social: [
-	{ img: "/images/badges/mastodon-flat.png", url: "https://astro.build/" },
-  { img: "/images/badges/github.gif", url: "https://github.com/music47ell" },
-	{ img: "/images/badges/rss-button.gif", url: "https://ahmetalmaz.com/feed.xml" },
-],
-uses: [
-  { img: "/images/badges/brave.gif", url: "https://brave.com/" },
-	{ img: "/images/badges/vscode.gif", url: "https://librewolf.net/" },
-  { img: "/images/badges/bitwarden.gif", url: "https://bitwarden.com/" },
-  { img: "/images/badges/navidrome.gif", url: "https://www.navidrome.org/" },
-],
+		{
+			img: '/images/badges/donate.gif',
+			url: 'https://github.com/sponsors/Music47ell',
+		},
+	],
+	social: [
+		{ img: '/images/badges/mastodon-flat.png', url: 'https://astro.build/' },
+		{ img: '/images/badges/github.gif', url: 'https://github.com/music47ell' },
+		{
+			img: '/images/badges/rss-button.gif',
+			url: 'https://ahmetalmaz.com/feed.xml',
+		},
+	],
+	uses: [
+		{ img: '/images/badges/brave.gif', url: 'https://brave.com/' },
+		{ img: '/images/badges/vscode.gif', url: 'https://librewolf.net/' },
+		{ img: '/images/badges/bitwarden.gif', url: 'https://bitwarden.com/' },
+		{ img: '/images/badges/navidrome.gif', url: 'https://www.navidrome.org/' },
+	],
 	stack: [
-  { img: "/images/badges/astro.png", url: "https://astro.build/" },
-  { img: "/images/badges/caddy.png", url: "https://caddyserver.com/" },
-  { img: "/images/badges/docker.png", url: "https://www.docker.com/" },
-  { img: "/images/badges/debian.gif", url: "https://www.debian.org/" },
-  { img: "/images/badges/hetzner.gif", url: "https://ahmetalmaz.com/go/hetzner" },
-]
+		{ img: '/images/badges/astro.png', url: 'https://astro.build/' },
+		{ img: '/images/badges/caddy.png', url: 'https://caddyserver.com/' },
+		{ img: '/images/badges/docker.png', url: 'https://www.docker.com/' },
+		{ img: '/images/badges/debian.gif', url: 'https://www.debian.org/' },
+		{
+			img: '/images/badges/hetzner.gif',
+			url: 'https://ahmetalmaz.com/go/hetzner',
+		},
+	],
 }
 
 export default siteMetadata

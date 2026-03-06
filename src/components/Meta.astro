@@ -1,58 +1,58 @@
 ---
-import siteMetadata from "../data/siteMetadata";
-import Favicons from "../components/Favicons.astro";
+import siteMetadata from '../data/siteMetadata'
+import Favicons from '../components/Favicons.astro'
 
-import { API_BASE_URL } from "astro:env/client";
+import { API_BASE_URL } from 'astro:env/client'
 
-const { status } = Astro.response;
+const { status } = Astro.response
 
-const isProduction = import.meta.env.PROD;
+const isProduction = import.meta.env.PROD
 
 export interface Props {
-	title: string;
-	description: string;
-	slug: string;
-	published_at: Date;
-	updated_at: Date;
-	wordsCount: number | undefined;
-	type: string;
+	title: string
+	description: string
+	slug: string
+	published_at: Date
+	updated_at: Date
+	wordsCount: number | undefined
+	type: string
 }
 
 function formatOgDate(input: string | Date) {
-	const d = new Date(input);
-	if (isNaN(d.getTime())) return "";
+	const d = new Date(input)
+	if (isNaN(d.getTime())) return ''
 
 	return d
-		.toLocaleDateString("en-US", {
-			month: "short",
-			day: "2-digit",
-			year: "numeric",
+		.toLocaleDateString('en-US', {
+			month: 'short',
+			day: '2-digit',
+			year: 'numeric',
 		})
-		.toUpperCase();
+		.toUpperCase()
 }
 
 const { title, description, slug, published_at, updated_at, wordsCount, type } =
-	Astro.props;
+	Astro.props
 
 const pageTitle =
 	title === siteMetadata.name
 		? siteMetadata.name
-		: type === "article"
+		: type === 'article'
 			? title
-			: title;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+			: title
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 const twitter = {
-	site: "@",
+	site: '@',
 	author: siteMetadata.username,
-};
+}
 
-const formattedDate = formatOgDate(published_at);
+const formattedDate = formatOgDate(published_at)
 
 const ogImage =
 	`${API_BASE_URL}/og` +
 	`?title=${encodeURIComponent(title)}` +
 	`&description=${encodeURIComponent(description)}` +
-	`&pubdate=${encodeURIComponent(formattedDate)}`;
+	`&pubdate=${encodeURIComponent(formattedDate)}`
 ---
 
 <meta charset="utf-8" />

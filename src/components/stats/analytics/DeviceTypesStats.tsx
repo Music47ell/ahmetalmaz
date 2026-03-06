@@ -29,9 +29,7 @@ const DeviceTypeList: React.FC<DeviceType> = ({ title, devices }) => {
 								{index + 1}
 							</small>
 
-							<div className="truncate capitalize text-sm">
-								{type}
-							</div>
+							<div className="truncate capitalize text-sm">{type}</div>
 
 							<strong className="flex justify-end grow">{`x${total}`}</strong>
 						</li>

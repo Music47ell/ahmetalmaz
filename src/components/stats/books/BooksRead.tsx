@@ -43,7 +43,9 @@ const BooksRead: React.FC<BooksReadProps> = ({ books }) => {
 						<div className="h-32 w-32 animate-pulse bg-white" />
 					)}
 					<div className="flex flex-col">
-						<p className="text-base font-semibold text-dracula-cullen md:text-xl">{book.title}</p>
+						<p className="text-base font-semibold text-dracula-cullen md:text-xl">
+							{book.title}
+						</p>
 						<p className="text-xs text-yellow-400">Rating: {book.rating} ★</p>
 					</div>
 				</a>

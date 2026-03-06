@@ -29,9 +29,7 @@ const BrowserList: React.FC<Browser> = ({ title, browsers }) => {
 								{index + 1}
 							</small>
 
-							<div className="truncate capitalize text-sm">
-								{browser}
-							</div>
+							<div className="truncate capitalize text-sm">{browser}</div>
 
 							<strong className="flex justify-end grow">{`x${total}`}</strong>
 						</li>

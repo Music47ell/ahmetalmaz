@@ -1,11 +1,11 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Link from "../components/Link.astro";
-import { fetchPublicPostList } from "../libs/fetchAPI";
-const posts = await fetchPublicPostList();
-import Views from "../components/Views";
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Link from '../components/Link.astro'
+import { fetchPublicPostList } from '../libs/fetchAPI'
+const posts = await fetchPublicPostList()
+import Views from '../components/Views'
 
-const { title, description } = Astro.props;
+const { title, description } = Astro.props
 ---
 
 <BaseLayout title={title} description={description} type="website" slug="/404">
