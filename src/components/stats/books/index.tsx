@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import GoodreadsStats from './GoodreadsStats'
 import BooksRead from './BooksRead'
 
-import {API_BASE_URL} from 'astro:env/server'
+import { API_BASE_URL } from "astro:env/client";
 
 const BooksStats = () => {
 	const [stats, setStats] = useState<{

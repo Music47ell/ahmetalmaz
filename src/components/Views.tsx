@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {API_BASE_URL} from 'astro:env/server'
+import { API_BASE_URL } from "astro:env/client";
 
 type PostViewsProps = {
   slug: string;

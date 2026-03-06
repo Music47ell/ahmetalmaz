@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { API_BASE_URL } from 'astro:env/server';
+import { API_BASE_URL } from "astro:env/client";
 
 export default function OnlineCount(): JSX.Element {
   const [onlineData, setOnlineData] = useState<{ total: number; pages: Record<string, number> }>({ total: 0, pages: {} });
