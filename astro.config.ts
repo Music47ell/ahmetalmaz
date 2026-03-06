@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 
 import siteMetadata from './src/data/siteMetadata'
 
+import cloudflare from '@astrojs/cloudflare';
+
 // https://astro.build/config
 export default defineConfig({
     site: siteMetadata.siteUrl,
@@ -49,7 +51,5 @@ export default defineConfig({
         },
     },
     integrations: [react()],
-    adapter: node({
-    mode: 'standalone',
-  }),
+    adapter: cloudflare(),
 })
