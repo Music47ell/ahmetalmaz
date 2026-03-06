@@ -29,7 +29,7 @@ jobs:
       - name: Build image
         run: |
           docker build \
-            --build-arg API_BASE_URL=${{ vars.API_BASE_URL }} \
+            --build-arg "API_BASE_URL=${{ secrets.API_BASE_URL }}" \
             -t ghcr.io/${{ env.REPO }}/ahmetalmaz:latest .
 
       - name: Push image
