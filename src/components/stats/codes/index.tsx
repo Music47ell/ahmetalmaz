@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import CodeStatsStats from './CodeStatsStats'
 import TopLanguages from './TopLanguages'
 
-import {API_BASE_URL} from 'astro:env/server'
+import { API_BASE_URL } from "astro:env/client";
 
 const CodingStats = () => {
 	const [stats, setStats] = useState<{

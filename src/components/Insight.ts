@@ -1,5 +1,5 @@
 import Bowser from "bowser";
-import { API_BASE_URL } from "astro:env/server";
+import { API_BASE_URL } from "astro:env/client";
 
 const TIMEOUT = 30 * 60 * 1000;
 const HEARTBEAT_INTERVAL = 5000; // 5s

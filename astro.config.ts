@@ -21,7 +21,7 @@ export default defineConfig({
   env: {
       schema: {
           API_BASE_URL: envField.string({
-              context: "server", access: "secret", optional: false
+              context: "client", access: "public", optional: false
           }),
           BLOG_TOKEN: envField.string({
               context: "server", access: "secret", optional: false

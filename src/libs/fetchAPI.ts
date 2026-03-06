@@ -1,4 +1,5 @@
-import { API_BASE_URL, BLOG_TOKEN } from 'astro:env/server';
+import { API_BASE_URL } from "astro:env/client";
+import { BLOG_TOKEN } from 'astro:env/server';
 
 function authHeaders(): HeadersInit {
   return BLOG_TOKEN ? { Authorization: `Bearer ${BLOG_TOKEN}` } : {};

@@ -10,7 +10,7 @@ import BrowsersStats from '../../../components/stats/analytics/BrowsersStats'
 import OperatingSystemsStats from '../../../components/stats/analytics/OperatingSystemsStats'
 import DeviceTypesStats from '../../../components/stats/analytics/DeviceTypesStats'
 
-import {API_BASE_URL} from 'astro:env/server'
+import { API_BASE_URL } from "astro:env/client";
 
 const AnalyticsStats = () => {
 	const [data, setData] = useState<{

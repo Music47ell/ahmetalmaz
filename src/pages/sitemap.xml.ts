@@ -1,5 +1,6 @@
 import siteMetadata from "../data/siteMetadata";
-import { API_BASE_URL, BLOG_TOKEN } from 'astro:env/server';
+import { API_BASE_URL } from "astro:env/client";
+import { BLOG_TOKEN } from 'astro:env/server';
 
 type Post = {
   frontmatter: {
