@@ -4,9 +4,9 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "TAILWIND_MODE=watch dotenvx run -f .env.development -- astro dev --port 4321 --host 0.0.0.0",
-        "start": "dotenvx run -f .env.ci -- bun ./dist/server/entry.mjs",
-        "build": "dotenvx run -f .env.ci -- astro telemetry disable && astro build",
-        "preview": "dotenvx run -f .env.ci -- astro telemetry disable && astro preview",
+		"start": "dotenvx run -f .env.ci -- bun ./dist/server/entry.mjs",
+		"build": "dotenvx run -f .env.ci -- astro telemetry disable && astro build",
+		"preview": "dotenvx run -f .env.ci -- astro telemetry disable && astro preview",
 		"astro": "astro",
 		"check": "astro check",
 		"format": "biome format --write .",
@@ -17,6 +17,7 @@
 	},
 	"dependencies": {
 		"@astrojs/check": "^0.9.6",
+		"@astrojs/cloudflare": "^12.6.12",
 		"@astrojs/node": "^9.5.4",
 		"@astrojs/react": "^4.4.2",
 		"@astrojs/rss": "^4.0.15",
