@@ -1,36 +1,26 @@
 import siteMetadata from "../data/siteMetadata";
-import {WP_REST_URL} from 'astro:env/client'
+import { API_BASE_URL } from 'astro:env/client';
+import { BLOG_TOKEN } from 'astro:env/server';
 
-type WPPost = {
-  slug: string;
-  date: string;
-  modified?: string;
+type Post = {
+  frontmatter: {
+    slug: string;
+    published: string;
+    updated?: string;
+  };
 };
 
-async function fetchAllPosts(): Promise<WPPost[]> {
-  const perPage = 100; // max WP allows
-  let page = 1;
-  let totalPages = 1;
-  const allPosts: WPPost[] = [];
+async function fetchAllPosts(): Promise<Post[]> {
+  const res = await fetch(
+    `${API_BASE_URL}/blog`,
+    { cache: "no-store", headers: BLOG_TOKEN ? { Authorization: `Bearer ${BLOG_TOKEN}` } : {} }
+  );
 
-  do {
-    const res = await fetch(
-      `${WP_REST_URL}/all-posts?per_page=${perPage}&page=${page}&_fields=slug,date,modified`,
-      { cache: "no-store" }
-    );
+  if (!res.ok) {
+    throw new Error(`API fetch failed: ${res.status}`);
+  }
 
-    if (!res.ok) {
-      throw new Error(`WP fetch failed on page ${page}`);
-    }
-
-    const posts: WPPost[] = await res.json();
-    allPosts.push(...posts);
-
-    totalPages = Number(res.headers.get("X-WP-TotalPages")) || 1;
-    page++;
-  } while (page <= totalPages);
-
-  return allPosts;
+  return res.json();
 }
 
 async function generateSitemap() {
@@ -55,8 +45,8 @@ async function generateSitemap() {
     .map(
       (post) => `
   <url>
-    <loc>${siteMetadata.siteUrl}/blog/${post.slug}</loc>
-    <lastmod>${new Date(post.modified || post.date).toISOString()}</lastmod>
+    <loc>${siteMetadata.siteUrl}/blog/${post.frontmatter.slug}</loc>
+    <lastmod>${new Date(post.frontmatter.updated || post.frontmatter.published).toISOString()}</lastmod>
     <priority>0.80</priority>
   </url>
   `

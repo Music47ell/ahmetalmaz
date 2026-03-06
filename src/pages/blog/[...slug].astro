@@ -1,27 +1,23 @@
 ---
 import ContentLayout from "../../layouts/ContentLayout.astro";
-import { fetchPublicPostBySlug } from "../../libs/fetchWP";
-import { processPostContent } from "../../libs/processPost";
+import { fetchPublicPostBySlug } from "../../libs/fetchAPI";
 
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect("/404");
 
 const post = await fetchPublicPostBySlug(slug);
 if (!post) return Astro.redirect("/404");
-
-const content = await processPostContent(post.content.markdown);
 ---
 
 <ContentLayout
-	title={post.title.rendered}
-	description={post.excerpt.markdown}
-	published_at={post.date}
-	lastModified={post.modified}
-	readingTime={post.readingTime}
-	wordsCount={post.wordCount}
-	slug={post.slug}
-	mastodon_status={post.mastodon_status}
-	relatedPosts={post.relatedPosts}
+	title={post.frontmatter.title}
+	description={post.frontmatter.excerpt}
+	published_at={post.frontmatter.published}
+	lastModified={post.frontmatter.updated}
+	readingTime={post.frontmatter.readingTime}
+	wordsCount={post.frontmatter.wordCount}
+	slug={post.frontmatter.slug}
+	toot={post.toot}
 >
-	<div set:html={content} />
+	<div set:html={post.content} />
 </ContentLayout>

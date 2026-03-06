@@ -4,7 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Prose from "../components/Prose.astro";
 import Title from "../components/Title.astro";
 import Link from "../components/Link.astro";
-import MastodonPost from "../components/MastodonPost";
+import TootCard from "../components/MastodonPost";
 import { displayDate } from "../utils/formatters";
 import Views from "../components/Views";
 import siteMetadata from "../data/siteMetadata";
@@ -19,7 +19,7 @@ const {
 	cover,
 	source,
 	slug,
-	mastodon_status,
+	toot,
 	relatedPosts = [],
 } = Astro.props;
 ---
@@ -61,17 +61,17 @@ const {
 					)
 				}
 
-						<div class="p-4 text-sm text-[#F8F8F2]">
+						<div class="text-sm text-[#F8F8F2]">
 	<div class="space-y-2">
 		<div class="flex items-center">
 			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
 				permalink:
 			</span>
 			<Link
-				href={`${siteMetadata.siteUrl}/${slug}`}
+				href={`${siteMetadata.siteUrl}/blog/${slug}`}
 				class="text-[#8BE9FD]"
 			>
-				{siteMetadata.siteUrl}/{slug}
+				{siteMetadata.siteUrl}/blog/{slug}
 			</Link>
 		</div>
 
@@ -130,10 +130,10 @@ const {
 			<div class="e-content entry-content">
 				<slot />
 			</div>
-			{mastodon_status && (
+			{toot && (
 			<hr class="border-t-2 border-dracula-dracula"/>
-			<MastodonPost
-				mastodon_status={mastodon_status}
+			<TootCard
+				toot={toot}
 				client:load
 			/>
 			)}

@@ -24,8 +24,8 @@ export default defineConfig({
             INSIGHT_TOKEN: envField.string({
                 context: "client", access: "public", optional: true
             }),
-            WP_REST_URL: envField.string({
-                context: "client", access: "public", optional: true
+            BLOG_TOKEN: envField.string({
+                context: "server", access: "secret", optional: true
             }),
         }
     },
