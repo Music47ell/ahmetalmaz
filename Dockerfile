@@ -10,7 +10,9 @@ COPY . .
 COPY .env.ci .env.ci
 
 RUN --mount=type=secret,id=private_key_ci \
+    --mount=type=secret,id=env_ci \
     export DOTENV_PRIVATE_KEY_CI=$(cat /run/secrets/private_key_ci) && \
+    cp /run/secrets/env_ci .env.ci && \
     bun x @dotenvx/dotenvx run -f .env.ci -- bun run build
 
 
