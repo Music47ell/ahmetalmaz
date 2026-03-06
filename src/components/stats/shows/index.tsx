@@ -5,7 +5,7 @@ import TraktStats from './TraktStats'
 import WatchedMovies from './MoviesWatched'
 import WatchedShows from './ShowsWatched'
 
-import {API_BASE_URL} from 'astro:env/client'
+import {API_BASE_URL} from 'astro:env/server'
 
 const MoviesShowsStats = () => {
 	const [stats, setStats] = useState<{

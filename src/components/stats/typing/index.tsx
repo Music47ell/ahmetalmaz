@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import MonkeyStatsStats from './MonkeyStatsStats'
 import MonkeyTypeTestResults from './MonkeyTypeTestResults'
-import { API_BASE_URL } from 'astro:env/client'
+import { API_BASE_URL } from 'astro:env/server'
 
 interface MonkeyTypeStats {
   bestRecord: {

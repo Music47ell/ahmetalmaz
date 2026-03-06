@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {API_BASE_URL, INSIGHT_TOKEN} from 'astro:env/client'
+import {API_BASE_URL} from 'astro:env/server'
 
 type PostViewsProps = {
   slug: string;
@@ -15,7 +15,6 @@ const PostViews: React.FC<PostViewsProps> = ({ slug }) => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${INSIGHT_TOKEN}`,
         },
       });
 
