@@ -11,7 +11,7 @@ COPY .env.ci .env.ci
 
 RUN --mount=type=secret,id=private_key_ci \
     export DOTENV_PRIVATE_KEY_CI=$(cat /run/secrets/private_key_ci) && \
-    dotenvx run -- bun run build
+    bunx @dotenvx/dotenvx run bun run build
 
 
 FROM oven/bun:slim AS runtime
