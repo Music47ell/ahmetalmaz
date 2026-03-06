@@ -1,5 +1,5 @@
 import Bowser from "bowser";
-import { API_BASE_URL, INSIGHT_TOKEN } from "astro:env/client";
+import { API_BASE_URL } from "astro:env/server";
 
 const TIMEOUT = 30 * 60 * 1000;
 const HEARTBEAT_INTERVAL = 5000; // 5s
@@ -105,7 +105,6 @@ export const trackHeartbeat = () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...(INSIGHT_TOKEN ? { Authorization: INSIGHT_TOKEN } : {}),
     },
     body: JSON.stringify({ visitorId, slug }),
     keepalive: true,

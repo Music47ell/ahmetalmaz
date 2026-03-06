@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import RecentTracks from "./RecentTracks";
 import ListenbrainzStats from "./ListenBrainzStats";
 
-import {API_BASE_URL} from 'astro:env/client'
+import {API_BASE_URL} from 'astro:env/server'
 
 const MusicStats = () => {
 	const [listenBrainzStats, setListenBrainzStats] = useState<{
