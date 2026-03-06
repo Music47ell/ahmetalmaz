@@ -5,7 +5,7 @@ interface Movie {
 	poster: string
 	url: string
 	rating: number | null
-  watched: Date
+	watched: Date
 }
 
 interface WatchedMoviesProps {
@@ -47,9 +47,11 @@ const WatchedMovies: React.FC<WatchedMoviesProps> = ({ movies }) => {
 						<p className="origin-left text-base font-semibold text-dracula-cullen md:text-xl">
 							{movie.title}
 						</p>
-            {movie.rating !== null && (
-            <p className="text-xs text-dracula-marcelin">Rating: {movie.rating} ♥</p>
-            )}
+						{movie.rating !== null && (
+							<p className="text-xs text-dracula-marcelin">
+								Rating: {movie.rating} ♥
+							</p>
+						)}
 					</div>
 				</a>
 			))}

@@ -1,13 +1,13 @@
 ---
-import type { HTMLAttributes } from "astro/types";
+import type { HTMLAttributes } from 'astro/types'
 
-export type Props = HTMLAttributes<"a">;
+export type Props = HTMLAttributes<'a'>
 
-const { class: className, rel, href } = Astro.props;
+const { class: className, rel, href } = Astro.props
 
-const url = new URL(href ?? "", Astro.url);
-const isExternal = url.host !== Astro.url.host;
-const isCurrent = url.href === Astro.url.href;
+const url = new URL(href ?? '', Astro.url)
+const isExternal = url.host !== Astro.url.host
+const isCurrent = url.href === Astro.url.href
 ---
 
 <a

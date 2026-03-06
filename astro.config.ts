@@ -1,59 +1,63 @@
 import { defineConfig, envField } from 'astro/config'
-import node from '@astrojs/node';
-import react from '@astrojs/react';
+import node from '@astrojs/node'
+import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
 
 import siteMetadata from './src/data/siteMetadata'
 
 // https://astro.build/config
 export default defineConfig({
-  site: siteMetadata.siteUrl,
-  trailingSlash: 'never',
-  output: 'server',
+	site: siteMetadata.siteUrl,
+	trailingSlash: 'never',
+	output: 'server',
 
-  server: {
-    host: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  },
+	server: {
+		host: true,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+		},
+	},
 
-  env: {
-      schema: {
-          API_BASE_URL: envField.string({
-              context: "client", access: "public", optional: false
-          }),
-          BLOG_TOKEN: envField.string({
-              context: "server", access: "secret", optional: false
-          }),
-      }
-  },
+	env: {
+		schema: {
+			API_BASE_URL: envField.string({
+				context: 'client',
+				access: 'public',
+				optional: false,
+			}),
+			BLOG_TOKEN: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: false,
+			}),
+		},
+	},
 
-  build: {
-      format: 'file',
-  },
+	build: {
+		format: 'file',
+	},
 
-  prefetch: {
-      defaultStrategy: 'viewport',
-  },
+	prefetch: {
+		defaultStrategy: 'viewport',
+	},
 
-  vite: {
-      // ssr: {
-      //     external: ['node:fs/promises', 'jsdom'],
-      // },
-      plugins: [tailwindcss()],
-      resolve: {
-          // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
-          // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
-          alias: import.meta.env.PROD && {
-              'react-dom/server': 'react-dom/server.edge',
-          },
-      },
-  },
+	vite: {
+		// ssr: {
+		//     external: ['node:fs/promises', 'jsdom'],
+		// },
+		plugins: [tailwindcss()],
+		resolve: {
+			// Use react-dom/server.edge instead of react-dom/server.browser for React 19.
+			// Without this, MessageChannel from node:worker_threads needs to be polyfilled.
+			alias: import.meta.env.PROD && {
+				'react-dom/server': 'react-dom/server.edge',
+			},
+		},
+	},
 
-  integrations: [react()],
+	integrations: [react()],
 
-  adapter: node({
-    mode: 'standalone',
-  }),
+	adapter: node({
+		mode: 'standalone',
+	}),
 })

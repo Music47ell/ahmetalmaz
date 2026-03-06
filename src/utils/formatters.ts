@@ -18,7 +18,6 @@ const minutesToDays = (minutes: number) => {
 }
 
 const capitalize = (str: string) =>
-  str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
-
+	str ? str.charAt(0).toUpperCase() + str.slice(1) : str
 
 export { displayDate, displayNumbers, minutesToDays, capitalize }

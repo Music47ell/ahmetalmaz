@@ -1,11 +1,11 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import siteMetadata from "../../data/siteMetadata";
-import Link from "../../components/Link.astro";
-import { fetchPublicPostListContent } from "../../libs/fetchAPI";
-import Views from "../../components/Views";
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import siteMetadata from '../../data/siteMetadata'
+import Link from '../../components/Link.astro'
+import { fetchPublicPostListContent } from '../../libs/fetchAPI'
+import Views from '../../components/Views'
 
-const posts = await fetchPublicPostListContent();
+const posts = await fetchPublicPostListContent()
 ---
 
 <BaseLayout

@@ -3,7 +3,10 @@ interface OperatingSystem {
 	title: string
 }
 
-const OperatingSystemList: React.FC<OperatingSystem> = ({ title, operatingSystems }) => {
+const OperatingSystemList: React.FC<OperatingSystem> = ({
+	title,
+	operatingSystems,
+}) => {
 	if (!operatingSystems || operatingSystems.length === 0) {
 		return (
 			<div className="flex justify-center items-center py-10">
@@ -29,9 +32,7 @@ const OperatingSystemList: React.FC<OperatingSystem> = ({ title, operatingSystem
 								{index + 1}
 							</small>
 
-							<div className="truncate capitalize text-sm">
-								{os}
-							</div>
+							<div className="truncate capitalize text-sm">{os}</div>
 
 							<strong className="flex justify-end grow">{`x${total}`}</strong>
 						</li>

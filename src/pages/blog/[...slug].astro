@@ -1,12 +1,12 @@
 ---
-import ContentLayout from "../../layouts/ContentLayout.astro";
-import { fetchPublicPostBySlug } from "../../libs/fetchAPI";
+import ContentLayout from '../../layouts/ContentLayout.astro'
+import { fetchPublicPostBySlug } from '../../libs/fetchAPI'
 
-const { slug } = Astro.params;
-if (!slug) return Astro.redirect("/404");
+const { slug } = Astro.params
+if (!slug) return Astro.redirect('/404')
 
-const post = await fetchPublicPostBySlug(slug);
-if (!post) return Astro.redirect("/404");
+const post = await fetchPublicPostBySlug(slug)
+if (!post) return Astro.redirect('/404')
 ---
 
 <ContentLayout

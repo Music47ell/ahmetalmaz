@@ -21,7 +21,10 @@ const formatDate = (timestamp: number): string => {
 	})
 }
 
-const MonkeyTypeTestResults: React.FC<MonkeyTypeTestResultsProps> = ({ title, results }) => {
+const MonkeyTypeTestResults: React.FC<MonkeyTypeTestResultsProps> = ({
+	title,
+	results,
+}) => {
 	if (!results || results.length === 0) {
 		return (
 			<div className="flex justify-center items-center py-10">
@@ -33,7 +36,9 @@ const MonkeyTypeTestResults: React.FC<MonkeyTypeTestResultsProps> = ({ title, re
 	return (
 		<div className="flex flex-col gap-y-2">
 			<div className="border border-dracula-dracula px-4 py-3 bg-dracula-background">
-				<h2 className="uppercase font-semibold tracking-wide text-sm">{title}</h2>
+				<h2 className="uppercase font-semibold tracking-wide text-sm">
+					{title}
+				</h2>
 			</div>
 
 			<div className="border border-dracula-dracula overflow-hidden">
@@ -50,21 +55,29 @@ const MonkeyTypeTestResults: React.FC<MonkeyTypeTestResultsProps> = ({ title, re
 						{/* Main Stats */}
 						<div className="flex grow items-center gap-6 ml-4">
 							<div className="flex flex-col gap-1">
-								<span className="text-lg font-bold text-white">{result.wpm}</span>
+								<span className="text-lg font-bold text-white">
+									{result.wpm}
+								</span>
 								<span className="text-xs text-gray-500">WPM</span>
 							</div>
 							<span className="text-gray-600">|</span>
-							<span className="text-xs text-gray-400">{formatDate(result.timestamp)}</span>
+							<span className="text-xs text-gray-400">
+								{formatDate(result.timestamp)}
+							</span>
 						</div>
 
 						{/* Secondary Stats */}
 						<div className="flex gap-6 ml-auto">
 							<div className="flex flex-col items-end">
-								<span className="text-sm font-semibold text-white">{result.accuracy}%</span>
+								<span className="text-sm font-semibold text-white">
+									{result.accuracy}%
+								</span>
 								<span className="text-xs text-gray-500">Accuracy</span>
 							</div>
 							<div className="flex flex-col items-end">
-								<span className="text-sm font-semibold text-white">{result.consistency}%</span>
+								<span className="text-sm font-semibold text-white">
+									{result.consistency}%
+								</span>
 								<span className="text-xs text-gray-500">Consistency</span>
 							</div>
 						</div>
