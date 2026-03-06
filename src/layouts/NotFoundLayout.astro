@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Link from "../components/Link.astro";
-import { fetchPublicPostList } from "../libs/fetchWP";
+import { fetchPublicPostList } from "../libs/fetchAPI";
 const posts = await fetchPublicPostList();
 import Views from "../components/Views";
 
@@ -25,14 +25,14 @@ const { title, description } = Astro.props;
 					posts
 						.sort(() => Math.random() - 0.5)
 						.slice(0, 5)
-						.map((post: { slug: string; title: { rendered: string } }) => (
+						.map((post: { frontmatter: { slug: string; title: string } }) => (
 							<tr class="border-b border-dracula-dracula">
 								<td class="border-r border-dracula-dracula p-4">
-									<Link href={`/blog/${post.slug}`}>{post.title.rendered}</Link>
+									<Link href={`/blog/${post.frontmatter.slug}`}>{post.frontmatter.title}</Link>
 								</td>
 
 								<td class="p-4">
-									<Views slug={post.slug} client:load/>
+									<Views slug={post.frontmatter.slug} client:load/>
 								</td>
 							</tr>
 						))

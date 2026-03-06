@@ -2,16 +2,10 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import siteMetadata from "../../data/siteMetadata";
 import Link from "../../components/Link.astro";
-import { fetchPublicPostList, fetchTotalPostCount } from "../../libs/fetchWP";
+import { fetchPublicPostListContent } from "../../libs/fetchAPI";
 import Views from "../../components/Views";
 
-const perPage = 10;
-const page = 1;
-
-const posts = await fetchPublicPostList({ page, perPage });
-const totalPosts = await fetchTotalPostCount();
-const totalPages = Math.ceil(totalPosts / perPage);
-const nextPage = totalPages > 1 ? 2 : null;
+const posts = await fetchPublicPostListContent();
 ---
 
 <BaseLayout
@@ -25,29 +19,35 @@ const nextPage = totalPages > 1 ? 2 : null;
 			<thead>
 				<tr class="border-b border-dracula-dracula">
 					<th class="border-r border-dracula-dracula p-4 text-left">
-						Posts ({totalPosts})
+						Posts ({posts.length})
 					</th>
 					<th class="p-4 text-left">Views</th>
 				</tr>
 			</thead>
 			<tbody>
 				{
-					posts.map((post: { slug: string; title: { rendered: string } }) => (
+					posts.map((post: { frontmatter: { slug: string; title: string } }) => (
 						<tr class="border-b border-dracula-dracula">
 							<td class="border-r border-dracula-dracula p-4">
-								<Link href={`/blog/${post.slug}`}>{post.title.rendered}</Link>
+								<Link href={`/blog/${post.frontmatter.slug}`}>{post.frontmatter.title}</Link>
 							</td>
-
 							<td class="p-4">
-								<Views slug={post.slug} client:load />
+								<Views slug={post.frontmatter.slug} client:load />
 							</td>
 						</tr>
 					))
 				}
 			</tbody>
 		</table>
-		<nav class="flex justify-end p-4">
-			{nextPage && <Link href={`/blog/page/${nextPage}`}>NEXT PAGE</Link>}
-		</nav>
 	</main>
+
+	<div class="mt-8 space-y-16">
+		{
+			posts.map((post: { frontmatter: { slug: string; title: string }; content: string }) => (
+				<article id={post.frontmatter.slug}>
+					<div set:html={post.content} />
+				</article>
+			))
+		}
+	</div>
 </BaseLayout>
