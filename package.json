@@ -3,7 +3,7 @@
 	"type": "module",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "TAILWIND_MODE=watch astro telemetry -- astro dev --port 4321 --host 0.0.0.0",
+		"dev": "TAILWIND_MODE=watch astro telemetry disable && astro dev --port 4321 --host 0.0.0.0",
 		"start": "bun ./dist/server/entry.mjs",
 		"build": "astro telemetry disable && astro build",
 		"preview": "astro telemetry disable && astro preview",
