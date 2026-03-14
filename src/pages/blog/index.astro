@@ -40,14 +40,4 @@ const posts = await fetchPublicPostListContent()
 			</tbody>
 		</table>
 	</main>
-
-	<div class="mt-8 space-y-16">
-		{
-			posts.map((post: { frontmatter: { slug: string; title: string }; content: string }) => (
-				<article id={post.frontmatter.slug}>
-					<div set:html={post.content} />
-				</article>
-			))
-		}
-	</div>
 </BaseLayout>
