@@ -1,9 +1,9 @@
 ---
-import NotFoundLayout from '../layouts/NotFoundLayout.astro'
+import ErrorLayout from '../layouts/ErrorLayout.astro'
 
 const title = 'Page not found'
-const description = "Oops, this page doesn't exist."
+const excerpt = "Oops, this page doesn't exist."
 Astro.response.status = 404
 ---
 
-<NotFoundLayout title={title} description={description} />
+<ErrorLayout title={title} excerpt={excerpt} />

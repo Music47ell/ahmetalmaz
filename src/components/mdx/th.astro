@@ -1,0 +1,7 @@
+---
+const { ...attrs } = Astro.props
+---
+
+<th class="bg-neutral-500 p-4 border-b border-zinc-700" {...attrs}>
+	<slot />
+</th>

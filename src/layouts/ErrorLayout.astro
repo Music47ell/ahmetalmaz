@@ -1,14 +1,17 @@
 ---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Link from '../components/Link.astro'
-import { fetchPublicPostList } from '../libs/fetchAPI'
-const posts = await fetchPublicPostList()
 import Views from '../components/Views'
 
-const { title, description } = Astro.props
+const posts = (await getCollection("posts")) as CollectionEntry<"posts">[];
+
+const { title, excerpt } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} type="website" slug="/404">
+<BaseLayout title={title} excerpt={excerpt} type="website" slug="/404">
 	<h1 class="text-4xl font-bold p-4 text-center">{title}</h1>
 	<main class="overflow-hidden border border-dracula-dracula">
 		<table class="w-full border-collapse">
@@ -25,14 +28,14 @@ const { title, description } = Astro.props
 					posts
 						.sort(() => Math.random() - 0.5)
 						.slice(0, 5)
-						.map((post: { frontmatter: { slug: string; title: string } }) => (
+						.map((post) => (
 							<tr class="border-b border-dracula-dracula">
 								<td class="border-r border-dracula-dracula p-4">
-									<Link href={`/blog/${post.frontmatter.slug}`}>{post.frontmatter.title}</Link>
+									<Link href={`/blog/${post.data.slug}`}>{post.data.title}</Link>
 								</td>
 
 								<td class="p-4">
-									<Views slug={post.frontmatter.slug} client:load/>
+									<Views slug={post.data.slug} client:load/>
 								</td>
 							</tr>
 						))

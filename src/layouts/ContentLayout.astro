@@ -11,10 +11,10 @@ import siteMetadata from '../data/siteMetadata'
 
 const {
 	title,
-	description,
-	published_at,
-	lastModified,
-	wordsCount,
+	excerpt,
+	published,
+	updated,
+	wordCount,
 	readingTime,
 	cover,
 	source,
@@ -26,11 +26,11 @@ const {
 
 <BaseLayout
 	title={title}
-	description={description}
+	excerpt={excerpt}
 	slug={`blog/${slug}`}
-	published_at={published_at}
-	updated_at={lastModified}
-	wordsCount={wordsCount}
+	published={published}
+	updated={updated}
+	wordCount={wordCount}
 	image={cover?.src.src}
 	type="article"
 >
@@ -61,68 +61,83 @@ const {
 					)
 				}
 
-						<div class="text-sm text-[#F8F8F2]">
+						<div class="text-sm text-dracula-cullen">
 	<div class="space-y-2">
 		<div class="flex items-center">
-			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+			<span class="font-medium w-24 text-right pr-2 text-dracula-vonCount">
 				permalink:
 			</span>
 			<Link
 				href={`${siteMetadata.siteUrl}/blog/${slug}`}
-				class="text-[#8BE9FD]"
+				class="text-dracula-vanHelsing"
 			>
 				{siteMetadata.siteUrl}/blog/{slug}
 			</Link>
 		</div>
 
 		<div class="flex items-center">
-			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+			<span class="font-medium w-24 text-right pr-2 text-dracula-vonCount">
 				updated:
 			</span>
 			<time
-				datetime={new Date(lastModified).toISOString()}
-				class="dt-published text-[#F1FA8C]"
+				datetime={new Date(updated).toISOString()}
+				class="dt-published text-dracula-lincoln"
 				itemprop="dateModified"
 			>
-				{displayDate(lastModified)}
+				{displayDate(updated)}
 			</time>
 		</div>
 
 		<div class="flex items-center">
-			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+			<span class="font-medium w-24 text-right pr-2 text-dracula-vonCount">
 				created:
 			</span>
 			<time
-				datetime={new Date(published_at).toISOString()}
+				datetime={new Date(published).toISOString()}
 				class="dt-published text-[#F1FA8C]"
 				itemprop="dateModified"
 			>
-				{displayDate(published_at)}
+				{displayDate(published)}
 			</time>
 		</div>
 
 		<div class="flex items-center">
-			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+			<span class="font-medium w-24 text-right pr-2 text-dracula-vonCount">
 				words:
 			</span>
-			<span class="text-[#50FA7B]">{wordsCount} words</span>
+			<span class="text-dracula-blade">{wordCount} words</span>
 		</div>
 
 		<div class="flex items-center">
-			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+			<span class="font-medium w-24 text-right pr-2 text-dracula-vonCount">
 				time:
 			</span>
-			<span class="text-[#BD93F9]">{readingTime} min</span>
+			<span class="text-dracula-dracula">{readingTime} min</span>
 		</div>
 
-				<div class="flex items-center">
-			<span class="font-medium w-24 text-right pr-2 text-[#6272A4]">
+		<div class="flex items-center">
+			<span class="font-medium w-24 text-right pr-2 text-dracula-vonCount">
 				<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye" style="display: inline;">
-  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-  <circle cx="12" cy="12" r="3"></circle>
-</svg>
+					<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+					<circle cx="12" cy="12" r="3"></circle>
+				</svg>
+			</span>
+			<Views slug={slug} TrackViews={true} client:load />
+		</div>
+
+		<div class="not-prose pt-3 mt-3 border-t border-dracula-aro">
+			<div class="flex flex-col items-center justify-center gap-2">
+				<span class="text-dracula-cullen text-base">
+					If this helped you, consider supporting my work
 				</span>
-			<Views slug={slug} TrackViews={true} client:load/>
+				<a
+					href={siteMetadata.donationUrl}
+					class="inline-flex items-center px-4 py-2 bg-dracula-dracula text-dracula-nosferatu text-s font-bold rounded-md transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-dracula-dracula focus:ring-offset-2 focus:ring-offset-dracula-nosferatu"
+				>
+					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+					Sponsor This Post
+				</a>
+			</div>
 		</div>
 	</div>
 </div>
@@ -132,10 +147,7 @@ const {
 			</div>
 			{toot && (
 			<hr class="border-t-2 border-dracula-dracula"/>
-			<TootCard
-				toot={toot}
-				client:load
-			/>
+			<TootCard toot={toot} client:load />
 			)}
 			{relatedPosts.length > 0 && (
 			<hr class="border-t-2 border-dracula-dracula"/>
