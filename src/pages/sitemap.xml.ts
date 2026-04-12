@@ -1,59 +1,37 @@
+import { getCollection } from 'astro:content'
+
 import siteMetadata from '../data/siteMetadata'
-import { API_BASE_URL } from 'astro:env/client'
-import { BLOG_TOKEN } from 'astro:env/server'
-
-type Post = {
-	frontmatter: {
-		slug: string
-		published: string
-		updated?: string
-	}
-}
-
-async function fetchAllPosts(): Promise<Post[]> {
-	const res = await fetch(`${API_BASE_URL}/blog`, {
-		cache: 'no-store',
-		headers: BLOG_TOKEN ? { Authorization: `Bearer ${BLOG_TOKEN}` } : {},
-	})
-
-	if (!res.ok) {
-		throw new Error(`API fetch failed: ${res.status}`)
-	}
-
-	return res.json()
-}
 
 async function generateSitemap() {
-	const posts = await fetchAllPosts()
+	const content = await getCollection('posts')
 
 	return `
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet href="/sitemap.xsl" type="text/xsl"?>
-<urlset
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-    http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-
-  <url>
-    <loc>${siteMetadata.siteUrl}</loc>
-    <lastmod>${new Date().toISOString()}</lastmod>
-    <priority>1.00</priority>
-  </url>
-
-  ${posts
-		.map(
-			(post) => `
-  <url>
-    <loc>${siteMetadata.siteUrl}/blog/${post.frontmatter.slug}</loc>
-    <lastmod>${new Date(post.frontmatter.updated || post.frontmatter.published).toISOString()}</lastmod>
-    <priority>0.80</priority>
-  </url>
-  `,
-		)
-		.join('')}
-
-</urlset>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <?xml-stylesheet href="/sitemap.xsl" type="text/xsl"?>
+    <urlset xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <url>
+        <loc>${siteMetadata.siteUrl}</loc>
+        <lastmod>${new Date().toISOString()}</lastmod>
+        <priority>1.00</priority>
+    </url>
+    ${content
+			.sort((a, b) => {
+				return (
+					new Date(b.data.published).getTime() -
+					new Date(a.data.published).getTime()
+				)
+			})
+			.map((post) => {
+				return `
+            <url>
+                <loc>${siteMetadata.siteUrl}/blog/${post.id}</loc>
+                <lastmod>${new Date(post.data.updated).toISOString()}</lastmod>
+                <priority>0.80</priority>
+            </url>
+        `.trim()
+			})
+			.join('')}
+    </urlset>
 `.trim()
 }
 

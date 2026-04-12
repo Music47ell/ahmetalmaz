@@ -44,6 +44,15 @@ const getClientInfo = () => {
 	const platform = parser.getPlatform()
 	const engine = parser.getEngine()
 
+	// Fix deviceType: Bowser might return undefined or 'bot' for platform.type
+	// Default to 'desktop' instead of 'Unknown' to avoid confusion
+	let deviceType = platform.type || 'desktop'
+	
+	// Normalize deviceType values - bots shouldn't reach here anyway
+	if (deviceType === 'bot') {
+		deviceType = 'desktop'
+	}
+
 	return {
 		language: navigator.language || 'Unknown',
 		os: os.name || 'Unknown',
@@ -52,11 +61,46 @@ const getClientInfo = () => {
 		browserVersion: browser.version || 'Unknown',
 		engine: engine.name || 'Unknown',
 		engineVersion: engine.version || 'Unknown',
-		deviceType: platform.type || 'Unknown',
+		deviceType: deviceType,
 		deviceVendor: platform.vendor || 'Unknown',
 		deviceModel: platform.model || 'Unknown',
 		userAgent: navigator.userAgent,
 		screenResolution: `${window.screen.width}x${window.screen.height}`,
+	}
+}
+
+/**
+ * Cleans and normalizes a referrer URL. Returns "Direct" if:
+ * - referrer is empty or already "Direct"
+ * - referrer is a localhost or development URL
+ * - referrer cannot be parsed
+ */
+const cleanReferrer = (referrer: string): string => {
+	if (!referrer || referrer.trim() === '' || referrer === 'Direct') {
+		return 'Direct'
+	}
+
+	try {
+		const url = new URL(referrer)
+		const hostname = url.hostname.toLowerCase()
+
+		// Filter out localhost and development URLs
+		if (
+			hostname === 'localhost' ||
+			hostname === '127.0.0.1' ||
+			hostname === '0.0.0.0' ||
+			hostname.endsWith('.localhost') ||
+			hostname.includes(':4321') || // Astro dev port
+			hostname.includes(':3000') || // Common dev ports
+			hostname.includes(':8080')
+		) {
+			return 'Direct'
+		}
+
+		return referrer
+	} catch {
+		// Unparseable URL — treat as direct
+		return 'Direct'
 	}
 }
 
@@ -76,6 +120,9 @@ const sendEvent = async (
 
 // --- PAGEVIEW TRACKING ---
 export const trackEvent = (eventType: string, eventName = '', extra = {}) => {
+	// Don't track in development
+	if (import.meta.env.DEV) return
+
 	const visitorId = getVisitorId()
 	const sessionId = getSessionId()
 	const clientInfo = getClientInfo()
@@ -86,14 +133,17 @@ export const trackEvent = (eventType: string, eventName = '', extra = {}) => {
 		eventType,
 		eventName,
 		title: document.title,
-		slug: window.location.pathname,
-		referrer: document.referrer || 'Direct',
+		slug: window.location.pathname, // ALWAYS pathname only, never full URL
+		referrer: cleanReferrer(document.referrer),
 		...clientInfo,
 		...extra,
 	})
 }
 
 export const trackPageView = (statusCode = 200) => {
+	// Don't track in development
+	if (import.meta.env.DEV) return
+
 	trackEvent('pageview', '', { statusCode })
 }
 

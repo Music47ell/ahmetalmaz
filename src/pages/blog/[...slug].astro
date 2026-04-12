@@ -1,23 +1,47 @@
 ---
-import ContentLayout from '../../layouts/ContentLayout.astro'
-import { fetchPublicPostBySlug } from '../../libs/fetchAPI'
+// const { slug } = Astro.params
+// if (!slug) return Astro.redirect('/404')
 
-const { slug } = Astro.params
-if (!slug) return Astro.redirect('/404')
+// const post = await fetchPublicPostBySlug(slug)
+// if (!post) return Astro.redirect('/404')
 
-const post = await fetchPublicPostBySlug(slug)
-if (!post) return Astro.redirect('/404')
+import { getCollection } from "astro:content";
+import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+import ContentLayout from "../../layouts/ContentLayout.astro";
+import { components } from "../../components/mdx/index.astro";
+
+export async function getStaticPaths() {
+	const content = await getCollection("posts");
+
+	return content.map((post) => {
+		return {
+			params: { slug: post.data.slug },
+			props: { post },
+		};
+	});
+}
+
+interface Props {
+	post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await render(post);
+const { title, excerpt, slug, published, updated } = post.data;
+const { readingTime, wordCount, toot } = remarkPluginFrontmatter;
 ---
 
 <ContentLayout
-	title={post.frontmatter.title}
-	description={post.frontmatter.excerpt}
-	published_at={post.frontmatter.published}
-	lastModified={post.frontmatter.updated}
-	readingTime={post.frontmatter.readingTime}
-	wordsCount={post.frontmatter.wordCount}
-	slug={post.frontmatter.slug}
-	toot={post.toot}
+	title={title}
+	excerpt={excerpt}
+	published={published}
+	updated={updated}
+	readingTime={readingTime}
+	wordCount={wordCount}
+	slug={slug}
+	toot={toot}
 >
-	<div set:html={post.content} />
+	<Content components={components} />
 </ContentLayout>

@@ -5,6 +5,7 @@ const siteMetadata = {
 	instance: 'mastodon.social',
 	siteUrl: 'https://ahmetalmaz.com',
 	apiUrl: 'https://api.ahmetalmaz.com',
+	donationUrl: 'https://github.com/sponsors/Music47ell',
 	locale: 'en-US',
 	avatar: '/images/others/me.png',
 	altAvatar: '/images/others/doomface.gif',
@@ -19,7 +20,7 @@ const siteMetadata = {
 		{ title: 'Stats', href: '/stats', activePath: /^\/stats*/ },
 		{
 			title: 'Resume',
-			href: 'https://api.ahmetalmaz.com/resume',
+			href: 'https://ahmetalmaz.com/ahmetalmaz-resume.pdf',
 			activePath: /^\/resume*/,
 		},
 	],

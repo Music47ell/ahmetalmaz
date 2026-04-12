@@ -1,10 +1,14 @@
 import rss from '@astrojs/rss'
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
+import sanitizeHtml from 'sanitize-html'
+import MarkdownIt from 'markdown-it'
 import siteMetadata from '../data/siteMetadata'
-import { fetchPublicPostListContent } from '../libs/fetchAPI'
+const parser = new MarkdownIt()
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export async function GET(context: any) {
-	const posts = await fetchPublicPostListContent()
+	const content: CollectionEntry<'posts'>[] = await getCollection('posts')
 
 	return rss({
 		title: siteMetadata.name,
@@ -13,33 +17,34 @@ export async function GET(context: any) {
 		trailingSlash: false,
 		xmlns: {
 			atom: 'http://www.w3.org/2005/Atom',
-			content: 'http://purl.org/rss/1.0/modules/content/',
 		},
 		customData: `
-      <language>${siteMetadata.locale}</language>
-      <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-      <webMaster>${siteMetadata.name}</webMaster>
-      <managingEditor>${siteMetadata.name}</managingEditor>
-      <atom:link href="${context.site}/feed.xml" rel="self" type="application/rss+xml" />
+    <language>${siteMetadata.locale}</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    <webMaster>${siteMetadata.name}</webMaster>
+    <managingEditor>${siteMetadata.name}</managingEditor>
+    <atom:link href="${context.site}/feed.xml" rel="self" type="application/rss+xml" />
     `,
-		items: posts.map(
-			(post: {
-				frontmatter: {
-					title: string
-					excerpt: string
-					published: string
-					slug: string
+		items: content
+			.sort(
+				(a, b) =>
+					new Date(b.data.published).getTime() -
+					new Date(a.data.published).getTime(),
+			)
+			.map((item) => {
+				return {
+					title: item.data.title,
+					description: item.data.excerpt,
+					pubDate: item.data.published,
+					link: `blog/${item.id}`,
+					categories: item.data.tags,
+					author: `${siteMetadata.name}`,
+					content: sanitizeHtml(parser.render(item.body ?? ''), {
+						allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+					}),
 				}
-				content: string
-			}) => ({
-				title: post.frontmatter.title,
-				description: post.frontmatter.excerpt,
-				pubDate: new Date(post.frontmatter.published),
-				link: `blog#${post.frontmatter.slug}`,
-				author: siteMetadata.name,
-				content: post.content ?? '',
 			}),
-		),
+
 		stylesheet: '/feed.xsl',
 	})
 }

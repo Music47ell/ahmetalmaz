@@ -11,7 +11,7 @@
 - `content` - Content for the blog posts and pages.
 - `data` - Metadata for the site
 - `layouts` - Layouts for the site.
-- `libs` - Libraries for the site.
+- `lib` - Libraries for the site.
 - `pages` - Pages for the site.
 - `utils` - Utility functions for the site.
 

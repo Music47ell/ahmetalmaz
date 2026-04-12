@@ -1,16 +1,19 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import siteMetadata from '../../data/siteMetadata'
 import Link from '../../components/Link.astro'
-import { fetchPublicPostListContent } from '../../libs/fetchAPI'
 import Views from '../../components/Views'
 
-const posts = await fetchPublicPostListContent()
+const content = await getCollection("posts");
+const posts = content.sort(
+	(a, b) => b.data.published.getTime() - a.data.published.getTime()
+);
 ---
 
 <BaseLayout
 	title="Blog"
-	description={siteMetadata.description}
+	excerpt={siteMetadata.description}
 	type="website"
 	slug="/blog"
 >
@@ -26,13 +29,13 @@ const posts = await fetchPublicPostListContent()
 			</thead>
 			<tbody>
 				{
-					posts.map((post: { frontmatter: { slug: string; title: string } }) => (
+					posts.map((post) => (
 						<tr class="border-b border-dracula-dracula">
 							<td class="border-r border-dracula-dracula p-4">
-								<Link href={`/blog/${post.frontmatter.slug}`}>{post.frontmatter.title}</Link>
+								<Link href={`/blog/${post.data.slug}`}>{post.data.title}</Link>
 							</td>
 							<td class="p-4">
-								<Views slug={post.frontmatter.slug} client:load />
+								<Views slug={post.data.slug} client:load />
 							</td>
 						</tr>
 					))

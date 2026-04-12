@@ -1,6 +1,7 @@
 ---
 import siteMetadata from '../data/siteMetadata'
 import Favicons from '../components/Favicons.astro'
+import Snake from '../components/Snake.astro'
 
 import { API_BASE_URL } from 'astro:env/client'
 
@@ -10,11 +11,11 @@ const isProduction = import.meta.env.PROD
 
 export interface Props {
 	title: string
-	description: string
+	excerpt: string
 	slug: string
-	published_at: Date
-	updated_at: Date
-	wordsCount: number | undefined
+	published: Date
+	updated: Date
+	wordCount: number | undefined
 	type: string
 }
 
@@ -31,7 +32,7 @@ function formatOgDate(input: string | Date) {
 		.toUpperCase()
 }
 
-const { title, description, slug, published_at, updated_at, wordsCount, type } =
+const { title, excerpt, slug, published, updated, wordCount, type } =
 	Astro.props
 
 const pageTitle =
@@ -46,12 +47,12 @@ const twitter = {
 	author: siteMetadata.username,
 }
 
-const formattedDate = formatOgDate(published_at)
+const formattedDate = formatOgDate(published)
 
 const ogImage =
 	`${API_BASE_URL}/og` +
 	`?title=${encodeURIComponent(title)}` +
-	`&description=${encodeURIComponent(description)}` +
+	`&excerpt=${encodeURIComponent(excerpt)}` +
 	`&pubdate=${encodeURIComponent(formattedDate)}`
 ---
 
@@ -62,7 +63,7 @@ const ogImage =
 	content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 />
 {title ? <title>{pageTitle}</title> : null}
-{description ? <meta name="description" content={description} /> : null}
+{excerpt ? <meta name="excerpt" content={excerpt} /> : null}
 <meta name="generator" content={Astro.generator} />
 <link rel="canonical" href={canonicalURL} />
 <link
@@ -98,7 +99,7 @@ const ogImage =
 <meta property="og:locale" content={siteMetadata.locale} />
 <meta property="og:type" content={type} />
 <meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
+<meta property="og:excerpt" content={excerpt} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content={siteMetadata.name} />
 <meta name="og:image" content={ogImage} />
@@ -115,7 +116,7 @@ const ogImage =
 	content={type == "article" ? twitter.author : twitter.site}
 />
 <meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
+<meta name="twitter:excerpt" content={excerpt} />
 <meta name="twitter:image" content={ogImage} />
 
 {/*JSON-LD*/}
@@ -135,12 +136,12 @@ const ogImage =
 					"@id": siteMetadata.siteUrl,
 				},
 				headline: title,
-				datePublished: published_at,
-				dateModified: updated_at,
+				datePublished: published,
+				dateModified: updated,
 				mainEntityOfPage: {
 					"@id": `${siteMetadata.siteUrl}/${slug}`,
 				},
-				wordCount: wordsCount,
+				wordCount: wordCount,
 				publisher: {
 					"@id": siteMetadata.siteUrl,
 				},
@@ -165,9 +166,9 @@ const ogImage =
 					"@id": ogImage,
 				},
 				thumbnailUrl: ogImage,
-				datePublished: published_at,
-				dateModified: updated_at,
-				description: description,
+				datePublished: published,
+				dateModified: updated,
+				excerpt: excerpt,
 				inLanguage: siteMetadata.locale,
 				potentialAction: [
 					{
@@ -208,7 +209,7 @@ const ogImage =
 				"@id": siteMetadata.siteUrl,
 				url: siteMetadata.siteUrl,
 				name: siteMetadata.name,
-				description: siteMetadata.description,
+				excerpt: siteMetadata.excerpt,
 				publisher: {
 					"@id": siteMetadata.siteUrl,
 				},
@@ -233,7 +234,7 @@ const ogImage =
 					contentUrl: `${siteMetadata.siteUrl}${siteMetadata.avatar}`,
 					caption: siteMetadata.name,
 				},
-				description: siteMetadata.description,
+				excerpt: siteMetadata.excerpt,
 				sameAs: [siteMetadata.socials.map((url) => url.url)],
 			},
 		],
@@ -241,7 +242,7 @@ const ogImage =
 />
 
 {isProduction ? <Favicons /> : null}
-
+<Snake />
 {isProduction ? <astro-analytics data-status={status}></astro-analytics> : null}
 
 <script>
