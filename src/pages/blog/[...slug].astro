@@ -1,9 +1,5 @@
 ---
-// const { slug } = Astro.params
-// if (!slug) return Astro.redirect('/404')
-
-// const post = await fetchPublicPostBySlug(slug)
-// if (!post) return Astro.redirect('/404')
+export const prerender = true;
 
 import { getCollection } from "astro:content";
 import { render } from "astro:content";
@@ -31,6 +27,8 @@ const { post } = Astro.props;
 const { Content, remarkPluginFrontmatter } = await render(post);
 const { title, excerpt, slug, published, updated } = post.data;
 const { readingTime, wordCount, toot } = remarkPluginFrontmatter;
+
+if (!slug) return Astro.redirect('/404')
 ---
 
 <ContentLayout
