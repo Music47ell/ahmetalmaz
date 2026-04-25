@@ -1,14 +1,14 @@
 ---
-import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
+import { getCollection } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
 
 import BaseLayout from '../layouts/BaseLayout.astro'
 import Link from '../components/Link.astro'
 import Views from '../components/Views'
 
-const posts = (await getCollection("posts")) as CollectionEntry<"posts">[];
+const posts = (await getCollection('posts')) as CollectionEntry<'posts'>[]
 
-const { title, excerpt } = Astro.props;
+const { title, excerpt } = Astro.props
 ---
 
 <BaseLayout title={title} excerpt={excerpt} type="website" slug="/404">
@@ -35,7 +35,7 @@ const { title, excerpt } = Astro.props;
 								</td>
 
 								<td class="p-4">
-									<Views slug={post.data.slug} client:load/>
+									<Views slug={post.data.slug} client:visible/>
 								</td>
 							</tr>
 						))

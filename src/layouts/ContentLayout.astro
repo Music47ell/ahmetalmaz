@@ -122,7 +122,7 @@ const {
 					<circle cx="12" cy="12" r="3"></circle>
 				</svg>
 			</span>
-			<Views slug={slug} TrackViews={true} client:load />
+			<Views slug={slug} TrackViews={true} client:visible />
 		</div>
 
 		<div class="not-prose pt-3 mt-3 border-t border-dracula-aro">
@@ -147,7 +147,7 @@ const {
 			</div>
 			{toot && (
 			<hr class="border-t-2 border-dracula-dracula"/>
-			<TootCard toot={toot} client:load />
+			<TootCard toot={toot} client:visible />
 			)}
 			{relatedPosts.length > 0 && (
 			<hr class="border-t-2 border-dracula-dracula"/>

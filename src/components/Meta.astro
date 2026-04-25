@@ -1,7 +1,5 @@
 ---
 import siteMetadata from '../data/siteMetadata'
-import Favicons from '../components/Favicons.astro'
-import Snake from '../components/Snake.astro'
 
 import { API_BASE_URL } from 'astro:env/client'
 
@@ -241,22 +239,44 @@ const ogImage =
 	})}
 />
 
-{isProduction ? <Favicons /> : null}
-<Snake />
 {isProduction ? <astro-analytics data-status={status}></astro-analytics> : null}
 
 <script>
-  if (import.meta.env.PROD) {
-    class AstroAnalytics extends HTMLElement {
-    connectedCallback() {
-      const status = this.dataset.status;
-      import('../components/Insight.ts').then(module => {
-        module.trackPageView(status);
-        module.startHeartbeat(); // automatically start heartbeat
-      });
-    }
-  }
+	if (import.meta.env.PROD) {
+		const runWhenIdle = (callback) => {
+			if ('requestIdleCallback' in window) {
+				window.requestIdleCallback(() => callback(), { timeout: 2000 })
+				return
+			}
 
-  customElements.define('astro-analytics', AstroAnalytics);
-  }
+			window.setTimeout(callback, 1200)
+		}
+
+		runWhenIdle(() => {
+			import('../scripts/init-favicons.ts').then((module) =>
+				module.initFavicons(),
+			)
+		})
+
+		runWhenIdle(() => {
+			import('../scripts/init-snake.ts').then((module) => module.initSnake())
+		})
+
+		class AstroAnalytics extends HTMLElement {
+			connectedCallback() {
+				if (this.dataset.initialized === 'true') return
+				this.dataset.initialized = 'true'
+
+				const status = this.dataset.status
+				runWhenIdle(() => {
+					import('../components/Insight.ts').then((module) => {
+						module.trackPageView(status)
+						module.startHeartbeat()
+					})
+				})
+			}
+		}
+
+		customElements.define('astro-analytics', AstroAnalytics)
+	}
 </script>
