@@ -2,6 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import siteMetadata from '../data/siteMetadata'
 import Link from '../components/Link.astro'
+import lyrics from '../data/lyrics/index.json'
+
+const randomLyric = lyrics[Math.floor(Math.random() * lyrics.length)] ?? null
 ---
 
 <BaseLayout
@@ -20,9 +23,28 @@ import Link from '../components/Link.astro'
 			</p>
 		</div>
 
-        <div class="p-6 border border-dracula-dracula">
-		  <div id="wave-container" class="w-full h-[120px]"></div>
-        </div>
+		<div class="p-6 border border-dracula-dracula">
+			<div id="wave-container" class="w-full h-[120px]"></div>
+		</div>
+		{
+			randomLyric && (
+				<div class="p-6 border border-dracula-dracula">
+					<p class="text-dracula-cullen">
+						<span class="whitespace-pre-line">{randomLyric.lyric}</span>
+					</p>
+					<span class="mx-1">—</span>
+						<a
+							href={randomLyric.link}
+							class="text-dracula-vanHelsing hover:underline"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{randomLyric.band}
+						</a>
+						<span> · {randomLyric.song}</span>
+				</div>
+			)
+		}
 
 		<div class="p-6 border border-dracula-dracula">
 			<h2 class="text-xl font-semibold mb-4">Donate</h2>
@@ -106,119 +128,39 @@ import Link from '../components/Link.astro'
 </BaseLayout>
 
 <script>
-function SiriWave9Curve(opt){
-  opt=opt||{}
-  this.controller=opt.controller
-  this.color=opt.color
-  this.tick=0
-  this.respawn()
-}
-SiriWave9Curve.prototype.respawn=function(){
-  this.amplitude=0.3+Math.random()*0.7
-  this.seed=Math.random()
-  this.open_class=2+(Math.random()*3)|0
-}
-SiriWave9Curve.prototype.equation=function(i){
-  var p=this.tick
-  var y=-1*Math.abs(Math.sin(p))*this.controller.amplitude*this.amplitude*this.controller.MAX*Math.pow(1/(1+Math.pow(this.open_class*i,2)),2)
-  if(Math.abs(y)<0.001){this.respawn()}
-  return y
-}
-SiriWave9Curve.prototype._draw=function(m){
-  this.tick+=this.controller.speed*(1-0.5*Math.sin(this.seed*Math.PI))
-  var ctx=this.controller.ctx
-  ctx.beginPath()
-  var x_base=this.controller.width/2+(-this.controller.width/4+this.seed*(this.controller.width/2))
-  var y_base=this.controller.height/2
-  var x,y,x_init
-  var i=-3
-  while(i<=3){
-    x=x_base+i*this.controller.width/4
-    y=y_base+(m*this.equation(i))
-    x_init=x_init||x
-    ctx.lineTo(x,y)
-    i+=0.01
-  }
-  var h=Math.abs(this.equation(0))
-  var gradient=ctx.createRadialGradient(x_base,y_base,h*1.15,x_base,y_base,h*0.3)
-  gradient.addColorStop(0,'rgba('+this.color.join(',')+',0.4)')
-  gradient.addColorStop(1,'rgba('+this.color.join(',')+',0.2)')
-  ctx.fillStyle=gradient
-  ctx.lineTo(x_init,y_base)
-  ctx.closePath()
-  ctx.fill()
-}
-SiriWave9Curve.prototype.draw=function(){
-  this._draw(-1)
-  this._draw(1)
-}
+	const container = document.getElementById('wave-container')
+	if (container) {
+		const runWhenIdle = (callback) => {
+			if ('requestIdleCallback' in window) {
+				window.requestIdleCallback(() => callback(), { timeout: 2000 })
+				return
+			}
 
-function SiriWave9(opt){
-  opt=opt||{}
-  this.tick=0
-  this.run=false
-  this.ratio=window.devicePixelRatio||1
+			window.setTimeout(callback, 1200)
+		}
 
-  this.container=opt.container
-  this.width=this.ratio*this.container.offsetWidth
-  this.height=this.ratio*(opt.height||120)
+		let booted = false
+		const boot = () => {
+			if (booted) return
+			booted = true
+			import('../scripts/init-siri-wave.ts').then((module) =>
+				module.startSiriWave(container),
+			)
+		}
 
-  this.MAX=this.height/2
-  this.speed=opt.speed||0.05
-  this.amplitude=opt.amplitude||1
+		if ('IntersectionObserver' in window) {
+			const observer = new IntersectionObserver(
+				(entries) => {
+					if (!entries.some((entry) => entry.isIntersecting)) return
+					observer.disconnect()
+					runWhenIdle(boot)
+				},
+				{ rootMargin: '160px' },
+			)
 
-  this.canvas=document.createElement('canvas')
-  this.canvas.width=this.width
-  this.canvas.height=this.height
-  this.canvas.style.width="100%"
-  this.canvas.style.height=(this.height/this.ratio)+"px"
-
-  this.container.appendChild(this.canvas)
-  this.ctx=this.canvas.getContext('2d')
-
-  this.curves=[]
-  for(var i=0;i<SiriWave9.prototype.COLORS.length;i++){
-    var color=SiriWave9.prototype.COLORS[i]
-    for(var j=0;j<(3*Math.random())|0;j++){
-      this.curves.push(new SiriWave9Curve({controller:this,color:color}))
-    }
-  }
-
-  if(opt.autostart){this.start()}
-}
-SiriWave9.prototype._clear=function(){
-  this.ctx.globalCompositeOperation='destination-out'
-  this.ctx.fillRect(0,0,this.width,this.height)
-  this.ctx.globalCompositeOperation='lighter'
-}
-SiriWave9.prototype._draw=function(){
-  if(this.run===false)return
-  this._clear()
-  for(var i=0;i<this.curves.length;i++){
-    this.curves[i].draw()
-  }
-  requestAnimationFrame(this._draw.bind(this))
-}
-SiriWave9.prototype.start=function(){
-  this.tick=0
-  this.run=true
-  this._draw()
-}
-SiriWave9.prototype.stop=function(){
-  this.tick=0
-  this.run=false
-}
-SiriWave9.prototype.COLORS=[
-  [32,133,252],
-  [94,252,169],
-  [253,71,103]
-]
-
-new SiriWave9({
-  height:120,
-  speed:0.01,
-  amplitude:1,
-  container:document.getElementById('wave-container'),
-  autostart:true
-})
+			observer.observe(container)
+		} else {
+			runWhenIdle(boot)
+		}
+	}
 </script>

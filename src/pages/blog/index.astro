@@ -1,14 +1,14 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import siteMetadata from '../../data/siteMetadata'
 import Link from '../../components/Link.astro'
 import Views from '../../components/Views'
 
-const content = await getCollection("posts");
+const content = await getCollection('posts')
 const posts = content.sort(
-	(a, b) => b.data.published.getTime() - a.data.published.getTime()
-);
+	(a, b) => b.data.published.getTime() - a.data.published.getTime(),
+)
 ---
 
 <BaseLayout
@@ -35,7 +35,7 @@ const posts = content.sort(
 								<Link href={`/blog/${post.data.slug}`}>{post.data.title}</Link>
 							</td>
 							<td class="p-4">
-								<Views slug={post.data.slug} client:load />
+								<Views slug={post.data.slug} client:visible />
 							</td>
 						</tr>
 					))

@@ -1,6 +1,9 @@
 ---
 import siteMetadata from '../data/siteMetadata'
 import { Image } from 'astro:assets'
+import quotes from '../data/quotes/index.json'
+
+const randomQuote = quotes[Math.floor(Math.random() * quotes.length)] ?? null
 ---
 
 <div
@@ -50,5 +53,29 @@ import { Image } from 'astro:assets'
 				))
 			}
 		</div>
+		{
+			randomQuote && (
+				<p class="mt-2 text-sm text-dracula-cullen/80">
+					<span class="italic">{randomQuote.quote}</span>
+					{randomQuote.source && (
+						<>
+							<span class="mx-1">—</span>
+							{randomQuote.link ? (
+								<a
+									href={randomQuote.link}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="text-dracula-vanHelsing hover:underline"
+								>
+									{randomQuote.source}
+								</a>
+							) : (
+								<span>{randomQuote.source}</span>
+							)}
+						</>
+					)}
+				</p>
+			)
+		}
 	</div>
 </div>
