@@ -61,7 +61,7 @@ const ogImage =
 	content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 />
 {title ? <title>{pageTitle}</title> : null}
-{excerpt ? <meta name="excerpt" content={excerpt} /> : null}
+{excerpt ? <meta name="description" content={excerpt} /> : null}
 <meta name="generator" content={Astro.generator} />
 <link rel="canonical" href={canonicalURL} />
 <link
@@ -97,7 +97,7 @@ const ogImage =
 <meta property="og:locale" content={siteMetadata.locale} />
 <meta property="og:type" content={type} />
 <meta property="og:title" content={title} />
-<meta property="og:excerpt" content={excerpt} />
+<meta property="og:description" content={excerpt} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:site_name" content={siteMetadata.name} />
 <meta name="og:image" content={ogImage} />
@@ -114,7 +114,7 @@ const ogImage =
 	content={type == "article" ? twitter.author : twitter.site}
 />
 <meta name="twitter:title" content={title} />
-<meta name="twitter:excerpt" content={excerpt} />
+<meta name="twitter:description" content={excerpt} />
 <meta name="twitter:image" content={ogImage} />
 
 {/*JSON-LD*/}
