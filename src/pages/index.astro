@@ -5,6 +5,16 @@ import Link from '../components/Link.astro'
 import lyrics from '../data/lyrics/index.json'
 
 const randomLyric = lyrics[Math.floor(Math.random() * lyrics.length)] ?? null
+
+const getBadgeAriaLabel = (section: string, url: string) => {
+	try {
+		const parsed = new URL(url)
+		const host = parsed.hostname.replace(/^www\./, '')
+		return `${section}: ${host}`
+	} catch {
+		return section
+	}
+}
 ---
 
 <BaseLayout
@@ -54,6 +64,7 @@ const randomLyric = lyrics[Math.floor(Math.random() * lyrics.length)] ?? null
 						<li>
 							<a
 								href={badge.url}
+								aria-label={getBadgeAriaLabel('Donate', badge.url)}
 								class="block w-[88px] h-[31px] hover:opacity-80 transition"
 							>
 								<img
@@ -73,6 +84,7 @@ const randomLyric = lyrics[Math.floor(Math.random() * lyrics.length)] ?? null
 						<li>
 							<a
 								href={badge.url}
+								aria-label={getBadgeAriaLabel('Social', badge.url)}
 								class="block w-[88px] h-[31px] hover:opacity-80 transition"
 							>
 								<img
@@ -92,6 +104,7 @@ const randomLyric = lyrics[Math.floor(Math.random() * lyrics.length)] ?? null
 						<li>
 							<a
 								href={badge.url}
+								aria-label={getBadgeAriaLabel('Uses', badge.url)}
 								class="block w-[88px] h-[31px] hover:opacity-80 transition"
 							>
 								<img
@@ -111,6 +124,7 @@ const randomLyric = lyrics[Math.floor(Math.random() * lyrics.length)] ?? null
 						<li>
 							<a
 								href={badge.url}
+								aria-label={getBadgeAriaLabel('Stack', badge.url)}
 								class="block w-[88px] h-[31px] hover:opacity-80 transition"
 							>
 								<img
