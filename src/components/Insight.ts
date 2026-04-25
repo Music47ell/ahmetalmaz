@@ -1,5 +1,5 @@
-import Bowser from 'bowser'
 import { API_BASE_URL } from 'astro:env/client'
+import Bowser from 'bowser'
 
 const TIMEOUT = 30 * 60 * 1000
 const HEARTBEAT_INTERVAL = 5000 // 5s
@@ -44,11 +44,7 @@ const getClientInfo = () => {
 	const platform = parser.getPlatform()
 	const engine = parser.getEngine()
 
-	// Fix deviceType: Bowser might return undefined or 'bot' for platform.type
-	// Default to 'desktop' instead of 'Unknown' to avoid confusion
 	let deviceType = platform.type || 'desktop'
-	
-	// Normalize deviceType values - bots shouldn't reach here anyway
 	if (deviceType === 'bot') {
 		deviceType = 'desktop'
 	}
@@ -61,13 +57,16 @@ const getClientInfo = () => {
 		browserVersion: browser.version || 'Unknown',
 		engine: engine.name || 'Unknown',
 		engineVersion: engine.version || 'Unknown',
-		deviceType: deviceType,
+		deviceType,
 		deviceVendor: platform.vendor || 'Unknown',
 		deviceModel: platform.model || 'Unknown',
 		userAgent: navigator.userAgent,
 		screenResolution: `${window.screen.width}x${window.screen.height}`,
 	}
 }
+
+const removeTrailingSlash = (value: string) =>
+	value === '/' ? '/' : value.replace(/\/+$/, '')
 
 /**
  * Cleans and normalizes a referrer URL. Returns "Direct" if:
@@ -83,29 +82,30 @@ const cleanReferrer = (referrer: string): string => {
 	try {
 		const url = new URL(referrer)
 		const hostname = url.hostname.toLowerCase()
+		const port = url.port
 
-		// Filter out localhost and development URLs
 		if (
 			hostname === 'localhost' ||
 			hostname === '127.0.0.1' ||
 			hostname === '0.0.0.0' ||
 			hostname.endsWith('.localhost') ||
-			hostname.includes(':4321') || // Astro dev port
-			hostname.includes(':3000') || // Common dev ports
-			hostname.includes(':8080')
+			port === '4321' ||
+			port === '3000' ||
+			port === '8080'
 		) {
 			return 'Direct'
 		}
 
-		return referrer
+		const normalizedPath = removeTrailingSlash(url.pathname)
+		const normalizedReferrer = `${url.origin}${normalizedPath === '/' ? '' : normalizedPath}${url.search}${url.hash}`
+		return removeTrailingSlash(normalizedReferrer)
 	} catch {
-		// Unparseable URL — treat as direct
 		return 'Direct'
 	}
 }
 
 const sendEvent = async (
-	payload: Record<string, any>,
+	payload: Record<string, unknown>,
 	path = '/correct-horse-battery-staple',
 ) => {
 	const headers: Record<string, string> = { 'Content-Type': 'application/json' }
@@ -118,9 +118,7 @@ const sendEvent = async (
 	})
 }
 
-// --- PAGEVIEW TRACKING ---
 export const trackEvent = (eventType: string, eventName = '', extra = {}) => {
-	// Don't track in development
 	if (import.meta.env.DEV) return
 
 	const visitorId = getVisitorId()
@@ -133,7 +131,7 @@ export const trackEvent = (eventType: string, eventName = '', extra = {}) => {
 		eventType,
 		eventName,
 		title: document.title,
-		slug: window.location.pathname, // ALWAYS pathname only, never full URL
+		slug: removeTrailingSlash(window.location.pathname),
 		referrer: cleanReferrer(document.referrer),
 		...clientInfo,
 		...extra,
@@ -141,18 +139,15 @@ export const trackEvent = (eventType: string, eventName = '', extra = {}) => {
 }
 
 export const trackPageView = (statusCode = 200) => {
-	// Don't track in development
 	if (import.meta.env.DEV) return
-
 	trackEvent('pageview', '', { statusCode })
 }
 
-// --- HEARTBEAT TRACKING ---
 export const trackHeartbeat = () => {
 	if (import.meta.env.DEV) return
 
 	const visitorId = getVisitorId()
-	const slug = window.location.pathname
+	const slug = removeTrailingSlash(window.location.pathname)
 
 	fetch(`${API_BASE_URL}/heartbeat`, {
 		method: 'POST',
@@ -168,7 +163,7 @@ export const startHeartbeat = () => {
 	if (import.meta.env.DEV) return
 	if (heartbeatTimer) return
 
-	trackHeartbeat() // send immediately
+	trackHeartbeat()
 
 	heartbeatTimer = window.setInterval(() => {
 		if (document.visibilityState === 'visible') {
