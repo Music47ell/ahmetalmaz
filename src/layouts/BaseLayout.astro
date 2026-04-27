@@ -14,6 +14,7 @@ export interface Props {
 	wordCount?: number
 	image?: string | undefined
 	type?: 'website' | 'article'
+	noindex?: boolean
 }
 
 const {
@@ -24,6 +25,7 @@ const {
 	updated,
 	wordCount,
 	type = 'website',
+	noindex = false,
 } = Astro.props
 ---
 
@@ -37,6 +39,7 @@ const {
 			updated={updated ?? new Date()}
 			wordCount={wordCount}
 			type={type}
+			noindex={noindex}
 		/>
 	</head>
 	<body class="bg-dracula-nosferatu text-dracula-cullen antialiased">

@@ -43,15 +43,15 @@ const getBadgeAriaLabel = (section: string, url: string) => {
 						<span class="whitespace-pre-line">{randomLyric.lyric}</span>
 					</p>
 					<span class="mx-1">—</span>
+					<span>{randomLyric.band} · </span>
 						<a
 							href={randomLyric.link}
 							class="text-dracula-vanHelsing hover:underline"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							{randomLyric.band}
+							 {randomLyric.song}
 						</a>
-						<span> · {randomLyric.song}</span>
 				</div>
 			)
 		}
