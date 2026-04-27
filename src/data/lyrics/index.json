@@ -16,7 +16,7 @@
 	{
 		"song": "And The Consequence Macabre",
 		"band": "Carach Angren",
-		"lyric": "Haphazardly in anxiety I maim his face extremely and still he's laughing loudly\nHis clothes look rather old; a stench like\ndead things and a ragged captain's coat.\nThis dream is so ghastly and surreal.",
+		"lyric": "Haphazardly in anxiety I maim his face extremely\nand still he's laughing loudly\nHis clothes look rather old; a stench like\ndead things and a ragged captain's coat.\nThis dream is so ghastly and surreal.",
 		"date": "2022-06-04T13:44:59.257694+00:00",
 		"link": "https://www.youtube.com/watch?v=Li9K006to10"
 	},
@@ -54,5 +54,33 @@
 		"lyric": "Reminding the mortal of death\nI am the spore of your pride\nAn angel heaven sent\nThe master of all\nI am the urge of the flesh",
 		"date": "2022-06-04T20:00:50.656524+00:00",
 		"link": "https://www.youtube.com/watch?v=vkc9fd7u56g"
+	},
+	{
+		"song": "Poison",
+		"band": "Asking Alexandria",
+		"lyric": "These words, they fall off my tongue like a poison\nI hope they kill you all, I hope I never see your faces again",
+		"date": "2026-04-26T19:09:52.011645+00:00",
+		"link": "https://www.youtube.com/watch?v=92gKGj-9aUI"
+	},
+	{
+		"song": "Moving On",
+		"band": "Asking Alexandria",
+		"lyric": "A boy of anguish, now he's a man of soul\nTraded in his misery for the lonely life of the road",
+		"date": "2026-04-26T19:20:27.354111+00:00",
+		"link": "https://www.youtube.com/watch?v=i9lYwVm1NDg"
+	},
+	{
+		"song": "The Road",
+		"band": "Asking Alexandria",
+		"lyric": "Save me, can anyone save me? I don't know who I am anymore\nThis was supposed to be the dream\nYou don't see the pain in my eyes?\nYou don't hear the pain in my words?\nI'm just stuck here cold and alone with no one beside me\nAnd I want to go home",
+		"date": "2026-04-26T19:22:02.932089+00:00",
+		"link": "https://www.youtube.com/watch?v=Ew9RW9yngWA"
+	},
+	{
+		"song": "The Death of Me",
+		"band": "Asking Alexandria",
+		"lyric": "The tears have left a blur that I can't explain\nThe pain has left a hole in which my heart should've been\nI'm blind with rage and I can't shake this feeling\nIrrational, impetuous, intemperate",
+		"date": "2026-04-26T19:26:49.726840+00:00",
+		"link": "https://www.youtube.com/watch?v=Xl1lS6B9pMc"
 	}
 ]

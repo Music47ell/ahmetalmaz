@@ -11,7 +11,7 @@ const posts = (await getCollection('posts')) as CollectionEntry<'posts'>[]
 const { title, excerpt } = Astro.props
 ---
 
-<BaseLayout title={title} excerpt={excerpt} type="website" slug="/404">
+<BaseLayout title={title} excerpt={excerpt} type="website" slug="/404" noindex={true}>
 	<h1 class="text-4xl font-bold p-4 text-center">{title}</h1>
 	<main class="overflow-hidden border border-dracula-dracula">
 		<table class="w-full border-collapse">

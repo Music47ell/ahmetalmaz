@@ -1,8 +1,6 @@
 ---
 import siteMetadata from '../data/siteMetadata'
 
-import { API_BASE_URL } from 'astro:env/client'
-
 const { status } = Astro.response
 
 const isProduction = import.meta.env.PROD
@@ -15,22 +13,10 @@ export interface Props {
 	updated: Date
 	wordCount: number | undefined
 	type: string
+	noindex?: boolean
 }
 
-function formatOgDate(input: string | Date) {
-	const d = new Date(input)
-	if (isNaN(d.getTime())) return ''
-
-	return d
-		.toLocaleDateString('en-US', {
-			month: 'short',
-			day: '2-digit',
-			year: 'numeric',
-		})
-		.toUpperCase()
-}
-
-const { title, excerpt, slug, published, updated, wordCount, type } =
+const { title, excerpt, slug, published, updated, wordCount, type, noindex = false } =
 	Astro.props
 
 const pageTitle =
@@ -40,36 +26,47 @@ const pageTitle =
 			? title
 			: title
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const canonicalHref = canonicalURL.toString()
 const twitter = {
-	site: '@',
-	author: siteMetadata.username,
+	site: `@${siteMetadata.username}`,
+	author: `@${siteMetadata.username}`,
 }
 
-const formattedDate = formatOgDate(published)
-
-const ogImage =
-	`${API_BASE_URL}/og` +
-	`?title=${encodeURIComponent(title)}` +
-	`&excerpt=${encodeURIComponent(excerpt)}` +
-	`&pubdate=${encodeURIComponent(formattedDate)}`
+const normalizedSlug = slug.replace(/^\/|\/$/g, '')
+const ogImageSlug =
+	normalizedSlug === ''
+		? 'home'
+		: normalizedSlug.startsWith('blog/')
+			? normalizedSlug.replace(/^blog\//, '')
+			: normalizedSlug
+const ogImage = new URL(`/images/og/${ogImageSlug}.png`, Astro.site)
+const ogImageHref = ogImage.toString()
+const siteId = `${siteMetadata.siteUrl}#website`
+const personId = `${siteMetadata.siteUrl}#person`
+const organizationId = `${siteMetadata.siteUrl}#organization`
+const pageId = `${canonicalHref}#webpage`
+const breadcrumbId = `${canonicalHref}#breadcrumb`
+const imageId = `${ogImageHref}#primaryimage`
+const sameAs = siteMetadata.socials.map((social) => social.url)
 ---
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta
 	name="robots"
-	content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+	content={`${noindex ? 'noindex, nofollow' : 'index, follow'}, max-image-preview:large, max-snippet:-1, max-video-preview:-1`}
 />
 {title ? <title>{pageTitle}</title> : null}
 {excerpt ? <meta name="description" content={excerpt} /> : null}
 <meta name="generator" content={Astro.generator} />
-<link rel="canonical" href={canonicalURL} />
+{!noindex ? <link rel="canonical" href={canonicalHref} /> : null}
 <link
 	rel="alternate"
 	type="application/rss+xml"
 	title={`${siteMetadata.name} » RSS Feed`}
 	href="/feed.xml"
 />
+<link rel="sitemap" href="/sitemap.xml" />
 
 {/*Favicons Meta Tags*/}
 <link
@@ -98,9 +95,12 @@ const ogImage =
 <meta property="og:type" content={type} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={excerpt} />
-<meta property="og:url" content={canonicalURL} />
+<meta property="og:url" content={canonicalHref} />
 <meta property="og:site_name" content={siteMetadata.name} />
-<meta name="og:image" content={ogImage} />
+<meta property="og:image" content={ogImageHref} />
+<meta property="og:image:alt" content={title} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 
 {/*Fediverse Tags*/}
 <link rel="me" href="https://mastodon.social/@Music47ell" />
@@ -113,9 +113,7 @@ const ogImage =
 	name="twitter:site"
 	content={type == "article" ? twitter.author : twitter.site}
 />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={excerpt} />
-<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:creator" content={twitter.author} />
 
 {/*JSON-LD*/}
 <script
@@ -124,105 +122,114 @@ const ogImage =
 		"@context": "https://schema.org",
 		"@graph": [
 			{
-				"@type": "Article",
-				"@id": `${siteMetadata.siteUrl}/${slug}`,
-				isPartOf: {
-					"@id": `${siteMetadata.siteUrl}/${slug}`,
-				},
-				author: {
-					name: siteMetadata.name,
-					"@id": siteMetadata.siteUrl,
-				},
-				headline: title,
-				datePublished: published,
-				dateModified: updated,
-				mainEntityOfPage: {
-					"@id": `${siteMetadata.siteUrl}/${slug}`,
-				},
-				wordCount: wordCount,
-				publisher: {
-					"@id": siteMetadata.siteUrl,
-				},
-				image: {
-					"@id": ogImage,
-				},
-				thumbnailUrl: ogImage,
-				inLanguage: siteMetadata.locale,
-			},
-			{
 				"@type": "WebPage",
-				"@id": `${siteMetadata.siteUrl}/${slug}`,
-				url: `${siteMetadata.siteUrl}/${slug}`,
+				"@id": pageId,
+				url: canonicalHref,
 				name: title,
 				isPartOf: {
-					"@id": `${siteMetadata.siteUrl}/${slug}`,
+					"@id": siteId,
 				},
 				primaryImageOfPage: {
-					"@id": ogImage,
+					"@id": imageId,
 				},
 				image: {
-					"@id": ogImage,
+					"@id": imageId,
 				},
-				thumbnailUrl: ogImage,
+				thumbnailUrl: ogImageHref,
 				datePublished: published,
 				dateModified: updated,
-				excerpt: excerpt,
+				description: excerpt,
 				inLanguage: siteMetadata.locale,
 				potentialAction: [
 					{
 						"@type": "ReadAction",
-						target: [`${siteMetadata.siteUrl}/${slug}`],
+						target: [canonicalHref],
 					},
 				],
 			},
+			...(type === 'article'
+				? [
+					{
+						"@type": "BlogPosting",
+						"@id": `${canonicalHref}#article`,
+						isPartOf: {
+							"@id": pageId,
+						},
+						author: {
+							"@id": personId,
+						},
+						headline: title,
+						datePublished: published,
+						dateModified: updated,
+						mainEntityOfPage: {
+							"@id": pageId,
+						},
+						wordCount: wordCount,
+						publisher: {
+							"@id": organizationId,
+						},
+						image: {
+							"@id": imageId,
+						},
+						thumbnailUrl: ogImageHref,
+						inLanguage: siteMetadata.locale,
+					},
+				]
+				: []),
 			{
 				"@type": "ImageObject",
 				inLanguage: "en-US",
-				"@id": ogImage,
-				url: ogImage,
-				contentUrl: ogImage,
+				"@id": imageId,
+				url: ogImageHref,
+				contentUrl: ogImageHref,
 				width: 1200,
-				height: 628,
+				height: 630,
 				caption: title,
 			},
 			{
 				"@type": "BreadcrumbList",
-				"@id": `${siteMetadata.siteUrl}/${slug}#breadcrumb`,
+				"@id": breadcrumbId,
 				itemListElement: [
 					{
 						"@type": "ListItem",
 						position: 1,
-						name: "Blog",
+						name: "Home",
 						item: siteMetadata.siteUrl,
 					},
 					{
 						"@type": "ListItem",
 						position: 2,
 						name: title,
+						item: canonicalHref,
 					},
 				],
 			},
 			{
 				"@type": "WebSite",
-				"@id": siteMetadata.siteUrl,
+				"@id": siteId,
 				url: siteMetadata.siteUrl,
 				name: siteMetadata.name,
-				excerpt: siteMetadata.excerpt,
+				description: siteMetadata.description,
 				publisher: {
-					"@id": siteMetadata.siteUrl,
+					"@id": organizationId,
 				},
-				inLanguage: "en-US",
+				inLanguage: siteMetadata.locale,
+				potentialAction: {
+					"@type": "SearchAction",
+					target: `${siteMetadata.siteUrl}/blog`,
+					"query-input": "required name=search_term_string",
+				},
 			},
 			{
 				"@type": "Organization",
-				"@id": siteMetadata.siteUrl,
+				"@id": organizationId,
 				name: siteMetadata.name,
 				url: siteMetadata.siteUrl,
-				sameAs: [siteMetadata.socials.map((url) => url.url)],
+				sameAs,
 			},
 			{
 				"@type": "Person",
-				"@id": siteMetadata.siteUrl,
+				"@id": personId,
 				name: siteMetadata.name,
 				image: {
 					"@type": "ImageObject",
@@ -232,8 +239,8 @@ const ogImage =
 					contentUrl: `${siteMetadata.siteUrl}${siteMetadata.avatar}`,
 					caption: siteMetadata.name,
 				},
-				excerpt: siteMetadata.excerpt,
-				sameAs: [siteMetadata.socials.map((url) => url.url)],
+				description: siteMetadata.description,
+				sameAs,
 			},
 		],
 	})}
