@@ -57,8 +57,10 @@ export default function NowPlaying() {
 			audioRef.current.play()
 			setPlaying(true)
 			if (!waveRef.current) {
+				const width = Math.min(Math.max(window.innerWidth - 32, 280), 640)
 				waveRef.current = new SiriWave9({
 					container: waveContainerRef.current,
+					width,
 					height: 120,
 					speed: 0.05,
 					amplitude: 1,
@@ -190,13 +192,15 @@ export default function NowPlaying() {
 
 		constructor(opt: {
 			container: HTMLDivElement
+			width?: number
 			height?: number
 			speed?: number
 			amplitude?: number
 			autostart?: boolean
 		}) {
 			this.container = opt.container
-			this.width = this.ratio * this.container.offsetWidth
+			const estimatedWidth = Math.min(Math.max(window.innerWidth - 32, 280), 640)
+			this.width = this.ratio * (opt.width ?? estimatedWidth)
 			this.height = this.ratio * (opt.height || 120)
 			this.MAX = this.height / 2
 			this.speed = opt.speed || 0.05

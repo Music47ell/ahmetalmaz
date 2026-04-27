@@ -1,8 +1,6 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
-@import 'tailwindcss';
-
 @theme {
 	--color-turkyie: #e30a17;
 
