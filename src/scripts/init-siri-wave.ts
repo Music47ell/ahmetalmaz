@@ -87,12 +87,14 @@ class SiriWave9 {
 
 	constructor(opt: {
 		container: HTMLElement
+		width?: number
 		height?: number
 		speed?: number
 		amplitude?: number
 		autostart?: boolean
 	}) {
-		this.width = this.ratio * opt.container.offsetWidth
+		const estimatedWidth = Math.min(Math.max(window.innerWidth - 32, 280), 640)
+		this.width = this.ratio * (opt.width ?? estimatedWidth)
 		this.height = this.ratio * (opt.height || 120)
 		this.max = this.height / 2
 		this.speed = opt.speed || 0.05
@@ -146,12 +148,14 @@ class SiriWave9 {
 export const startSiriWave = (container: HTMLElement) => {
 	if (container.dataset.waveInitialized === 'true') return
 	container.dataset.waveInitialized = 'true'
+	const width = Math.min(Math.max(window.innerWidth - 32, 280), 640)
 
 	new SiriWave9({
 		height: 120,
 		speed: 0.01,
 		amplitude: 1,
 		container,
+		width,
 		autostart: true,
 	})
 }
