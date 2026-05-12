@@ -246,7 +246,8 @@ const sameAs = siteMetadata.socials.map((social) => social.url)
 	})}
 />
 
-{isProduction ? <astro-analytics data-status={status}></astro-analytics> : null}
+{isProduction ? <script data-goatcounter="https://stats.ahmetalmaz.com/count"
+        async src="//stats.ahmetalmaz.com/count.js"></script> : null}
 
 <script>
 	if (import.meta.env.PROD) {
