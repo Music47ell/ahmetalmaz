@@ -196,10 +196,11 @@ async function generateContentPages() {
 	const folders = await fs.readdir(CONTENT_DIR);
 
 	for (const folder of folders) {
-		const mdPath = path.join(CONTENT_DIR, folder, "index.md");
+		const mdPath = path.join(CONTENT_DIR, folder, "index.mdx");
+		const fallbackPath = path.join(CONTENT_DIR, folder, "index.md");
 
 		try {
-			const file = await fs.readFile(mdPath, "utf-8");
+			const file = await fs.readFile(mdPath, "utf-8").catch(() => fs.readFile(fallbackPath, "utf-8"));
 			const { data } = matter(file);
 
 			const title = data.title;
