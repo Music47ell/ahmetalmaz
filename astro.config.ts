@@ -43,7 +43,7 @@ export default defineConfig({
 	},
 
 	build: {
-		format: 'file',
+		format: 'directory',
 	},
 
 	prefetch: {
