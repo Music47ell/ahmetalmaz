@@ -42,16 +42,19 @@ const {
 			noindex={noindex}
 		/>
 	</head>
-	<body class="bg-dracula-nosferatu text-dracula-cullen antialiased">
-		<div class="flex flex-col justify-between">
+	<body class="min-h-screen flex flex-col bg-dracula-nosferatu text-dracula-cullen antialiased">
 			<Header />
 			<Nav />
 			<div
-				class="container mx-auto flex max-w-screen-sm gap-4 flex-col py-8 px-4 print:my-0 print:items-center print:justify-center print:py-0 print:px-0"
+				class="flex-1 container mx-auto flex max-w-screen-sm gap-4 flex-col justify-center py-8 px-4 print:my-0 print:items-center print:justify-center print:py-0 print:px-0"
 			>
 				<slot />
 			</div>
 			<Footer />
-		</div>
+		<script
+			defer
+			data-auto-init
+			src="https://cdn.jsdelivr.net/npm/@polar-sh/checkout@latest/dist/embed.global.js"
+		></script>
 	</body>
 </html>

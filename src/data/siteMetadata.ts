@@ -5,7 +5,8 @@ const siteMetadata = {
 	instance: 'mastodon.social',
 	siteUrl: 'https://ahmetalmaz.com',
 	apiUrl: 'https://api.ahmetalmaz.com',
-	donationUrl: 'https://github.com/sponsors/Music47ell',
+	polarCheckoutUrl: 'https://buy.polar.sh/polar_cl_zzR6AO8LWGIDhHBbqOeaKz3hQZ59Rs5TvSUmo2XtFYh',
+	polarSuccessUrl: 'https://ahmetalmaz.com/success?checkout_id={CHECKOUT_ID}',
 	locale: 'en-US',
 	avatar: '/images/others/me.png',
 	altAvatar: '/images/others/doomface.gif',
@@ -22,12 +23,6 @@ const siteMetadata = {
 			title: 'Resume',
 			href: 'https://ahmetalmaz.com/ahmetalmaz-resume.pdf',
 			activePath: /^\/resume*/,
-		},
-	],
-	donate: [
-		{
-			img: '/images/badges/donate.gif',
-			url: 'https://github.com/sponsors/Music47ell',
 		},
 	],
 	social: [

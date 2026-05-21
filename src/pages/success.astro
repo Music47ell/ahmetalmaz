@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+
+const title = 'Payment Successful'
+const excerpt = 'Thank you for your support!'
+---
+
+<BaseLayout title={title} excerpt={excerpt} slug="/success">
+	<div class="flex flex-col items-center justify-center gap-4 py-12 text-center">
+		<div class="text-6xl">🎉</div>
+		<h1 class="text-2xl font-bold text-[#f8f8f2]">Payment Successful!</h1>
+		<p class="text-[#6272a4] max-w-md">
+			Thank you for your support! Your payment has been processed successfully.
+		</p>
+		<a href="/" class="inline-flex items-center px-5 py-2 bg-dracula-dracula text-dracula-nosferatu text-sm font-semibold rounded-md transition-colors duration-200">
+			Go Home
+		</a>
+	</div>
+</BaseLayout>
