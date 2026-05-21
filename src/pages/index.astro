@@ -56,9 +56,9 @@ const getBadgeAriaLabel = (section: string, url: string) => {
 			)
 		}
 
-		<div class="p-6 border border-dracula-dracula">
+<!-- 		<div class="p-6 border border-dracula-dracula">
 			<h2 class="text-xl font-semibold mb-4">Donate</h2>
-<!-- 			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
+			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
 				<li>
 					<a
 						href={siteMetadata.polarCheckoutUrl}
@@ -72,67 +72,75 @@ const getBadgeAriaLabel = (section: string, url: string) => {
 						/>
 					</a>
 				</li>
-			</ul> -->
-			<h2 class="text-xl font-semibold mb-4">Social</h2>
-			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
-				{
-					siteMetadata.social.map((badge) => (
-						<li>
-							<a
-								href={badge.url}
-								aria-label={getBadgeAriaLabel('Social', badge.url)}
-								class="block w-[88px] h-[31px] hover:opacity-80 transition"
-							>
-								<img
-									src={badge.img}
-									alt=""
-									class="w-full h-full object-contain"
-								/>
-							</a>
-						</li>
-					))
-				}
 			</ul>
-			<h2 class="text-xl font-semibold mb-4">Uses</h2>
-			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
-				{
-					siteMetadata.uses.map((badge) => (
-						<li>
-							<a
-								href={badge.url}
-								aria-label={getBadgeAriaLabel('Uses', badge.url)}
-								class="block w-[88px] h-[31px] hover:opacity-80 transition"
-							>
-								<img
-									src={badge.img}
-									alt=""
-									class="w-full h-full object-contain"
-								/>
-							</a>
-						</li>
-					))
-				}
-			</ul>
-			<h2 class="text-xl font-semibold mb-4">Stack</h2>
-			<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside mb-4">
-				{
-					siteMetadata.stack.map((badge) => (
-						<li>
-							<a
-								href={badge.url}
-								aria-label={getBadgeAriaLabel('Stack', badge.url)}
-								class="block w-[88px] h-[31px] hover:opacity-80 transition"
-							>
-								<img
-									src={badge.img}
-									alt=""
-									class="w-full h-full object-contain"
-								/>
-							</a>
-						</li>
-					))
-				}
-			</ul>
+		</div> -->
+		<div class="p-6 border border-dracula-dracula space-y-6">
+			<div>
+				<h2 class="text-xl font-semibold mb-4">Social</h2>
+				<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside">
+					{
+						siteMetadata.social.map((badge) => (
+							<li>
+								<a
+									href={badge.url}
+									aria-label={getBadgeAriaLabel('Social', badge.url)}
+									class="block w-[88px] h-[31px] hover:opacity-80 transition"
+								>
+									<img
+										src={badge.img}
+										alt=""
+										class="w-full h-full object-contain"
+									/>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div>
+				<h2 class="text-xl font-semibold mb-4">Uses</h2>
+				<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside">
+					{
+						siteMetadata.uses.map((badge) => (
+							<li>
+								<a
+									href={badge.url}
+									aria-label={getBadgeAriaLabel('Uses', badge.url)}
+									class="block w-[88px] h-[31px] hover:opacity-80 transition"
+								>
+									<img
+										src={badge.img}
+										alt=""
+										class="w-full h-full object-contain"
+									/>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+			<div>
+				<h2 class="text-xl font-semibold mb-4">Stack</h2>
+				<ul class="grid grid-cols-3 md:grid-cols-5 gap-2 list-inside">
+					{
+						siteMetadata.stack.map((badge) => (
+							<li>
+								<a
+									href={badge.url}
+									aria-label={getBadgeAriaLabel('Stack', badge.url)}
+									class="block w-[88px] h-[31px] hover:opacity-80 transition"
+								>
+									<img
+										src={badge.img}
+										alt=""
+										class="w-full h-full object-contain"
+									/>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
 		</div>
 	</main>
 </BaseLayout>

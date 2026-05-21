@@ -7,22 +7,14 @@ import siteMetadata from '../data/siteMetadata'
 const isProduction = import.meta.env.PROD
 ---
 
-<footer class="border-t border-dracula-dracula mt-auto">
-        <div class="max-w-3xl mx-auto px-4 py-6">
-
-            <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
-                <div class="text-center sm:text-left">
-                    <p class="text-[#f8f8f2] text-sm font-medium mb-1">
-                        <span class="text-[#bd93f9]">⚡</span> Sponsor My Work
-                    </p>
-                </div>
-<!--                 <a href={siteMetadata.polarCheckoutUrl} data-polar-checkout data-polar-checkout-theme="dark" class="block w-[88px] h-[31px] shrink-0">
-                    <img src="/images/badges/donate.gif" alt="" class="w-full h-full object-contain" />
-                </a> -->
-            </div>
-            {isProduction ? 
-            <div class="grid grid-cols-1 gap-y-2 mt-6">
-		<Online client:idle/>
+<footer class="mt-auto">
+	{isProduction ? 
+	<div class="border-t border-dracula-dracula">
+		<div class="max-w-3xl mx-auto px-4 py-6">
+			<div class="grid grid-cols-1 gap-y-2">
+				<Online client:idle/>
+			</div>
+		</div>
 	</div>
 	: null}
     </footer>
