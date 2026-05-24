@@ -36,12 +36,10 @@ const siteMetadata = {
 	uses: [
 		{ img: '/images/badges/brave.gif', url: 'https://brave.com/' },
 		{ img: '/images/badges/vscode.gif', url: 'https://librewolf.net/' },
-		{ img: '/images/badges/bitwarden.gif', url: 'https://bitwarden.com/' },
 		{ img: '/images/badges/navidrome.gif', url: 'https://www.navidrome.org/' },
 	],
 	stack: [
 		{ img: '/images/badges/astro.png', url: 'https://astro.build/' },
-		{ img: '/images/badges/caddy.png', url: 'https://caddyserver.com/' },
 		{ img: '/images/badges/docker.png', url: 'https://www.docker.com/' },
 		{ img: '/images/badges/debian.gif', url: 'https://www.debian.org/' },
 		{

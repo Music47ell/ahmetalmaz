@@ -22,7 +22,7 @@ const PostViews: React.FC<PostViewsProps> = ({
 
 		const fetchViews = async () => {
 			const res = await fetch(
-				`${API_BASE_URL}/insight/${encodeURIComponent(slug)}?t=${Date.now()}`,
+				`${API_BASE_URL}/goatcounter/slug/%2Fblog%2F${encodeURIComponent(slug)}?t=${Date.now()}`,
 				{
 					method: 'GET',
 					headers: {
@@ -33,7 +33,7 @@ const PostViews: React.FC<PostViewsProps> = ({
 			)
 
 			const data = await res.json()
-			return Number(data.views) || 0
+			return Number(data.count) || 0
 		}
 
 		const loadViews = async () => {

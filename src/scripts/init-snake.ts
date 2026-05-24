@@ -98,7 +98,7 @@ export const initSnake = () => {
 			if (y === i) {
 				div.setAttribute(
 					introAttributeNames[y] ?? '',
-					' . OKAY now CLICK the SNAKE! . ',
+					' . OKAY now FIND and CLICK on DOOMGUY! . ',
 				)
 				return
 			}

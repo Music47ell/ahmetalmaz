@@ -1,20 +1,8 @@
 ---
 import NowPlaying from './NowPlaying.astro'
 import NowWatching from './NowWatching.astro'
-import Online from './Online'
 import siteMetadata from '../data/siteMetadata'
-
-const isProduction = import.meta.env.PROD
 ---
 
 <footer class="mt-auto">
-	{isProduction ? 
-	<div class="border-t border-dracula-dracula">
-		<div class="max-w-3xl mx-auto px-4 py-6">
-			<div class="grid grid-cols-1 gap-y-2">
-				<Online client:idle/>
-			</div>
-		</div>
-	</div>
-	: null}
     </footer>

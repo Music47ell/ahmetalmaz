@@ -5,7 +5,6 @@ import OverviewItem from '../../../components/stats/Overview'
 import ReferrersStats from '../../../components/stats/analytics/ReferrersStats'
 import SlugsStats from '../../../components/stats/analytics/SlugsStats'
 import CountriesStats from '../../../components/stats/analytics/CountriesStats'
-import CitiesStats from '../../../components/stats/analytics/CitiesStats'
 import BrowsersStats from '../../../components/stats/analytics/BrowsersStats'
 import OperatingSystemsStats from '../../../components/stats/analytics/OperatingSystemsStats'
 import DeviceTypesStats from '../../../components/stats/analytics/DeviceTypesStats'
@@ -14,16 +13,8 @@ import { API_BASE_URL } from 'astro:env/client'
 
 const AnalyticsStats = () => {
 	const [data, setData] = useState<{
-		monthlyPageViewsStats: number
-		monthlyVisitsStats: number
-		monthlyVisitorsStats: number
-		monthlyVisitDurationStats: number
-		monthlyBounceRateStats: number
-		monthlyEntryPagesStats: { slug: string; title: string; total: number }[]
-		monthlyExitPagesStats: { slug: string; title: string; total: number }[]
-		monthlyLanguageStats: { language: string; total: number }[]
+		monthlyVisitors: number
 		monthlySlugs: { slug: string; title: string; total: number }[]
-		monthlyCities: { flag: string; city: string; total: number }[]
 		monthlyCountries: { flag: string; country: string; total: number }[]
 		monthlyReferrers: { referrer: string; total: number }[]
 		monthlyDeviceTypes: { type: string; total: number }[]
@@ -34,7 +25,7 @@ const AnalyticsStats = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(`${API_BASE_URL}/insight`, {
+				const response = await fetch(`${API_BASE_URL}/goatcounter/stats`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -60,56 +51,35 @@ const AnalyticsStats = () => {
 					Site Stats (Last 30 Days)
 				</h2>
 
-				<span className="text-xs text-yellow-400 tracking-wider whitespace-nowrap flex items-center">
+				<span className="text-xs text-yellow-400 tracking-wider whitespace-nowrap flex items-center gap-1">
 					<svg
 						role="img"
-						viewBox="0 0 24 24"
+						viewBox="0 0 417 429"
 						xmlns="http://www.w3.org/2000/svg"
-						className="h-6 w-6"
+						className="h-5 w-5"
 					>
-						<title>Powered by Turso</title>
+						<title>Powered by GoatCounter</title>
 						<path
-							fill="#4FF8D2"
-							d="m23.31.803-.563-.42-1.11 1.189-.891-1.286-.512.235.704 1.798-.326.35L18.082 0l-.574.284 2.25 4.836-2.108.741h-.05l-1.143-1.359-1.144 1.36H8.687l-1.144-1.36-1.146 1.363H6.36l-2.12-.745L6.491.284 5.919 0l-2.53 2.668-.327-.349.705-1.798-.512-.236-.89 1.287L1.253.382.69.804 2.42 3.69l-.89.939.311 2.375 2.061.787L3.9 8.817H1.947v.444l.755 1.078 1.197.433v6.971l3.057 4.55L7.657 24l1.101-1.606L9.9 24l.999-1.606L12 24l1.102-1.606L14.1 24l1.141-1.606L16.343 24l.701-1.706 3.058-4.55v-6.972l1.196-.433.756-1.078v-.444h-1.952l.003-1.03 2.054-.784.311-2.375-.89-.939zm-8.93 18.718H8.033l.793-1.615.794 1.615.793-1.083.793 1.083.794-1.083.793 1.083.794-1.083.793 1.083.793-1.615.794 1.615zm3.886-7.39-3.3 1.084-.143 3.061-2.827.627-2.826-.627-.142-3.06-3.3-1.085v-1.635l4.266 1.21-.052 4.126h4.109l-.052-4.127 4.266-1.209z"
+							fill="none"
+							stroke="#9a15a4"
+							strokeWidth="44.5"
+							d="M25.399,235.075l118.517,-135.285c0,0 -124.734,-57.004 -120.995,-58.98c182.412,-96.381 370.769,214.033 370.769,214.033l-24.839,65.501c0,0 -169.954,-0.509 -192.464,-75.727"
+						/>
+						<path
+							fill="none"
+							stroke="#9a15a4"
+							strokeWidth="44.5"
+							d="M179.11,406.252c-0.044,-36.273 38.389,-117.225 38.389,-117.225"
 						/>
 					</svg>
 				</span>
 			</div>
 
 			<>
-				<div className="grid gap-3 md:grid-cols-2">
-					<OverviewItem
-						label="Page Views"
-						value={data?.monthlyPageViewsStats ?? 0}
-					/>
-					<OverviewItem label="Visits" value={data?.monthlyVisitsStats ?? 0} />
-					<OverviewItem
-						label="Visitors"
-						value={data?.monthlyVisitorsStats ?? 0}
-					/>
-					<OverviewItem
-						label="Visit Duration"
-						value={
-							data?.monthlyVisitDurationStats
-								? (() => {
-										const totalMs = data.monthlyVisitDurationStats
-										const totalSeconds = Math.floor(totalMs / 1000)
-										const minutes = Math.floor(totalSeconds / 60)
-										const seconds = totalSeconds % 60
-										return `${minutes}m ${seconds}s`
-									})()
-								: '0m 0s'
-						}
-					/>
-					<OverviewItem
-						label="Bounce Rate"
-						value={
-							data?.monthlyBounceRateStats !== undefined
-								? `${data.monthlyBounceRateStats.toFixed(0)}%`
-								: '0%'
-						}
-					/>
-				</div>
+				<OverviewItem
+					label="Visitors"
+					value={data?.monthlyVisitors ?? 0}
+				/>
 
 				<SlugsStats
 					title="Pages"
@@ -134,15 +104,6 @@ const AnalyticsStats = () => {
 						country: country.country,
 						flag: country.flag,
 						total: country.total,
-					}))}
-				/>
-
-				<CitiesStats
-					title="Cities"
-					cities={(data?.monthlyCities ?? []).map((city) => ({
-						city: city.city,
-						flag: city.flag,
-						total: city.total,
 					}))}
 				/>
 

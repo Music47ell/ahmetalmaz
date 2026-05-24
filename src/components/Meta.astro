@@ -250,7 +250,6 @@ const sameAs = siteMetadata.socials.map((social) => social.url)
         async src="//stats.ahmetalmaz.com/count.js"></script> : null}
 
 <script>
-	if (import.meta.env.PROD) {
 		const runWhenIdle = (callback) => {
 			if ('requestIdleCallback' in window) {
 				window.requestIdleCallback(() => callback(), { timeout: 2000 })
@@ -269,22 +268,4 @@ const sameAs = siteMetadata.socials.map((social) => social.url)
 		runWhenIdle(() => {
 			import('../scripts/init-snake.ts').then((module) => module.initSnake())
 		})
-
-		class AstroAnalytics extends HTMLElement {
-			connectedCallback() {
-				if (this.dataset.initialized === 'true') return
-				this.dataset.initialized = 'true'
-
-				const status = this.dataset.status
-				runWhenIdle(() => {
-					import('../components/Insight.ts').then((module) => {
-						module.trackPageView(status)
-						module.startHeartbeat()
-					})
-				})
-			}
-		}
-
-		customElements.define('astro-analytics', AstroAnalytics)
-	}
 </script>
