@@ -8,7 +8,7 @@ const siteMetadata = {
 	polarCheckoutUrl: 'https://buy.polar.sh/polar_cl_zzR6AO8LWGIDhHBbqOeaKz3hQZ59Rs5TvSUmo2XtFYh',
 	polarSuccessUrl: 'https://ahmetalmaz.com/success?checkout_id={CHECKOUT_ID}',
 	locale: 'en-US',
-	avatar: '/images/others/me.png',
+	avatar: '/images/others/black-square.png',
 	altAvatar: '/images/others/doomface.gif',
 	socials: [
 		{ title: 'Mastodon', url: 'https://mastodon.social/@Music47ell' },
