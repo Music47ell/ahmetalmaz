@@ -1,6 +1,7 @@
 import { defineConfig, envField } from 'astro/config'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
+import { unified } from '@astrojs/markdown-remark'
 
 import siteMetadata from './src/data/siteMetadata'
 
@@ -25,13 +26,6 @@ export default defineConfig({
 	trailingSlash: 'never',
 	output: 'server',
 
-	// server: {
-	//     host: true,
-	//     headers: {
-	//         'Access-Control-Allow-Origin': '*',
-	//     },
-	// },
-
 	env: {
 		schema: {
 			API_BASE_URL: envField.string({
@@ -55,22 +49,17 @@ export default defineConfig({
 		    external: ['node:fs/promises', 'jsdom'],
 		},
 		plugins: [tailwindcss()],
-		// resolve: {
-		// 	// Use react-dom/server.edge instead of react-dom/server.browser for React 19.
-		// 	// Without this, MessageChannel from node:worker_threads needs to be polyfilled.
-		// 	alias: import.meta.env.PROD && {
-		// 		'react-dom/server': 'react-dom/server.edge',
-		// 	},
-		// },
 	},
 
 	markdown: {
-		remarkPlugins: [remarkReadingTime, remarkMastodonToot],
-		rehypePlugins: [rehypeExternalUrlsFavicon],
+		processor: unified({
+			remarkPlugins: [remarkReadingTime, remarkMastodonToot],
+			rehypePlugins: [rehypeExternalUrlsFavicon],
+		}),
 	},
 
 	integrations: [
-		astroExpressiveCode(astroExpressiveCodeOptions()), react(), mdx()],
+		astroExpressiveCode(astroExpressiveCodeOptions()), react({ experimentalDisableStreaming: true }), mdx()],
 
 	adapter: cloudflare({
 		prerenderEnvironment: 'node',

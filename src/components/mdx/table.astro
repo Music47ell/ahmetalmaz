@@ -2,6 +2,8 @@
 const { ...attrs } = Astro.props
 ---
 
-<table class="w-full text-sm" {...attrs}>
-	<slot />
-</table>
+<div class="overflow-x-auto border border-dracula-dracula">
+	<table class="w-full text-sm border-collapse" {...attrs}>
+		<slot />
+	</table>
+</div>
