@@ -1,0 +1,163 @@
+---
+title: Secure SSH Access Using Cloudflare Tunnel With No Open Ports
+excerpt: Learn how to expose SSH access using Cloudflare Tunnel with Docker, no public IP, no open ports, no DDNS required.
+slug: secure-ssh-access-using-cloudflare-tunnel
+draft: false
+category: Self Hosted
+tags: ['Self Hosted', 'Cloudflare Tunnel', 'Cloudflared', 'SSH', 'Docker', 'Security']
+published: 2026-06-13T19:43:53+00:00
+updated: 2026-06-13T19:43:53+00:00
+---
+
+I set up [**Cloudflare Tunnel**](https://developers.cloudflare.com/tunnel/) [(cloudflared)](https://github.com/cloudflare/cloudflared), to stop worrying about open SSH ports on my server. No public IP exposed, no ports forwarded, no DDNS to maintain.
+
+Instead of opening a port and hoping for the best, I let Cloudflare handle the connection entirely. My server initiates an outbound tunnel to Cloudflare's edge, and all SSH traffic reaches it through that tunnel, not through any open port on my firewall. No port scanners can find me, no brute-force bots can knock, no DDoS can reach my actual server.
+
+Every connection is authenticated at Cloudflare's gateway before it ever touches my infrastructure. Paired with [**Cloudflare Zero Trust**](https://www.cloudflare.com/sase/products/access/) policies, this is about as close to "set it and forget it" secure remote access as I've found.
+
+## Prerequisites
+
+- A domain managed by Cloudflare
+- Docker installed on your server
+- A Cloudflare Zero Trust account
+
+---
+
+## 1. Create Tunnel in Cloudflare Dashboard
+
+1. Open [Cloudflare Zero Trust Dashboard](https://one.dash.cloudflare.com)
+2. Navigate to **Networks → Connectors**
+3. Click **Create a tunnel**
+4. Select **Cloudflared** as the connector type
+5. Name your tunnel (e.g., `server`)
+6. Select **Docker** as your environment
+7. Copy the token displayed in the installation command
+
+---
+
+## 2. Docker Setup on Server
+
+Create a `docker-compose.yml` file with the token embedded directly:
+
+```yaml
+name: cloudlfared
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: <your-token-here>
+    extra_hosts:
+      - "host.docker.internal:172.18.0.1"
+    networks:
+      - cftunnel
+
+networks:
+  cftunnel:
+    external: true
+```
+
+Replace `<your-token-here>` with the token from the previous step.
+
+This configuration uses `host.docker.internal` instead of `network_mode: host`. The key advantage: it keeps cloudflared on its own network while still reaching host services. With `network_mode: host`, the container would share the host's entire network stack, effectively exposing every container port on the machine.
+
+By using a dedicated network with `extra_hosts`, you can run services like Navidrome, Jellyfin, or a web app **without exposing any ports to the local network**, only cloudflared has a route to them, and it only forwards traffic for the specific public hostnames you configure in the Cloudflare dashboard.
+
+Create the external network beforehand:
+
+```bash
+docker network create cftunnel
+```
+
+Then start the container:
+
+```bash
+docker compose up -d
+```
+
+Back in the Cloudflare dashboard, your connector should now show as connected.
+
+---
+
+## 3. Add SSH Public Hostname
+
+1. Go to **Networks → Connectors** in Cloudflare Dashboard
+2. Click your tunnel name
+3. Click the **Published application routes** tab
+4. Click **Add a published application route**
+5. Configure:
+
+| Field    | Value                    |
+|----------|--------------------------|
+| Subdomain| `ssh`                    |
+| Domain   | Select your domain       |
+| Type     | SSH                      |
+| URL      | `localhost:22`           |
+
+Your SSH endpoint is now: `ssh.yourdomain.com`
+
+---
+
+## 4. Create Access Application (Authentication Layer)
+
+1. Go to **Access controls → Applications**
+2. Click **Create new application**
+3. Select **Self-hosted and private**, then **Private destinations**, then **Continue with Self-hosted and private**
+4. Configure:
+
+| Field            | Value                    |
+|------------------|--------------------------|
+| Public hostnames | `ssh.yourdomain.com`     |
+| Name             | SSH Access               |
+| Session Duration | 24 hours                 |
+
+5. Under **Access policies**, click **Create new policy**:
+
+| Field       | Value                              |
+|-------------|------------------------------------|
+| Policy name | Allow SSH                          |
+| Action      | Allow                              |
+| Selector    | Emails                             |
+| Value       | `your.email@example.com`           |
+
+6. Under **Authentication**, ensure **MFA** is **disabled**.
+
+7. Click **Create**.
+
+---
+
+## 5. Client Setup
+
+### Install cloudflared
+
+Follow the [official installation guide](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/downloads/) for your OS.
+
+### Configure SSH
+
+Add the following to `~/.ssh/config`:
+
+```ssh-config
+Host servername
+    HostName ssh.yourdomain.com
+    User server-username
+    ProxyCommand cloudflared access ssh --hostname %h
+    IdentityFile ~/.ssh/id_ed25519
+```
+
+### Connect
+
+```bash
+ssh servername
+```
+
+A browser window will open for authentication. Enter the email you configured earlier, verify the code sent to your inbox, and you're connected.
+
+---
+
+## Conclusion
+
+That's it. SSH through Cloudflare Tunnel, zero open ports, with an authentication layer that keeps everything locked down. I've been running this setup for months now and it's been rock solid, no failed connections, no security scares, no maintenance headaches.
+
+The best part? Once the tunnel is up, you can repeat Step 3 to expose any other service running on your server, Navidrome, Jellyfin, Home Assistant, you name it, just by adding more public hostnames. No firewall rules, no reverse proxy config, no port forwarding. It just works.
