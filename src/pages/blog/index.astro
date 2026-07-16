@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import siteMetadata from '../../data/siteMetadata'
 import Link from '../../components/Link.astro'
-import Views from '../../components/Views'
+import Views from '../../components/Views.astro'
 
 const content = await getCollection('posts')
 const posts = content.sort(
@@ -35,7 +35,7 @@ const posts = content.sort(
 								<Link href={`/blog/${post.data.slug}`}>{post.data.title}</Link>
 							</td>
 							<td class="p-4">
-								<Views slug={post.data.slug} client:visible />
+								<Views slug={post.data.slug} />
 							</td>
 						</tr>
 					))

@@ -48,7 +48,9 @@ export default defineConfig({
 		ssr: {
 		    external: ['node:fs/promises', 'jsdom'],
 		},
-		plugins: [tailwindcss()],
+		plugins: [
+			tailwindcss(),
+		],
 	},
 
 	markdown: {
@@ -59,7 +61,7 @@ export default defineConfig({
 	},
 
 	integrations: [
-		astroExpressiveCode(astroExpressiveCodeOptions()), react({ experimentalDisableStreaming: true }), mdx()],
+		astroExpressiveCode(astroExpressiveCodeOptions()), react(), mdx()],
 
 	adapter: cloudflare({
 		prerenderEnvironment: 'node',
