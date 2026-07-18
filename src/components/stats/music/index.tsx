@@ -28,6 +28,7 @@ const MusicStats = () => {
 			title: string
 			preview?: string
 			love: boolean
+			lastfmPlaycount?: number
 		}[]
 	>([])
 

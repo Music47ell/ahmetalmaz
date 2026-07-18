@@ -7,6 +7,7 @@ interface Track {
 	title: string
 	preview?: string
 	love: boolean
+	lastfmPlaycount?: number
 }
 
 interface RecentTracksProps {
@@ -83,6 +84,32 @@ const RecentTracks: React.FC<RecentTracksProps> = ({ tracks }) => {
 					key={`${track.title}-${index}`}
 					className="relative flex items-center gap-4 p-4 border-b border-dracula-dracula"
 				>
+					<div className="relative flex-shrink-0">
+						<img
+							src={track.image}
+							alt={track.title}
+							className="h-28 w-28 object-cover"
+							width="112"
+							height="112"
+							loading="lazy"
+						/>
+
+						{track.lastfmPlaycount !== undefined && (
+							<div className="absolute bottom-0 left-0 flex items-center gap-1 px-2 py-1 rounded-tr-lg backdrop-blur-md bg-black/60 text-xs font-medium text-dracula-purple">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									className="w-3 h-3"
+								>
+									<title>Play count</title>
+									<path d="M8 5v14l11-7z" />
+								</svg>
+								{track.lastfmPlaycount.toLocaleString()}
+							</div>
+						)}
+					</div>
+
 					{/* LOVE ICON */}
 					{track.love && (
 						<div className="absolute top-3 right-3 select-none cursor-default">
@@ -101,15 +128,6 @@ const RecentTracks: React.FC<RecentTracksProps> = ({ tracks }) => {
 							</svg>
 						</div>
 					)}
-
-					<img
-						src={track.image}
-						alt={track.title}
-						className="h-28 w-28 object-cover flex-shrink-0"
-						width="112"
-						height="112"
-						loading="lazy"
-					/>
 
 					<div className="flex flex-col w-full pr-8">
 						<p className="text-lg font-semibold text-dracula-cullen">
