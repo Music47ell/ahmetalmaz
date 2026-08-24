@@ -1,0 +1,18 @@
+import { getSecret } from 'astro:env/server'
+
+export const getUsername = () => getSecret('USERNAME')
+export const getTursoDatabaseUrl = () => getSecret('TURSO_DATABASE_URL')
+export const getTursoAuthToken = () => getSecret('TURSO_AUTH_TOKEN')
+export const getTraktClientId = () => getSecret('TRAKT_CLIENT_ID')
+export const getTmdbApiToken = () => getSecret('TMDB_API_TOKEN')
+export const getSteamApiKey = () => getSecret('STEAM_API_KEY')
+export const getSteamUserId = () => getSecret('STEAM_USER_ID')
+export const getMonkeytypeApiKey = () => getSecret('MONKEYTYPE_API_KEY')
+export const getMonkeytypeUsername = () => getSecret('MONKEYTYPE_USERNAME')
+export const getSimklClientId = () => getSecret('SIMKL_CLIENT_ID')
+export const getSimklUserId = () => getSecret('SIMKL_USER_ID')
+export const getSimklAccessToken = () => getSecret('SIMKL_ACCESS_TOKEN')
+export const getGoatcounterEndpoint = () => getSecret('GOATCOUNTER_ENDPOINT')
+export const getGoatcounterApiKey = () => getSecret('GOATCOUNTER_API_KEY')
+export const getLastfmApiKey = () => getSecret('LASTFM_API_KEY')
+export const getGoodreadsReadFeed = () => getSecret('GOODREADS_READ_FEED')

@@ -1,6 +1,4 @@
 ---
-import { API_BASE_URL } from 'astro:env/client'
-
 export interface Props {
 	slug: string
 	TrackViews?: boolean
@@ -9,14 +7,12 @@ export interface Props {
 
 const { slug } = Astro.props
 const shouldTrack = Astro.props.TrackViews ?? Astro.props.trackViews ?? false
-const apiBase = API_BASE_URL
 ---
 
 <span
 	class="shrink-0"
 	data-slug={slug}
 	data-track={shouldTrack ? 'true' : 'false'}
-	data-api-base={apiBase}
 >0</span>
 
 <script>
@@ -25,7 +21,6 @@ const apiBase = API_BASE_URL
 	for (const span of spans) {
 		const slug = span.getAttribute('data-slug')
 		const shouldTrackViews = span.getAttribute('data-track') === 'true'
-		const apiBase = span.getAttribute('data-api-base') ?? ''
 
 		let fetched = false
 		let mounted = true
@@ -33,7 +28,7 @@ const apiBase = API_BASE_URL
 		const fetchViews = async (): Promise<number> => {
 			try {
 				const res = await fetch(
-					`${apiBase}/goatcounter/slug/%2Fblog%2F${encodeURIComponent(slug ?? '')}?t=${Date.now()}`,
+					`/api/goatcounter/slug/%2Fblog%2F${encodeURIComponent(slug ?? '')}?t=${Date.now()}`,
 					{
 						method: 'GET',
 						headers: { 'Content-Type': 'application/json' },

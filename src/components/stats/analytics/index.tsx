@@ -9,8 +9,6 @@ import BrowsersStats from '../../../components/stats/analytics/BrowsersStats'
 import OperatingSystemsStats from '../../../components/stats/analytics/OperatingSystemsStats'
 import DeviceTypesStats from '../../../components/stats/analytics/DeviceTypesStats'
 
-import { API_BASE_URL } from 'astro:env/client'
-
 const AnalyticsStats = () => {
 	const [data, setData] = useState<{
 		monthlyVisitors: number
@@ -25,7 +23,7 @@ const AnalyticsStats = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const response = await fetch(`${API_BASE_URL}/goatcounter/stats`, {
+				const response = await fetch('/api/goatcounter/stats', {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -76,10 +74,7 @@ const AnalyticsStats = () => {
 			</div>
 
 			<>
-				<OverviewItem
-					label="Visitors"
-					value={data?.monthlyVisitors ?? 0}
-				/>
+				<OverviewItem label="Visitors" value={data?.monthlyVisitors ?? 0} />
 
 				<SlugsStats
 					title="Pages"

@@ -4,18 +4,16 @@ import { useEffect, useState } from 'react'
 import GoodreadsStats from './GoodreadsStats'
 import BooksRead from './BooksRead'
 
-import { API_BASE_URL } from 'astro:env/client'
-
 const BooksStats = () => {
 	const [stats, setStats] = useState<{
-		readingSince: string
+		accountAgeYears: number
 		totalBooks: number
 		totalPages: number
 		totalWords: number
 		totalDaysReading: number
 		uniqueAuthors: number
 	}>({
-		readingSince: '',
+		accountAgeYears: 0,
 		totalBooks: 0,
 		totalPages: 0,
 		totalWords: 0,
@@ -38,8 +36,8 @@ const BooksStats = () => {
 		const fetchData = async () => {
 			try {
 				const [statsRes, booksRes] = await Promise.all([
-					fetch(`${API_BASE_URL}/goodreads/stats`),
-					fetch(`${API_BASE_URL}/goodreads/books-read`),
+					fetch('/api/goodreads/stats'),
+					fetch('/api/goodreads/books-read'),
 				])
 
 				if (statsRes.ok && booksRes.ok) {

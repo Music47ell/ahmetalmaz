@@ -26,7 +26,7 @@ const formatDate = (timestamp: number): string => {
 	})
 }
 
-const MonkeyTypeStatsDisplay = ({ stats }: Props) => {
+const MonkeyTypeStatsDisplay = ({ stats }: { stats: MonkeyTypeStats }) => {
 	return (
 		<div className="flex flex-col gap-y-4 border border-dracula-dracula px-4 py-3">
 			{/* Best Record Header */}

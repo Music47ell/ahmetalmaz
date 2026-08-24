@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import MonkeyStatsStats from './MonkeyStatsStats'
 import MonkeyTypeTestResults from './MonkeyTypeTestResults'
-import { API_BASE_URL } from 'astro:env/client'
 
 interface MonkeyTypeStats {
 	bestRecord: {
@@ -48,7 +47,7 @@ const MonkeyTypeStats = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const res = await fetch(`${API_BASE_URL}/monkeytype/stats`)
+				const res = await fetch('/api/monkeytype/stats')
 
 				if (res.ok) {
 					const data = await res.json()
@@ -68,7 +67,7 @@ const MonkeyTypeStats = () => {
 
 		const fetchTestResults = async () => {
 			try {
-				const res = await fetch(`${API_BASE_URL}/monkeytype/results?limit=10`)
+				const res = await fetch('/api/monkeytype/results?limit=10')
 
 				if (res.ok) {
 					const data = await res.json()

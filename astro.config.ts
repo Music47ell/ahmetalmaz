@@ -5,7 +5,7 @@ import { unified } from '@astrojs/markdown-remark'
 
 import siteMetadata from './src/data/siteMetadata'
 
-import mdx from '@astrojs/mdx';
+import mdx from '@astrojs/mdx'
 import {
 	astroExpressiveCodeOptions,
 	remarkReadingTime,
@@ -14,12 +14,14 @@ import {
 import { rehypeExternalUrlsFavicon } from './src/lib/rehype'
 import astroExpressiveCode from 'astro-expressive-code'
 
-import cloudflare from '@astrojs/cloudflare';
+import cloudflare from '@astrojs/cloudflare'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 // https://astro.build/config
 export default defineConfig({
 	devToolbar: {
-		enabled: false
+		enabled: false,
 	},
 
 	site: siteMetadata.siteUrl,
@@ -28,10 +30,85 @@ export default defineConfig({
 
 	env: {
 		schema: {
-			API_BASE_URL: envField.string({
-				context: 'client',
-				access: 'public',
-				optional: false,
+			TURSO_DATABASE_URL: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			TURSO_AUTH_TOKEN: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			USERNAME: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			TRAKT_CLIENT_ID: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			TMDB_API_TOKEN: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			STEAM_API_KEY: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			STEAM_USER_ID: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			MONKEYTYPE_API_KEY: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			MONKEYTYPE_USERNAME: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			SIMKL_CLIENT_ID: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			SIMKL_USER_ID: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			SIMKL_ACCESS_TOKEN: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			GOATCOUNTER_ENDPOINT: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			GOATCOUNTER_API_KEY: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			LASTFM_API_KEY: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
+			}),
+			GOODREADS_READ_FEED: envField.string({
+				context: 'server',
+				access: 'secret',
+				optional: true,
 			}),
 		},
 	},
@@ -46,11 +123,9 @@ export default defineConfig({
 
 	vite: {
 		ssr: {
-		    external: ['node:fs/promises', 'jsdom'],
+			external: ['node:fs/promises', 'jsdom'],
 		},
-		plugins: [
-			tailwindcss(),
-		],
+		plugins: [tailwindcss()],
 	},
 
 	markdown: {
@@ -61,9 +136,14 @@ export default defineConfig({
 	},
 
 	integrations: [
-		astroExpressiveCode(astroExpressiveCodeOptions()), react(), mdx()],
+		astroExpressiveCode(astroExpressiveCodeOptions()),
+		react(),
+		mdx(),
+	],
 
-	adapter: cloudflare({
-		prerenderEnvironment: 'node',
-	}),
+	adapter: isDev
+		? undefined
+		: cloudflare({
+				prerenderEnvironment: 'node',
+			}),
 })

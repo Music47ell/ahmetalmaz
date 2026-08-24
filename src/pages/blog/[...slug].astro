@@ -1,32 +1,32 @@
 ---
-export const prerender = true;
+export const prerender = true
 
-import { getCollection } from "astro:content";
-import { render } from "astro:content";
-import type { CollectionEntry } from "astro:content";
+import { getCollection } from 'astro:content'
+import { render } from 'astro:content'
+import type { CollectionEntry } from 'astro:content'
 
-import ContentLayout from "../../layouts/ContentLayout.astro";
-import { components } from "../../components/mdx/index.astro";
+import ContentLayout from '../../layouts/ContentLayout.astro'
+import { components } from '../../components/mdx/index.astro'
 
 export async function getStaticPaths() {
-	const content = await getCollection("posts");
+	const content = await getCollection('posts')
 
 	return content.map((post) => {
 		return {
 			params: { slug: post.data.slug },
 			props: { post },
-		};
-	});
+		}
+	})
 }
 
 interface Props {
-	post: CollectionEntry<"posts">;
+	post: CollectionEntry<'posts'>
 }
 
-const { post } = Astro.props;
-const { Content, remarkPluginFrontmatter } = await render(post);
-const { title, excerpt, slug, published, updated } = post.data;
-const { readingTime, wordCount, toot } = remarkPluginFrontmatter;
+const { post } = Astro.props
+const { Content, remarkPluginFrontmatter } = await render(post)
+const { title, excerpt, slug, published, updated } = post.data
+const { readingTime, wordCount, toot } = remarkPluginFrontmatter
 
 if (!slug) return Astro.redirect('/404')
 ---

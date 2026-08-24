@@ -16,8 +16,16 @@ export interface Props {
 	noindex?: boolean
 }
 
-const { title, excerpt, slug, published, updated, wordCount, type, noindex = false } =
-	Astro.props
+const {
+	title,
+	excerpt,
+	slug,
+	published,
+	updated,
+	wordCount,
+	type,
+	noindex = false,
+} = Astro.props
 
 const pageTitle =
 	title === siteMetadata.name

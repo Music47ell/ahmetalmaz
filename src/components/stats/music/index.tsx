@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react'
 import RecentTracks from './RecentTracks'
 import ListenbrainzStats from './ListenBrainzStats'
 
-import { API_BASE_URL } from 'astro:env/client'
-
 const MusicStats = () => {
 	const [listenBrainzStats, setListenBrainzStats] = useState<{
 		accountAge: number
@@ -36,8 +34,8 @@ const MusicStats = () => {
 		const fetchData = async () => {
 			try {
 				const [statsRes, recentTracksRes] = await Promise.all([
-					fetch(`${API_BASE_URL}/listenbrainz/stats`),
-					fetch(`${API_BASE_URL}/listenbrainz/recent-tracks`),
+					fetch('/api/listenbrainz/stats'),
+					fetch('/api/listenbrainz/recent-tracks'),
 				])
 
 				if (statsRes.ok) {

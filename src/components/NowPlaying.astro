@@ -1,8 +1,6 @@
 ---
-import { API_BASE_URL } from 'astro:env/client'
-
 const { isPlaying, artist, title, image, url, preview, love } = await fetch(
-	`${API_BASE_URL}/listenbrainz/now-playing`,
+	'/api/listenbrainz/now-playing',
 )
 	.then((res) => res.json())
 	.catch((error) => {

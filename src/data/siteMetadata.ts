@@ -4,8 +4,8 @@ const siteMetadata = {
 	username: 'Music47ell',
 	instance: 'mastodon.social',
 	siteUrl: 'https://ahmetalmaz.com',
-	apiUrl: 'https://api.ahmetalmaz.com',
-	polarCheckoutUrl: 'https://buy.polar.sh/polar_cl_zzR6AO8LWGIDhHBbqOeaKz3hQZ59Rs5TvSUmo2XtFYh',
+	polarCheckoutUrl:
+		'https://buy.polar.sh/polar_cl_zzR6AO8LWGIDhHBbqOeaKz3hQZ59Rs5TvSUmo2XtFYh',
 	polarSuccessUrl: 'https://ahmetalmaz.com/success?checkout_id={CHECKOUT_ID}',
 	locale: 'en-US',
 	avatar: '/images/others/black-square.png',

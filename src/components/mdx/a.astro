@@ -1,7 +1,8 @@
 ---
-const { class: className, ...attrs } = Astro.props;
-const defaultClass = "inline-flex items-center text-red-500 gap-2 underline bg-gray-500/10 hover:bg-red-500/20 rounded-md px-1 transition-colors"
-const mergedClass = [defaultClass, className].filter(Boolean).join(" ")
+const { class: className, ...attrs } = Astro.props
+const defaultClass =
+	'inline-flex items-center text-red-500 gap-2 underline bg-gray-500/10 hover:bg-red-500/20 rounded-md px-1 transition-colors'
+const mergedClass = [defaultClass, className].filter(Boolean).join(' ')
 ---
 
 <a
