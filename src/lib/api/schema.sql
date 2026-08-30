@@ -14,3 +14,11 @@ CREATE TABLE IF NOT EXISTS analytics (
 CREATE INDEX IF NOT EXISTS idx_analytics_slug ON analytics(slug);
 CREATE INDEX IF NOT EXISTS idx_analytics_timestamp ON analytics(timestamp);
 CREATE INDEX IF NOT EXISTS idx_analytics_city ON analytics(city);
+
+CREATE TABLE IF NOT EXISTS cache (
+	key TEXT PRIMARY KEY,
+	value TEXT NOT NULL,
+	expires_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_cache_expires_at ON cache(expires_at);
