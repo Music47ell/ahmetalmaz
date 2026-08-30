@@ -35,8 +35,7 @@ export async function insertPageView(
 		}
 	}
 
-	const locals = context.locals as Record<string, any>
-	const cf = locals?.runtime?.cf ?? {}
+	const cf = context.request.cf ?? {}
 	const hdr = (k: string) => context.request.headers.get(k)
 	const country = cf.country ?? hdr('cf-ipcountry') ?? 'Unknown'
 	const city =
