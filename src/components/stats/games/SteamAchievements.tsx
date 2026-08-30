@@ -35,8 +35,7 @@ const SteamAchievements: React.FC<SteamAchievementsProps> = ({
 	return (
 		<div className="flex flex-col gap-y-2">
 			{achievements.rarest.length > 0 && (
-				<>
-					<div className="flex flex-col border border-dracula-dracula shadow-lg">
+				<div className="flex flex-col border border-dracula-dracula shadow-lg">
 						{achievements.rarest.map((achievement) => (
 							<a
 								key={`${achievement.appid}-${achievement.name}`}
@@ -74,7 +73,6 @@ const SteamAchievements: React.FC<SteamAchievementsProps> = ({
 							</a>
 						))}
 					</div>
-				</>
 			)}
 		</div>
 	)

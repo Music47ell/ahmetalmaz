@@ -194,6 +194,7 @@ export const initSnake = () => {
 		try {
 			const saved = Number.parseInt(
 				localStorage.getItem('snake-high-score') ?? '0',
+				10,
 			)
 			if (saved > highScore) highScore = saved
 		} catch {}

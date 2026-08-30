@@ -1,7 +1,7 @@
 import { visit } from 'unist-util-visit'
 
 export default function rehypeExternalUrlsFavicons() {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: unist tree node type is too broad to type precisely
 	return (tree: any) => {
 		visit(tree, 'element', (node) => {
 			if (node.tagName === 'a' && node.properties?.href) {

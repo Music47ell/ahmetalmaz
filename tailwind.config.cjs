@@ -27,7 +27,7 @@ module.exports = {
 					'50%': { height: '0.75rem' },
 				},
 			},
-			typography: ({ theme }) => ({
+			typography: () => ({
 				// default disables all prose styling globally
 				DEFAULT: { css: disabledCss },
 				sm: { css: disabledCss },

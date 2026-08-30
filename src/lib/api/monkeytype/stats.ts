@@ -20,6 +20,34 @@ export interface MonkeyTypeStats {
 	}[]
 }
 
+type PersonalBest = {
+	wpm: number
+	acc: number
+	raw: number
+	consistency: number
+	timestamp: number
+}
+
+type MonkeyTypeProfile = {
+	typingStats: {
+		completedTests?: number
+		timeTyping?: number
+	}
+	personalBests?: {
+		time?: Record<string, PersonalBest[]>
+		words?: Record<string, PersonalBest[]>
+	}
+}
+
+type MonkeyTypeResult = {
+	wpm: number
+	acc: number
+	raw: number
+	consistency: number
+	timestamp: number
+	charStats?: number[]
+}
+
 export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> =>
 	withCache('monkeytype:stats', 3600, async () => {
 		const apiKey = await getMonkeytypeApiKey()
@@ -66,8 +94,10 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> =>
 				)
 			}
 
-			const profileData = await profileRes.json()
-			const user = profileData.data
+		const profileData = (await profileRes.json()) as {
+			data: MonkeyTypeProfile
+		}
+		const user = profileData.data
 
 			const typingStats = user.typingStats || {}
 
@@ -79,10 +109,10 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> =>
 				timestamp: 0,
 			}
 
-			const allPbs: any[] = []
+			const allPbs: PersonalBest[] = []
 
 			if (user.personalBests?.time) {
-				Object.values(user.personalBests.time).forEach((timeMode: any) => {
+				Object.values(user.personalBests.time).forEach((timeMode) => {
 					if (Array.isArray(timeMode)) {
 						allPbs.push(...timeMode)
 					}
@@ -90,7 +120,7 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> =>
 			}
 
 			if (user.personalBests?.words) {
-				Object.values(user.personalBests.words).forEach((wordsMode: any) => {
+				Object.values(user.personalBests.words).forEach((wordsMode) => {
 					if (Array.isArray(wordsMode)) {
 						allPbs.push(...wordsMode)
 					}
@@ -98,7 +128,7 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> =>
 			}
 
 			if (allPbs.length > 0) {
-				const bestResult = allPbs.reduce((prev: any, current: any) => {
+				const bestResult = allPbs.reduce((prev: PersonalBest, current: PersonalBest) => {
 					return (current.wpm || 0) > (prev.wpm || 0) ? current : prev
 				})
 
@@ -130,15 +160,17 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> =>
 			)
 
 			if (resultsRes.ok) {
-				const resultsData = await resultsRes.json()
+				const resultsData = (await resultsRes.json()) as {
+					data: MonkeyTypeResult[]
+				}
 				const results = resultsData.data || []
 
-				results.forEach((result: any) => {
+				results.forEach((result: MonkeyTypeResult) => {
 					const correctChars = result.charStats?.[0] || 0
 					totalWords += Math.round(correctChars / 5)
 				})
 
-				recentResults = results.slice(0, 10).map((result: any) => ({
+				recentResults = results.slice(0, 10).map((result: MonkeyTypeResult) => ({
 					wpm: Math.round(result.wpm * 100) / 100 || 0,
 					accuracy: Math.round(result.acc * 100) / 100 || 0,
 					consistency: Math.round(result.consistency * 100) / 100 || 0,

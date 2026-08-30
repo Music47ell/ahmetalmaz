@@ -8,6 +8,17 @@ export interface SimklMovie {
 	year?: number
 }
 
+type SimklItem = {
+	movie?: {
+		title?: string
+		poster?: string
+		year?: number
+		ids?: { simkl?: number; slug?: string }
+	}
+	last_watched_at?: string
+	user_rating?: number | null
+}
+
 export const getSimklWatchedMovies = async (
 	dateFrom?: string,
 ): Promise<SimklMovie[]> => {
@@ -34,20 +45,20 @@ export const getSimklWatchedMovies = async (
 		throw new Error(`Simkl API error: ${res.status}`)
 	}
 
-	const data = await res.json()
+	const data = (await res.json()) as { movies?: SimklItem[] }
 
-	const moviesList = data.movies || data || []
+	const moviesList = data.movies || []
 
 	const sortedMovies = moviesList
-		.filter((item: any) => item && item.movie)
+		.filter((item: SimklItem) => item?.movie)
 		.sort(
-			(a: any, b: any) =>
+			(a: SimklItem, b: SimklItem) =>
 				new Date(b.last_watched_at || 0).getTime() -
 				new Date(a.last_watched_at || 0).getTime(),
 		)
 		.slice(0, 10)
 
-	return sortedMovies.map((item: any) => {
+	return sortedMovies.map((item: SimklItem) => {
 		const movie = item.movie || {}
 		const ids = movie.ids || {}
 		const posterPath = movie.poster || ''

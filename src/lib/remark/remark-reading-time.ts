@@ -1,4 +1,4 @@
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
+// biome-ignore lint/suspicious/noShadowRestrictedNames: imports toString for mdast utility, intentional
 import { toString } from 'mdast-util-to-string'
 import type { Parent } from 'unist'
 
@@ -18,7 +18,7 @@ function getReadingTime(content: string) {
 }
 
 export default function remarkReadingTime() {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	// biome-ignore lint/suspicious/noExplicitAny: remark plugin callback signature uses dynamic data object
 	return (tree: Parent, { data }: any) => {
 		const textOnPage = toString(tree)
 		const { wordCount, readingTime } = getReadingTime(textOnPage) || {

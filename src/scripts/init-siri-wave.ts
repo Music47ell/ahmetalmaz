@@ -25,7 +25,7 @@ class SiriWave9Curve {
 			this.controller.amplitude *
 			this.amplitude *
 			this.controller.max *
-			Math.pow(1 / (1 + Math.pow(this.openClass * i, 2)), 2)
+			(1 / (1 + (this.openClass * i) ** 2)) ** 2
 
 		if (Math.abs(y) < 0.001) this.respawn()
 		return y

@@ -8,6 +8,17 @@ export interface SimklShow {
 	year?: number
 }
 
+type SimklItem = {
+	show?: {
+		title?: string
+		poster?: string
+		year?: number
+		ids?: { simkl?: number; slug?: string }
+	}
+	last_watched_at?: string
+	user_rating?: number | null
+}
+
 export const getSimklWatchedShows = async (
 	dateFrom?: string,
 ): Promise<SimklShow[]> => {
@@ -34,20 +45,20 @@ export const getSimklWatchedShows = async (
 		throw new Error(`Simkl API error: ${res.status}`)
 	}
 
-	const data = await res.json()
+	const data = (await res.json()) as { shows?: SimklItem[] }
 
-	const showsList = data.shows || data || []
+	const showsList = data.shows || []
 
 	const sortedShows = showsList
-		.filter((item: any) => item && item.show)
+		.filter((item: SimklItem) => item?.show)
 		.sort(
-			(a: any, b: any) =>
+			(a: SimklItem, b: SimklItem) =>
 				new Date(b.last_watched_at || 0).getTime() -
 				new Date(a.last_watched_at || 0).getTime(),
 		)
 		.slice(0, 10)
 
-	return sortedShows.map((item: any) => {
+	return sortedShows.map((item: SimklItem) => {
 		const show = item.show || {}
 		const ids = show.ids || {}
 		const posterPath = show.poster || ''

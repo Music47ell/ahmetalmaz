@@ -1,10 +1,51 @@
 import { useEffect, useState } from 'react'
+import sanitizeHtml from 'sanitize-html'
 
-type TootCardProps = {
-	toot: any
+type TootAccount = {
+	url: string
+	avatar: string
+	username: string
+	display_name: string
 }
 
-type CommentNode = any & { children?: CommentNode[] }
+type TootMedia = {
+	id: string
+	preview_url: string
+	description: string | null
+}
+
+type Toot = {
+	id: string
+	created_at: string
+	url: string
+	content: string
+	replies_count: number
+	reblogs_count: number
+	favourites_count: number
+	media_attachments: TootMedia[]
+}
+
+type TootCardProps = {
+	toot: Toot
+}
+
+type CommentNode = {
+	id: string
+	in_reply_to_id: string | null
+	account: TootAccount
+	content: string
+	children?: CommentNode[]
+}
+
+const SANITIZE_OPTIONS = {
+	allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'span']),
+	allowedAttributes: {
+		...sanitizeHtml.defaults.allowedAttributes,
+		a: ['href', 'name', 'target', 'rel'],
+		img: ['src', 'alt', 'title', 'width', 'height'],
+	},
+	allowedSchemes: ['http', 'https', 'mailto', 'tel'],
+}
 
 export default function TootCard({ toot }: TootCardProps) {
 	const [commentsTree, setCommentsTree] = useState<CommentNode[]>([])
@@ -17,7 +58,7 @@ export default function TootCard({ toot }: TootCardProps) {
 				const res = await fetch(
 					`https://mastodon.social/api/v1/statuses/${toot.id}/context`,
 				)
-				const data = await res.json()
+				const data = (await res.json()) as { descendants?: CommentNode[] }
 				const descendants: CommentNode[] = data.descendants || []
 				const map: Record<string, CommentNode> = {}
 
@@ -31,7 +72,7 @@ export default function TootCard({ toot }: TootCardProps) {
 					if (c.in_reply_to_id === toot.id) {
 						tree.push(map[c.id])
 					} else if (c.in_reply_to_id && map[c.in_reply_to_id]) {
-						map[c.in_reply_to_id].children!.push(map[c.id])
+						map[c.in_reply_to_id].children?.push(map[c.id])
 					}
 				})
 
@@ -79,10 +120,14 @@ export default function TootCard({ toot }: TootCardProps) {
 							</a>
 						</span>
 					</div>
+					{/* biome-ignore-start lint/security/noDangerouslySetInnerHtml: Mastodon HTML content, sanitized via sanitize-html */}
 					<div
 						className="prose prose-invert max-w-none text-sm"
-						dangerouslySetInnerHTML={{ __html: comment.content }}
+						dangerouslySetInnerHTML={{
+							__html: sanitizeHtml(comment.content, SANITIZE_OPTIONS),
+						}}
 					/>
+					{/* biome-ignore-end lint/security/noDangerouslySetInnerHtml: Mastodon HTML content, sanitized via sanitize-html */}
 					{comment.children &&
 						comment.children.length > 0 &&
 						renderComments(comment.children, level + 1)}
@@ -120,15 +165,19 @@ export default function TootCard({ toot }: TootCardProps) {
 			</div>
 
 			{/* Content */}
+			{/* biome-ignore-start lint/security/noDangerouslySetInnerHtml: Mastodon HTML content, sanitized via sanitize-html */}
 			<div
 				className="p-3 prose prose-invert prose-p:my-3 max-w-none prose-a:text-dracula-marcelin"
-				dangerouslySetInnerHTML={{ __html: toot.content }}
+				dangerouslySetInnerHTML={{
+					__html: sanitizeHtml(toot.content, SANITIZE_OPTIONS),
+				}}
 			/>
+			{/* biome-ignore-end lint/security/noDangerouslySetInnerHtml: Mastodon HTML content, sanitized via sanitize-html */}
 
 			{/* Media */}
 			{toot.media_attachments?.length > 0 && (
 				<div className="grid grid-cols-3 gap-2 p-3 prose-img:m-0">
-					{toot.media_attachments.map((media: any, i: number) => (
+					{toot.media_attachments.map((media, i: number) => (
 						<img
 							key={media.id}
 							src={media.preview_url}
@@ -148,6 +197,7 @@ export default function TootCard({ toot }: TootCardProps) {
 				<a
 					href={toot.url}
 					target="_blank"
+					rel="noopener noreferrer"
 					className="flex items-center gap-1 text-dracula-cullen hover:text-dracula-marcelin no-underline"
 				>
 					<svg
@@ -167,6 +217,7 @@ export default function TootCard({ toot }: TootCardProps) {
 				<a
 					href={`${toot.url}/reblogs`}
 					target="_blank"
+					rel="noopener noreferrer"
 					className="flex items-center gap-1 text-dracula-cullen hover:text-dracula-marcelin no-underline"
 				>
 					<svg
@@ -186,6 +237,7 @@ export default function TootCard({ toot }: TootCardProps) {
 				<a
 					href={`${toot.url}/favourites`}
 					target="_blank"
+					rel="noopener noreferrer"
 					className="flex items-center gap-1 text-dracula-cullen hover:text-dracula-marcelin no-underline"
 				>
 					<svg

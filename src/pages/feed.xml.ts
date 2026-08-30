@@ -6,7 +6,7 @@ import MarkdownIt from 'markdown-it'
 import siteMetadata from '../data/siteMetadata'
 const parser = new MarkdownIt()
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+// biome-ignore lint/suspicious/noExplicitAny: APIContext from astro has broad typing, only site is used
 export async function GET(context: any) {
 	const content: CollectionEntry<'posts'>[] = await getCollection('posts')
 

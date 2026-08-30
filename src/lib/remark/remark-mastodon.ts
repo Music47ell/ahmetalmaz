@@ -1,5 +1,13 @@
 import type { Parent } from 'unist'
 
+type MediaAttachment = {
+	id: string
+	type: string
+	url: string
+	preview_url: string
+	description: string | null
+}
+
 // Define the exact shape of the returned object
 export type TootData = {
 	id: string
@@ -9,7 +17,7 @@ export type TootData = {
 	reblogs_count: number
 	favourites_count: number
 	content: string
-	media_attachments: any[]
+	media_attachments: MediaAttachment[]
 }
 
 async function fetchStatus(id: string): Promise<TootData> {
@@ -40,8 +48,8 @@ async function fetchStatus(id: string): Promise<TootData> {
 }
 
 export default function remarkMastodonToot() {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	return async (tree: Parent, { data }: any) => {
+	// biome-ignore lint/suspicious/noExplicitAny: remark plugin callback signature uses dynamic data object
+	return async (_tree: Parent, { data }: any) => {
 		const frontmatter = data.astro?.frontmatter
 
 		if (!frontmatter) return

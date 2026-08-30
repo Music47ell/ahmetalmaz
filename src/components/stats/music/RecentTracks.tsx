@@ -79,9 +79,9 @@ const RecentTracks: React.FC<RecentTracksProps> = ({ tracks }) => {
 
 	return (
 		<div className="flex flex-col border border-dracula-dracula shadow-lg">
-			{tracks.map((track, index) => (
+			{tracks.map((track) => (
 				<div
-					key={`${track.title}-${index}`}
+					key={`${track.title}-${track.artist}`}
 					className="relative flex items-center gap-4 p-4 border-b border-dracula-dracula"
 				>
 					<div className="relative flex-shrink-0">
@@ -157,7 +157,9 @@ const RecentTracks: React.FC<RecentTracksProps> = ({ tracks }) => {
 									src={track.preview}
 									onEnded={() => handleEnded(index)}
 									onTimeUpdate={() => handleTimeUpdate(index)}
-								/>
+								>
+									<track kind="captions" />
+								</audio>
 
 								<div className="flex items-center gap-2 text-dracula-cullen text-sm">
 									<span>{formatTime(currentTime[index] || 0)}</span>

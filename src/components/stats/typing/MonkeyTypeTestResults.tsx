@@ -44,7 +44,7 @@ const MonkeyTypeTestResults: React.FC<MonkeyTypeTestResultsProps> = ({
 			<div className="border border-dracula-dracula overflow-hidden">
 				{results.map((result, index) => (
 					<div
-						key={`${result.timestamp}-${index}`}
+						key={result.timestamp}
 						className="flex items-center justify-between px-4 py-4 border-b border-dracula-dracula hover:bg-dracula-background/50 transition-colors last:border-b-0"
 					>
 						{/* Rank */}

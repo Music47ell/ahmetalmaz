@@ -1,5 +1,5 @@
-import fs from 'fs/promises'
-import path from 'path'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import matter from 'gray-matter'
 import { Resvg } from '@resvg/resvg-js'
 import satori from 'satori'
@@ -219,8 +219,10 @@ async function generateContentPages() {
 			await generateOg(title, excerpt, pubdate, outPath)
 
 			console.log(`Generated: ${folder}`)
-		} catch (err: any) {
-			throw new Error(`Failed for ${folder}: ${err.message}`)
+		} catch (err) {
+			throw new Error(
+				`Failed for ${folder}: ${err instanceof Error ? err.message : String(err)}`,
+			)
 		}
 	}
 }

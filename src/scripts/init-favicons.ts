@@ -109,7 +109,9 @@ export const initFavicons = () => {
 	const clearFavicons = () => {
 		document
 			.querySelectorAll("link[rel~='icon'], link[rel='shortcut icon']")
-			.forEach((link) => link.remove())
+			.forEach((link) => {
+				link.remove()
+			})
 	}
 
 	const setFavicon = (href: string) => {
@@ -123,9 +125,9 @@ export const initFavicons = () => {
 
 	const restoreFavicons = () => {
 		clearFavicons()
-		originalLinks.forEach((link) =>
-			document.head.appendChild(link.cloneNode(true)),
-		)
+		originalLinks.forEach((link) => {
+			document.head.appendChild(link.cloneNode(true))
+		})
 	}
 
 	document.addEventListener('visibilitychange', () => {

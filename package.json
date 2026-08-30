@@ -44,7 +44,7 @@
 		"string-width": "^8.2.2",
 		"tailwindcss": "^4.3.3",
 		"three": "^0.185.1",
-		"typescript": "^7.0.2",
+		"typescript": "6.0.3",
 		"unist-util-visit": "^5.1.0",
 		"wrangler": "^4.125.0"
 	},

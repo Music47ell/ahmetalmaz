@@ -1,13 +1,5 @@
 import type React from 'react'
 
-interface Show {
-	title: string
-	poster: string
-	url: string
-	rating: number | null
-	watched: Date
-}
-
 interface WatchedAnimeProps {
 	anime: Anime[]
 }

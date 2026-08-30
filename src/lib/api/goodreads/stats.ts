@@ -1,6 +1,21 @@
 import { XMLParser } from 'fast-xml-parser'
 import { getGoodreadsReadFeed } from '../env'
 
+type GoodreadsItem = {
+	title?: string
+	user_read_at?: string
+	author_name?: string
+	book?: { num_pages?: string }
+}
+
+type GoodreadsFeed = {
+	rss?: {
+		channel?: {
+			item?: GoodreadsItem | GoodreadsItem[]
+		}
+	}
+}
+
 const fetchFeed = async () => {
 	const feedUrl = await getGoodreadsReadFeed()
 	if (!feedUrl) {
@@ -24,7 +39,7 @@ export const getGoodreadsStats = async () => {
 		ignoreAttributes: false,
 		removeNSPrefix: true,
 	})
-	const json = parser.parse(xml)
+	const json = parser.parse(xml) as GoodreadsFeed
 
 	const channel = json.rss?.channel
 	if (!channel) throw new Error('No channel found in feed')
@@ -32,11 +47,11 @@ export const getGoodreadsStats = async () => {
 	const rawItems = Array.isArray(channel.item) ? channel.item : [channel.item]
 
 	const sortedItems = rawItems
-		.filter((item: any) => item.user_read_at)
+		.filter((item: GoodreadsItem) => item.user_read_at)
 		.sort(
-			(a: any, b: any) =>
-				new Date(a.user_read_at).getTime() -
-				new Date(b.user_read_at).getTime(),
+			(a: GoodreadsItem, b: GoodreadsItem) =>
+				new Date(a.user_read_at ?? '').getTime() -
+				new Date(b.user_read_at ?? '').getTime(),
 		)
 
 	const totalBooks = sortedItems.length
@@ -58,7 +73,7 @@ export const getGoodreadsStats = async () => {
 	let totalPages = 0
 	const authorsSet = new Set<string>()
 
-	sortedItems.forEach((item: any) => {
+	sortedItems.forEach((item: GoodreadsItem) => {
 		const pages = Number(item.book?.num_pages || 0)
 		totalPages += pages
 		if (item.author_name) authorsSet.add(item.author_name)

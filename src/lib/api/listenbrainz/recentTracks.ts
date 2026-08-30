@@ -5,6 +5,23 @@ import { logError } from '../utils/helpers'
 const PLACEHOLDER_IMAGE =
 	'https://cdn-images.dzcdn.net/images/cover//250x250-000000-80-0-0.jpg'
 
+type ListenRecord = {
+	track_metadata: {
+		artist_name: string
+		track_name: string
+		mbid_mapping?: {
+			recording_mbid?: string
+			release_mbid?: string
+			artists?: { artist_credit_name?: string }[]
+		}
+	}
+}
+
+type ListenFeedback = {
+	recording_mbid: string
+	score: number
+}
+
 export const getRecentTracks = async (): Promise<TrackInfo[]> => {
 	try {
 		const username = await getUsername()
@@ -19,9 +36,11 @@ export const getRecentTracks = async (): Promise<TrackInfo[]> => {
 			return []
 		}
 
-		const { payload } = await res.json()
+		const { payload } = (await res.json()) as {
+			payload: { listens: ListenRecord[] }
+		}
 
-		const tracks: TrackInfo[] = payload.listens.map((record: any) => {
+		const tracks: TrackInfo[] = payload.listens.map((record: ListenRecord) => {
 			const meta = record.track_metadata
 			const mbidMapping = meta.mbid_mapping || {}
 
@@ -48,9 +67,11 @@ export const getRecentTracks = async (): Promise<TrackInfo[]> => {
 				const feedbackRes = await fetch(feedbackUrl)
 
 				if (feedbackRes.ok) {
-					const feedbackData = await feedbackRes.json()
+					const feedbackData = (await feedbackRes.json()) as {
+						feedback: ListenFeedback[]
+					}
 					const feedbackMap = new Map<string, boolean>(
-						feedbackData.feedback.map((f: any) => [
+						feedbackData.feedback.map((f: ListenFeedback) => [
 							f.recording_mbid,
 							f.score === 1,
 						]),
@@ -59,7 +80,7 @@ export const getRecentTracks = async (): Promise<TrackInfo[]> => {
 					tracks.forEach((track) => {
 						const mbid = track.mbid
 						if (mbid && feedbackMap.has(mbid)) {
-							track.love = feedbackMap.get(mbid)!
+							track.love = feedbackMap.get(mbid) ?? false
 						}
 					})
 				}
