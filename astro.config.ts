@@ -2,6 +2,7 @@ import { defineConfig, envField } from 'astro/config'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
 import { unified } from '@astrojs/markdown-remark'
+import { config as loadEnv } from 'dotenv'
 
 import siteMetadata from './src/data/siteMetadata'
 
@@ -15,6 +16,8 @@ import { rehypeExternalUrlsFavicon } from './src/lib/rehype'
 import astroExpressiveCode from 'astro-expressive-code'
 
 import cloudflare from '@astrojs/cloudflare'
+
+loadEnv({ override: true, path: '.env' })
 
 const isDev = process.env.NODE_ENV === 'development'
 

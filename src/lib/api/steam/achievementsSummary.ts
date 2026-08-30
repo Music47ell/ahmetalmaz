@@ -1,5 +1,4 @@
 import { getSteamApiKey, getSteamUserId } from '../env'
-import { withCache } from '../utils/cache'
 import { STEAM_BASE, storeUrl } from './helpers'
 
 const MAX_GAMES = 30
@@ -151,51 +150,50 @@ const getRarest = async (
 		.slice(0, 10)
 }
 
-export const getSteamAchievementsSummary = async () =>
-	withCache('steam:achievements-summary', 3600, async () => {
-		const key = await getSteamApiKey()
-		const steamId = await getSteamUserId()
+export const getSteamAchievementsSummary = async () => {
+	const key = await getSteamApiKey()
+	const steamId = await getSteamUserId()
 
-		if (!key || !steamId) {
-			throw new Error(
-				'STEAM_API_KEY or STEAM_USER_ID environment variables are not set',
-			)
-		}
-
-		const owned = (await getOwnedGames(key, steamId))
-			.sort((a, b) => b.playtime_forever - a.playtime_forever)
-			.slice(0, MAX_GAMES)
-
-		const gameStats = await Promise.all(
-			owned.map(async (game) => ({
-				game,
-				stats: await getPlayerStats(key, steamId, game.appid),
-			})),
+	if (!key || !steamId) {
+		throw new Error(
+			'STEAM_API_KEY or STEAM_USER_ID environment variables are not set',
 		)
+	}
 
-		let totalAvailable = 0
-		let totalEarned = 0
+	const owned = (await getOwnedGames(key, steamId))
+		.sort((a, b) => b.playtime_forever - a.playtime_forever)
+		.slice(0, MAX_GAMES)
 
-		for (const { stats } of gameStats) {
-			if (!stats) continue
+	const gameStats = await Promise.all(
+		owned.map(async (game) => ({
+			game,
+			stats: await getPlayerStats(key, steamId, game.appid),
+		})),
+	)
 
-			const earned = stats.achievements.filter(
-				(achievement) => achievement.achieved === 1,
-			).length
-			const total = stats.achievements.length
+	let totalAvailable = 0
+	let totalEarned = 0
 
-			totalAvailable += total
-			totalEarned += earned
-		}
+	for (const { stats } of gameStats) {
+		if (!stats) continue
 
-		const rarest = await getRarest(key, gameStats)
+		const earned = stats.achievements.filter(
+			(achievement) => achievement.achieved === 1,
+		).length
+		const total = stats.achievements.length
 
-		return {
-			totalAvailable,
-			totalEarned,
-			percent: totalAvailable
-				? Math.round((totalEarned / totalAvailable) * 100)
-				: 0,
-			rarest,
-		}
-	})
+		totalAvailable += total
+		totalEarned += earned
+	}
+
+	const rarest = await getRarest(key, gameStats)
+
+	return {
+		totalAvailable,
+		totalEarned,
+		percent: totalAvailable
+			? Math.round((totalEarned / totalAvailable) * 100)
+			: 0,
+		rarest,
+	}
+}

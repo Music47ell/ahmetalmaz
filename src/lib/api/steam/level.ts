@@ -1,5 +1,4 @@
 import { getSteamApiKey, getSteamUserId } from '../env'
-import { withCache } from '../utils/cache'
 import { STEAM_BASE } from './helpers'
 
 export interface SteamBadge {
@@ -87,61 +86,60 @@ const getBadgeDescriptions = async (steamId: string, badgeIds: number[]) => {
 	)
 }
 
-export const getSteamLevel = async () =>
-	withCache('steam:level', 3600, async () => {
-		const key = await getSteamApiKey()
-		const steamId = await getSteamUserId()
+export const getSteamLevel = async () => {
+	const key = await getSteamApiKey()
+	const steamId = await getSteamUserId()
 
-		if (!key || !steamId) {
-			throw new Error(
-				'STEAM_API_KEY or STEAM_USER_ID environment variables are not set',
-			)
-		}
-
-		const endpoint = `${STEAM_BASE}/IPlayerService/GetBadges/v1/?key=${key}&steamid=${steamId}`
-		const res = await fetch(endpoint)
-
-		if (!res.ok) {
-			throw new Error(`Steam API error: ${res.status}`)
-		}
-
-		const data = await res.json()
-		const response = data.response || {}
-		const rawBadges = response.badges || []
-
-		const names = await getBadgeNames(steamId)
-		const descriptions = await getBadgeDescriptions(
-			steamId,
-			rawBadges.map((badge: { badgeid: number }) => badge.badgeid),
+	if (!key || !steamId) {
+		throw new Error(
+			'STEAM_API_KEY or STEAM_USER_ID environment variables are not set',
 		)
+	}
 
-		const badges: SteamBadge[] = rawBadges.map(
-			(badge: {
-				badgeid: number
-				level: number
-				xp: number
-				completion_time?: number
-			}) => {
-				const meta = names.get(badge.badgeid)
-				return {
-					badgeId: badge.badgeid,
-					level: badge.level,
-					xp: badge.xp,
-					name: meta?.name || null,
-					description: descriptions.get(badge.badgeid) || null,
-					icon: meta?.icon || null,
-					completionTime: badge.completion_time
-						? new Date(badge.completion_time * 1000).toISOString()
-						: null,
-				}
-			},
-		)
+	const endpoint = `${STEAM_BASE}/IPlayerService/GetBadges/v1/?key=${key}&steamid=${steamId}`
+	const res = await fetch(endpoint)
 
-		return {
-			level: response.player_level || null,
-			xp: response.player_xp || null,
-			xpNeededToLevelUp: response.player_xp_needed_to_level_up || null,
-			badgeCount: badges.length,
-			badges,
-		}
-	})
+	if (!res.ok) {
+		throw new Error(`Steam API error: ${res.status}`)
+	}
+
+	const data = await res.json()
+	const response = data.response || {}
+	const rawBadges = response.badges || []
+
+	const names = await getBadgeNames(steamId)
+	const descriptions = await getBadgeDescriptions(
+		steamId,
+		rawBadges.map((badge: { badgeid: number }) => badge.badgeid),
+	)
+
+	const badges: SteamBadge[] = rawBadges.map(
+		(badge: {
+			badgeid: number
+			level: number
+			xp: number
+			completion_time?: number
+		}) => {
+			const meta = names.get(badge.badgeid)
+			return {
+				badgeId: badge.badgeid,
+				level: badge.level,
+				xp: badge.xp,
+				name: meta?.name || null,
+				description: descriptions.get(badge.badgeid) || null,
+				icon: meta?.icon || null,
+				completionTime: badge.completion_time
+					? new Date(badge.completion_time * 1000).toISOString()
+					: null,
+			}
+		},
+	)
+
+	return {
+		level: response.player_level || null,
+		xp: response.player_xp || null,
+		xpNeededToLevelUp: response.player_xp_needed_to_level_up || null,
+		badgeCount: badges.length,
+		badges,
+	}
+}

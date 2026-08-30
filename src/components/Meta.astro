@@ -254,8 +254,20 @@ const sameAs = siteMetadata.socials.map((social) => social.url)
 	})}
 />
 
-{isProduction ? <script data-goatcounter="https://stats.ahmetalmaz.com/count"
-        async src="//stats.ahmetalmaz.com/count.js"></script> : null}
+{isProduction ? (
+	<script is:inline define:vars={{ title: Astro.props?.title ?? '' }}>
+		setTimeout(function () {
+			navigator.sendBeacon(
+				'/api/correct-horse-battery-staple',
+				JSON.stringify({
+					title: document.title,
+					slug: window.location.pathname,
+					referrer: document.referrer === window.location.origin + '/' ? '' : document.referrer,
+				}),
+			)
+		}, 10000)
+	</script>
+) : null}
 
 <script>
 		const runWhenIdle = (callback) => {

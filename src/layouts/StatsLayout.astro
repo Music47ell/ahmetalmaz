@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content'
 import Analytics from '../components/stats/analytics'
 import Typing from '../components/stats/typing'
 import Books from '../components/stats/books'
@@ -6,9 +7,37 @@ import Code from '../components/stats/codes'
 import Music from '../components/stats/music'
 import Shows from '../components/stats/shows'
 import Games from '../components/stats/games'
+
+const posts = await getCollection('posts')
+const postCount = posts.length
+// Astro content-layer entries don't render() outside pages; count words from the raw .mdx bodies
+const { readdir, readFile } = await import('node:fs/promises')
+const { join } = await import('node:path')
+const contentDir = new URL(
+	'../data/content/',
+	import.meta.url,
+).pathname.replace(/^\/([A-Za-z]:)/, '$1')
+let wordCount = 0
+for (const entry of posts) {
+	const dir = join(contentDir, entry.id || '')
+	let body = ''
+	try {
+		const files = await readdir(dir)
+		const file = files.find((f) => f.endsWith('.mdx') || f.endsWith('.md'))
+		if (file) body = await readFile(join(dir, file), 'utf8')
+	} catch {
+		continue
+	}
+	// strip frontmatter and markdown/JSX noise for a rough-but-honest word count
+	const text = body
+		.replace(/^---[\s\S]*?---/, '')
+		.replace(/```[\s\S]*?```/g, ' ')
+		.replace(/<[^>]+>|\{[^}]*\}|[#*_[\]()>`~-]/g, ' ')
+	wordCount += text.split(/\s+/).filter(Boolean).length
+}
 ---
 
-<Analytics client:idle />
+<Analytics client:idle postCount={postCount} wordCount={wordCount} />
 <hr class="squiggle-hr my-4"/>
 <Typing client:idle />
 <hr class="squiggle-hr my-4"/>

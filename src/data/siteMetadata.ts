@@ -26,7 +26,10 @@ const siteMetadata = {
 		},
 	],
 	social: [
-		{ img: '/images/badges/mastodon-flat.png', url: 'https://astro.build/' },
+		{
+			img: '/images/badges/mastodon-flat.png',
+			url: 'https://mastodon.social/@Music47ell',
+		},
 		{ img: '/images/badges/github.gif', url: 'https://github.com/music47ell' },
 		{
 			img: '/images/badges/rss-button.gif',
@@ -35,7 +38,7 @@ const siteMetadata = {
 	],
 	uses: [
 		{ img: '/images/badges/brave.gif', url: 'https://brave.com/' },
-		{ img: '/images/badges/vscode.gif', url: 'https://librewolf.net/' },
+		{ img: '/images/badges/vscode.gif', url: 'https://code.visualstudio.com/' },
 		{ img: '/images/badges/navidrome.gif', url: 'https://www.navidrome.org/' },
 	],
 	stack: [

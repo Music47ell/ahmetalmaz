@@ -28,7 +28,7 @@ const shouldTrack = Astro.props.TrackViews ?? Astro.props.trackViews ?? false
 		const fetchViews = async (): Promise<number> => {
 			try {
 				const res = await fetch(
-					`/api/goatcounter/slug/%2Fblog%2F${encodeURIComponent(slug ?? '')}?t=${Date.now()}`,
+					`/api/analytics/slug/%2Fblog%2F${encodeURIComponent(slug ?? '')}?t=${Date.now()}`,
 					{
 						method: 'GET',
 						headers: { 'Content-Type': 'application/json' },

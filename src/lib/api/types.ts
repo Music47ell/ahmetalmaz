@@ -25,7 +25,6 @@ export type Languages = {
 }
 
 export type Language = {
-	ranking: number
-	name: string
+	new_xps: number
 	xps: number
 }
