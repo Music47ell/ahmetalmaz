@@ -37,6 +37,21 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> => {
 		)
 
 		if (!profileRes.ok) {
+			if (profileRes.status === 479) {
+				console.warn('MonkeyType profile request rate limited')
+				return {
+					bestRecord: {
+						wpm: 0,
+						accuracy: 0,
+						rawWpm: 0,
+						consistency: 0,
+						timestamp: 0,
+					},
+					totalTests: 0,
+					totalTimeTyping: 0,
+					totalWords: 0,
+				}
+			}
 			throw new Error(
 				`Failed to fetch MonkeyType profile: ${profileRes.status}`,
 			)

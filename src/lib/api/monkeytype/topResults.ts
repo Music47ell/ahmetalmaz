@@ -28,6 +28,10 @@ export const getMonkeyTypeResults = async (
 		)
 
 		if (!resultsRes.ok) {
+			if (resultsRes.status === 479) {
+				console.warn('MonkeyType results request rate limited')
+				return []
+			}
 			throw new Error(
 				`Failed to fetch MonkeyType results: ${resultsRes.status}`,
 			)
