@@ -11,6 +11,12 @@ export interface MonkeyTypeStats {
 	totalTests: number
 	totalTimeTyping: number
 	totalWords: number
+	recentResults: {
+		wpm: number
+		accuracy: number
+		consistency: number
+		timestamp: number
+	}[]
 }
 
 export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> => {
@@ -50,6 +56,7 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> => {
 					totalTests: 0,
 					totalTimeTyping: 0,
 					totalWords: 0,
+					recentResults: [],
 				}
 			}
 			throw new Error(
@@ -103,6 +110,12 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> => {
 		}
 
 		let totalWords = 0
+		let recentResults: {
+			wpm: number
+			accuracy: number
+			consistency: number
+			timestamp: number
+		}[] = []
 
 		const resultsRes = await fetch(
 			`https://api.monkeytype.com/results?limit=1000`,
@@ -122,6 +135,13 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> => {
 				const correctChars = result.charStats?.[0] || 0
 				totalWords += Math.round(correctChars / 5)
 			})
+
+			recentResults = results.slice(0, 10).map((result: any) => ({
+				wpm: Math.round(result.wpm * 100) / 100 || 0,
+				accuracy: Math.round(result.acc * 100) / 100 || 0,
+				consistency: Math.round(result.consistency * 100) / 100 || 0,
+				timestamp: result.timestamp || 0,
+			}))
 		} else {
 			console.warn(`Failed to fetch MonkeyType results: ${resultsRes.status}`)
 		}
@@ -131,6 +151,7 @@ export const getMonkeyTypeStats = async (): Promise<MonkeyTypeStats> => {
 			totalTests: typingStats.completedTests || 0,
 			totalTimeTyping: typingStats.timeTyping || 0,
 			totalWords,
+			recentResults,
 		}
 	} catch (error) {
 		console.error('Error fetching MonkeyType stats:', error)

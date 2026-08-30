@@ -15,6 +15,12 @@ interface MonkeyTypeStats {
 	totalTests: number
 	totalTimeTyping: number // in seconds
 	totalWords: number
+	recentResults: {
+		wpm: number
+		accuracy: number
+		consistency: number
+		timestamp: number
+	}[]
 	accountAge: number // in milliseconds
 }
 
@@ -38,6 +44,7 @@ const MonkeyTypeStats = () => {
 		totalTests: 0,
 		totalTimeTyping: 0,
 		totalWords: 0,
+		recentResults: [],
 		accountAge: 0,
 	})
 
@@ -52,6 +59,7 @@ const MonkeyTypeStats = () => {
 				if (res.ok) {
 					const data = await res.json()
 					setStats(data)
+					setTestResults(data.recentResults ?? [])
 					setError(null)
 				} else {
 					setError('Failed to fetch MonkeyType stats')
@@ -65,23 +73,7 @@ const MonkeyTypeStats = () => {
 			}
 		}
 
-		const fetchTestResults = async () => {
-			try {
-				const res = await fetch('/api/monkeytype/results?limit=10')
-
-				if (res.ok) {
-					const data = await res.json()
-					setTestResults(data)
-				} else {
-					console.error('Failed to fetch test results:', res.status)
-				}
-			} catch (error) {
-				console.error('Error fetching test results:', error)
-			}
-		}
-
 		fetchData()
-		fetchTestResults()
 	}, [])
 
 	if (error) {
