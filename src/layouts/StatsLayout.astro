@@ -11,6 +11,7 @@ import Games from '../components/stats/games'
 const posts = await getCollection('posts')
 const postCount = posts.length
 let wordCount = 0
+const titles: Record<string, string> = {}
 for (const entry of posts) {
 	// strip frontmatter and markdown/JSX noise for a rough-but-honest word count
 	const text = (entry.body ?? '')
@@ -18,10 +19,11 @@ for (const entry of posts) {
 		.replace(/```[\s\S]*?```/g, ' ')
 		.replace(/<[^>]+>|\{[^}]*\}|[#*_[\]()>`~-]/g, ' ')
 	wordCount += text.split(/\s+/).filter(Boolean).length
+	if (entry.data.slug) titles[`/blog/${entry.data.slug}`] = entry.data.title
 }
 ---
 
-<Analytics client:idle postCount={postCount} wordCount={wordCount} />
+<Analytics client:idle postCount={postCount} wordCount={wordCount} titles={titles} />
 <hr class="squiggle-hr my-4"/>
 <Typing client:idle />
 <hr class="squiggle-hr my-4"/>

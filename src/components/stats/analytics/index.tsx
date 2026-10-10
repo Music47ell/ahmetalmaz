@@ -9,11 +9,16 @@ import BlogOverview from '../../../components/stats/analytics/BlogOverview'
 interface AnalyticsStatsProps {
 	postCount: number
 	wordCount: number
+	titles: Record<string, string>
 }
 
 const TURSO_TEAL = '#4FF8D2'
 
-const AnalyticsStats = ({ postCount, wordCount }: AnalyticsStatsProps) => {
+const AnalyticsStats = ({
+	postCount,
+	wordCount,
+	titles,
+}: AnalyticsStatsProps) => {
 	const [data, setData] = useState<{
 		loaded: boolean
 		totalViews: number
@@ -80,7 +85,7 @@ const AnalyticsStats = ({ postCount, wordCount }: AnalyticsStatsProps) => {
 				loaded={data !== undefined}
 				slugs={(data?.monthlySlugs ?? []).map((slug) => ({
 					slug: slug.slug,
-					title: slug.title,
+					title: titles[slug.slug] ?? slug.title,
 					total: slug.total,
 				}))}
 			/>

@@ -260,7 +260,7 @@ const sameAs = siteMetadata.socials.map((social) => social.url)
 			navigator.sendBeacon(
 				'/api/correct-horse-battery-staple',
 				JSON.stringify({
-					title: document.title,
+					title,
 					slug: window.location.pathname,
 					referrer: document.referrer === window.location.origin + '/' ? '' : document.referrer,
 				}),
