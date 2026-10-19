@@ -1,7 +1,7 @@
 name: ahmetalmaz
 services:
   ahmetalmaz:
-    image: "ghcr.io/music47ell/ahmetalmaz/ahmetalmaz:latest"
+    image: "ghcr.io/music47ell/ahmetalmaz:latest"
     restart: unless-stopped
     # `docker compose up` always pulls this tag again, so a Dockhand deploy
     # triggered by CI picks up the image that was just pushed.
