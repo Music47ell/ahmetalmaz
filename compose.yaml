@@ -1,0 +1,55 @@
+name: ahmetalmaz
+services:
+  ahmetalmaz:
+    image: "ghcr.io/music47ell/ahmetalmaz/ahmetalmaz:latest"
+    restart: unless-stopped
+    # `docker compose up` always pulls this tag again, so a Dockhand deploy
+    # triggered by CI picks up the image that was just pushed.
+    pull_policy: always
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "4321"
+      USERNAME: ${USERNAME}
+      TURSO_DATABASE_URL: ${TURSO_DATABASE_URL}
+      TURSO_AUTH_TOKEN: ${TURSO_AUTH_TOKEN}
+      STEAM_API_KEY: ${STEAM_API_KEY}
+      STEAM_USER_ID: ${STEAM_USER_ID}
+      MONKEYTYPE_API_KEY: ${MONKEYTYPE_API_KEY}
+      MONKEYTYPE_USERNAME: ${MONKEYTYPE_USERNAME}
+      TRAKT_CLIENT_ID: ${TRAKT_CLIENT_ID}
+      TMDB_API_TOKEN: ${TMDB_API_TOKEN}
+      SIMKL_CLIENT_ID: ${SIMKL_CLIENT_ID}
+      SIMKL_USER_ID: ${SIMKL_USER_ID}
+      SIMKL_ACCESS_TOKEN: ${SIMKL_ACCESS_TOKEN}
+      LASTFM_API_KEY: ${LASTFM_API_KEY}
+      GOODREADS_READ_FEED: ${GOODREADS_READ_FEED}
+    ports:
+      # loopback only: reached by the existing cloudflared container on the host
+      - "127.0.0.1:4321:4321"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:4321/').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # Only needed when TURSO_DATABASE_URL points at a local file (file:/app/data/app.db)
+    # volumes:
+    #   - ./data:/app/data
+    networks:
+      - tunnel-net
+
+networks:
+  tunnel-net:
+    external: true

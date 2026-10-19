@@ -1,0 +1,83 @@
+name: Build and Push Astro SSR Site
+
+on:
+  push:
+    branches: [main]
+
+# Prevent an older run from pushing :latest after a newer one
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute image name and short sha
+        run: |
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}/ahmetalmaz" >> "$GITHUB_ENV"
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:sha-${{ env.SHORT_SHA }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Runs after the push so Dockhand pulls the image that was just built.
+      - name: Trigger Dockhand deploy
+        if: success()
+        env:
+          DOCKHAND_WEBHOOK_URL: ${{ secrets.DOCKHAND_WEBHOOK_URL }}
+          DOCKHAND_WEBHOOK_SECRET: ${{ secrets.DOCKHAND_WEBHOOK_SECRET }}
+        run: |
+          [ -z "$DOCKHAND_WEBHOOK_URL" ] && exit 0
+          curl -sSf --max-time 300 --retry 3 --retry-delay 10 \
+            -X POST "$DOCKHAND_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Gitlab-Token: $DOCKHAND_WEBHOOK_SECRET" \
+            -d '{}'
+
+      - name: Send ntfy notification
+        if: always()
+        env:
+          NTFY_URL: ${{ secrets.NTFY_URL }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+          STATUS: ${{ job.status }}
+          SHORT_SHA: ${{ env.SHORT_SHA }}
+        run: |
+          [ -z "$NTFY_URL" ] && exit 0
+          if [ "$STATUS" = "success" ]; then
+            TAGS="white_check_mark,rocket"; PRIORITY="high"
+          else
+            TAGS="x,warning"; PRIORITY="urgent"
+          fi
+          curl -fsS -X POST \
+            -H "Title: Astro build $STATUS" \
+            -H "Priority: $PRIORITY" \
+            -H "Tags: $TAGS" \
+            -H "Click: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            -H "Authorization: Bearer $NTFY_TOKEN" \
+            -d "Build $STATUS for $SHORT_SHA - Dockhand deploy $STATUS." \
+            "$NTFY_URL" || true

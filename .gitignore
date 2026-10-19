@@ -3,9 +3,6 @@ dist/
 # generated types
 .astro/
 
-# cloudflare wrangler
-.wrangler/
-
 # dependencies
 node_modules/
 

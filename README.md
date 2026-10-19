@@ -15,6 +15,20 @@
 - `pages` - Pages for the site.
 - `utils` - Utility functions for the site.
 
+## Deployment
+
+The site runs on a VPS behind a Cloudflare Tunnel, built by GitHub Actions and deployed
+by [Dockhand](https://github.com/Finsys/dockhand) through its git webhook.
+The stack is defined in [`compose.yaml`](./compose.yaml) and CI in
+[`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml).
+
+```bash
+npm install      # install dependencies
+npm run dev      # local dev server on :4321
+npm run build    # standalone Node server in dist/server/entry.mjs
+npm start        # run the production server
+```
+
 ## Features
 
 - Easy styling customization with [Tailwind](https://tailwindcss.com/)

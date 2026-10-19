@@ -1,21 +1,18 @@
-import { defineConfig, envField } from 'astro/config'
+import { unified } from '@astrojs/markdown-remark'
+import mdx from '@astrojs/mdx'
+import node from '@astrojs/node'
 import react from '@astrojs/react'
 import tailwindcss from '@tailwindcss/vite'
-import { unified } from '@astrojs/markdown-remark'
+import { defineConfig, envField } from 'astro/config'
+import astroExpressiveCode from 'astro-expressive-code'
 import { config as loadEnv } from 'dotenv'
-
 import siteMetadata from './src/data/siteMetadata'
-
-import mdx from '@astrojs/mdx'
+import { rehypeExternalUrlsFavicon } from './src/lib/rehype'
 import {
 	astroExpressiveCodeOptions,
-	remarkReadingTime,
 	remarkMastodonToot,
+	remarkReadingTime,
 } from './src/lib/remark'
-import { rehypeExternalUrlsFavicon } from './src/lib/rehype'
-import astroExpressiveCode from 'astro-expressive-code'
-
-import cloudflare from '@astrojs/cloudflare'
 
 loadEnv({ override: true, path: '.env' })
 
@@ -93,16 +90,6 @@ export default defineConfig({
 				access: 'secret',
 				optional: true,
 			}),
-			GOATCOUNTER_ENDPOINT: envField.string({
-				context: 'server',
-				access: 'secret',
-				optional: true,
-			}),
-			GOATCOUNTER_API_KEY: envField.string({
-				context: 'server',
-				access: 'secret',
-				optional: true,
-			}),
 			LASTFM_API_KEY: envField.string({
 				context: 'server',
 				access: 'secret',
@@ -146,7 +133,7 @@ export default defineConfig({
 
 	adapter: isDev
 		? undefined
-		: cloudflare({
-				prerenderEnvironment: 'node',
+		: node({
+				mode: 'standalone',
 			}),
 })
