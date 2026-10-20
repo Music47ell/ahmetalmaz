@@ -44,7 +44,5 @@ export async function GET(context: any) {
 					}),
 				}
 			}),
-
-		stylesheet: '/feed.xsl',
 	})
 }
