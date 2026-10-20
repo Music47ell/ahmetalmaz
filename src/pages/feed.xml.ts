@@ -23,7 +23,7 @@ export async function GET(context: any) {
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <webMaster>${siteMetadata.name}</webMaster>
     <managingEditor>${siteMetadata.name}</managingEditor>
-    <atom:link href="${context.site}/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="${new URL('feed.xml', context.site)}" rel="self" type="application/rss+xml" />
     `,
 		items: content
 			.sort(
